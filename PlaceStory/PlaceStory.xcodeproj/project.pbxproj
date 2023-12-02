@@ -19,6 +19,7 @@
 		988C78F72B1B0CCD007E5440 /* Platform in Frameworks */ = {isa = PBXBuildFile; productRef = 988C78F62B1B0CCD007E5440 /* Platform */; };
 		988C78F92B1B0CCD007E5440 /* ProxyPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 988C78F82B1B0CCD007E5440 /* ProxyPackage */; };
 		988C79102B1B12BE007E5440 /* AppRoot in Frameworks */ = {isa = PBXBuildFile; productRef = 988C790F2B1B12BE007E5440 /* AppRoot */; };
+		988C79122B1B18BC007E5440 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 988C79112B1B18BC007E5440 /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		988C78CD2B1B0075007E5440 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
 		988C78E22B1B07A4007E5440 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
 		988C78FC2B1B100C007E5440 /* AppRoot */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppRoot; sourceTree = "<group>"; };
+		988C79112B1B18BC007E5440 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 			children = (
 				988C78D82B1B04F5007E5440 /* App */,
 				988C78D72B1B04EA007E5440 /* Resources */,
+				988C79112B1B18BC007E5440 /* .gitignore */,
 			);
 			path = PlaceStory;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				337214C82B19D1BE007622F7 /* LaunchScreen.storyboard in Resources */,
+				988C79122B1B18BC007E5440 /* .gitignore in Resources */,
 				337214C52B19D1BE007622F7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
