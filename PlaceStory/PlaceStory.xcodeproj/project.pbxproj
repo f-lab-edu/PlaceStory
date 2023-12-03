@@ -14,12 +14,13 @@
 		337214D32B19D1BE007622F7 /* PlaceStoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214D22B19D1BE007622F7 /* PlaceStoryTests.swift */; };
 		337214DD2B19D1BE007622F7 /* PlaceStoryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214DC2B19D1BE007622F7 /* PlaceStoryUITests.swift */; };
 		337214DF2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214DE2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift */; };
+		9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */ = {isa = PBXBuildFile; productRef = 9857A7392B1B2A9F008A9827 /* LoggedOut */; };
 		988C78E32B1B07A4007E5440 /* AppComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988C78E22B1B07A4007E5440 /* AppComponent.swift */; };
 		988C78F52B1B0CCD007E5440 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 988C78F42B1B0CCD007E5440 /* Domain */; };
 		988C78F72B1B0CCD007E5440 /* Platform in Frameworks */ = {isa = PBXBuildFile; productRef = 988C78F62B1B0CCD007E5440 /* Platform */; };
 		988C78F92B1B0CCD007E5440 /* ProxyPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 988C78F82B1B0CCD007E5440 /* ProxyPackage */; };
-		988C79102B1B12BE007E5440 /* AppRoot in Frameworks */ = {isa = PBXBuildFile; productRef = 988C790F2B1B12BE007E5440 /* AppRoot */; };
 		988C79122B1B18BC007E5440 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 988C79112B1B18BC007E5440 /* .gitignore */; };
+		988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */ = {isa = PBXBuildFile; productRef = 988C791D2B1B1D55007E5440 /* AppRoot */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,12 +52,13 @@
 		337214D82B19D1BE007622F7 /* PlaceStoryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlaceStoryUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		337214DC2B19D1BE007622F7 /* PlaceStoryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceStoryUITests.swift; sourceTree = "<group>"; };
 		337214DE2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceStoryUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		9857A7302B1B27E4008A9827 /* LoggedOut */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoggedOut; sourceTree = "<group>"; };
 		988C78CB2B1B0016007E5440 /* ProxyPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProxyPackage; sourceTree = "<group>"; };
 		988C78CC2B1B0058007E5440 /* Platform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Platform; sourceTree = "<group>"; };
 		988C78CD2B1B0075007E5440 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
 		988C78E22B1B07A4007E5440 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
-		988C78FC2B1B100C007E5440 /* AppRoot */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppRoot; sourceTree = "<group>"; };
 		988C79112B1B18BC007E5440 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		988C791C2B1B1C79007E5440 /* AppRoot */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppRoot; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,8 +66,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				988C79102B1B12BE007E5440 /* AppRoot in Frameworks */,
+				988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */,
 				988C78F52B1B0CCD007E5440 /* Domain in Frameworks */,
+				9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */,
 				988C78F72B1B0CCD007E5440 /* Platform in Frameworks */,
 				988C78F92B1B0CCD007E5440 /* ProxyPackage in Frameworks */,
 			);
@@ -91,7 +94,8 @@
 		337214AF2B19D1BD007622F7 = {
 			isa = PBXGroup;
 			children = (
-				988C78FC2B1B100C007E5440 /* AppRoot */,
+				9857A7302B1B27E4008A9827 /* LoggedOut */,
+				988C791C2B1B1C79007E5440 /* AppRoot */,
 				988C78CD2B1B0075007E5440 /* Domain */,
 				988C78CC2B1B0058007E5440 /* Platform */,
 				988C78CB2B1B0016007E5440 /* ProxyPackage */,
@@ -187,7 +191,8 @@
 				988C78F42B1B0CCD007E5440 /* Domain */,
 				988C78F62B1B0CCD007E5440 /* Platform */,
 				988C78F82B1B0CCD007E5440 /* ProxyPackage */,
-				988C790F2B1B12BE007E5440 /* AppRoot */,
+				988C791D2B1B1D55007E5440 /* AppRoot */,
+				9857A7392B1B2A9F008A9827 /* LoggedOut */,
 			);
 			productName = PlaceStory;
 			productReference = 337214B82B19D1BD007622F7 /* PlaceStory.app */;
@@ -485,7 +490,6 @@
 				INFOPLIST_FILE = PlaceStory/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -513,7 +517,6 @@
 				INFOPLIST_FILE = PlaceStory/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -643,6 +646,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		9857A7392B1B2A9F008A9827 /* LoggedOut */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LoggedOut;
+		};
 		988C78F42B1B0CCD007E5440 /* Domain */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Domain;
@@ -655,7 +662,7 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = ProxyPackage;
 		};
-		988C790F2B1B12BE007E5440 /* AppRoot */ = {
+		988C791D2B1B1D55007E5440 /* AppRoot */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppRoot;
 		};

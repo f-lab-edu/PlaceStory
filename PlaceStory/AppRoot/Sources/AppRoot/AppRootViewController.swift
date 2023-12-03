@@ -21,6 +21,7 @@ final class AppRootViewController: UIViewController, AppRootPresentable, AppRoot
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .red
+        title = "Place Story"
+        view.backgroundColor = .systemPink
     }
 }

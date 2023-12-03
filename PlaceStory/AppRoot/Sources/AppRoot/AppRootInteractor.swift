@@ -7,8 +7,8 @@
 
 import ModernRIBs
 
-protocol AppRootRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
+public protocol AppRootRouting: ViewableRouting {
+    
 }
 
 protocol AppRootPresentable: Presentable {
@@ -16,7 +16,7 @@ protocol AppRootPresentable: Presentable {
     // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
-protocol AppRootListener: AnyObject {
+public protocol AppRootListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
@@ -34,7 +34,7 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        
     }
 
     override func willResignActive() {

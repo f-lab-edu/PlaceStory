@@ -4,22 +4,25 @@
 import PackageDescription
 
 let package = Package(
-    name: "AppRoot",
+    name: "LoggedOut",
     platforms: [.iOS(.v17)],
     products: [
         .library(
-            name: "AppRoot",
-            targets: ["AppRoot"]),
+            name: "LoggedOut",
+            targets: ["LoggedOut"]),
     ],
     dependencies: [
-        .package(path: "../ProxyPackage"),
+        .package(path: "../ProxyPackage")
     ],
     targets: [
         .target(
-            name: "AppRoot",
+            name: "LoggedOut",
             dependencies: [
-                "ProxyPackage",
+                "ProxyPackage"
             ]
-        )
+        ),
+        .testTarget(
+            name: "LoggedOutTests",
+            dependencies: ["LoggedOut"]),
     ]
 )

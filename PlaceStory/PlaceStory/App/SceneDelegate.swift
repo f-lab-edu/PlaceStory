@@ -6,11 +6,12 @@
 //
 
 import AppRoot
+import ModernRIBs
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
-    private var launchRouter: AppRootRouter?
+    private var launchRouter: LaunchRouting?
     
     var window: UIWindow?
 
@@ -19,9 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         self.window = window
         
-        let launchRouter = AppRootRouter(dependency: AppComponent()).build()
-        self.launchRouter = launchRouter
-        launchRouter.launchFromWindow(window)
+        let router = AppRootBuilder(dependency: AppComponent()).build()
+        self.launchRouter = router
+        self.launchRouter?.launch(from: window)
     }
 }
 
