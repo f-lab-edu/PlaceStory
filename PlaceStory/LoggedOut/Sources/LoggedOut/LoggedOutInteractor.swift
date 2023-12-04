@@ -1,5 +1,5 @@
 //
-//  AppRootInteractor.swift
+//  LoggedOutInteractor.swift
 //  PlaceStory
 //
 //  Created by 최제환 on 12/2/23.
@@ -7,35 +7,34 @@
 
 import ModernRIBs
 
-public protocol AppRootRouting: ViewableRouting {
-    func attachLoggedOut()
+public protocol LoggedOutRouting: ViewableRouting {
+    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
 }
 
-protocol AppRootPresentable: Presentable {
-    var listener: AppRootPresentableListener? { get set }
+protocol LoggedOutPresentable: Presentable {
+    var listener: LoggedOutPresentableListener? { get set }
     // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
-public protocol AppRootListener: AnyObject {
+public protocol LoggedOutListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
-final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRootInteractable, AppRootPresentableListener {
+final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, LoggedOutInteractable, LoggedOutPresentableListener {
 
-    weak var router: AppRootRouting?
-    weak var listener: AppRootListener?
+    weak var router: LoggedOutRouting?
+    weak var listener: LoggedOutListener?
 
     // TODO: Add additional dependencies to constructor. Do not perform any logic
     // in constructor.
-    override init(presenter: AppRootPresentable) {
+    override init(presenter: LoggedOutPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        
-        router?.attachLoggedOut()
+        // TODO: Implement business logic here.
     }
 
     override func willResignActive() {
