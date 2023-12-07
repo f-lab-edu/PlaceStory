@@ -9,6 +9,7 @@ import AuthenticationServices
 import Combine
 import ModernRIBs
 import UseCase
+import Utils
 
 public protocol LoggedOutRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
@@ -60,9 +61,9 @@ final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, Lo
                 
                 switch completion {
                 case .finished:
-                    print("Finished.")
+                    Log.debug("Finished.", "[\(#function) - \(#line)]")
                 case let .failure(error):
-                    print("[\(#function) / \(#line)] error - \(error.localizedDescription)")
+                    Log.error("\(error.localizedDescription)", "[\(#function) - \(#line)]")
                 }
             } receiveValue: { appleUser in
                 print("appleUser is \(appleUser)")

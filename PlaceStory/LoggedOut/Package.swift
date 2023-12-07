@@ -21,6 +21,7 @@ let package = Package(
             dependencies: [
                 "ProxyPackage",
                 .product(name: "UseCase", package: "Domain"),
+                .product(name: "Utils", package: "ProxyPackage"),
             ]
         )
     ]
