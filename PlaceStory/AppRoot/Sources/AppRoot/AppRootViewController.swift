@@ -16,14 +16,19 @@ protocol AppRootPresentableListener: AnyObject {
 
 final class AppRootViewController: UIViewController, AppRootPresentable, AppRootViewControllable {
 
+    // MARK: - Property
+    
     weak var listener: AppRootPresentableListener?
+    
+    // MARK: - View Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Place Story"
-        view.backgroundColor = .systemPink
+        view.backgroundColor = .systemBackground
     }
+    
+    // MARK: - AppRootViewControllable
     
     func present(viewController: ModernRIBs.ViewControllable) {
         viewController.uiviewController.modalPresentationStyle = .fullScreen

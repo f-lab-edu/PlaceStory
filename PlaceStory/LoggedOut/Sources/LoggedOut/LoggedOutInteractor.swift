@@ -5,7 +5,10 @@
 //  Created by 최제환 on 12/2/23.
 //
 
+import AuthenticationServices
+import Combine
 import ModernRIBs
+import UseCase
 
 public protocol LoggedOutRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
@@ -13,7 +16,7 @@ public protocol LoggedOutRouting: ViewableRouting {
 
 protocol LoggedOutPresentable: Presentable {
     var listener: LoggedOutPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
+    
 }
 
 public protocol LoggedOutListener: AnyObject {
@@ -25,9 +28,17 @@ final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, Lo
     weak var router: LoggedOutRouting?
     weak var listener: LoggedOutListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: LoggedOutPresentable) {
+    private let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+    
+    private var cancellables: Set<AnyCancellable>
+    
+    init(
+        presenter: LoggedOutPresentable,
+        appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+    ) {
+        self.appleAuthenticationServiceUseCase = appleAuthenticationServiceUseCase
+        self.cancellables = .init()
+        
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -40,5 +51,22 @@ final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, Lo
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+    
+    func handleSignInWithApple() {
+        appleAuthenticationServiceUseCase.signInWithApple()
+            .sink { [weak self] completion in
+                guard let self else { return }
+                
+                switch completion {
+                case .finished:
+                    print("Finished.")
+                case let .failure(error):
+                    print("[\(#function) / \(#line)] error - \(error.localizedDescription)")
+                }
+            } receiveValue: { appleUser in
+                print("appleUser is \(appleUser)")
+            }
+            .store(in: &cancellables)
     }
 }

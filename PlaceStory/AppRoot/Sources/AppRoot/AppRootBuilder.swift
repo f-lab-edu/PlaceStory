@@ -5,8 +5,11 @@
 //  Created by 최제환 on 12/2/23.
 //
 
+import Repositories
+import RepositoryImps
 import ModernRIBs
 import LoggedOut
+import UseCase
 
 public protocol AppRootDependency: Dependency {
     // TODO: Declare the set of dependencies required by this RIB, but cannot be
@@ -14,8 +17,15 @@ public protocol AppRootDependency: Dependency {
 }
 
 final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+    let appleAuthenticationServiceUseCase: UseCase.AppleAuthenticationServiceUseCase
+    
+    override init(
+        dependency: AppRootDependency
+    ) {
+        self.appleAuthenticationServiceUseCase = AppleAuthenticationServiceUseCaseImp(appleAuthenticationServiceRepository: AppleAuthenticationServiceRepositoryImp())
+        
+        super.init(dependency: dependency)
+    }
 }
 
 // MARK: - Builder
