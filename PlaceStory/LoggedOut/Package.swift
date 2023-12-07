@@ -22,6 +22,7 @@ let package = Package(
                 "ProxyPackage",
                 .product(name: "UseCase", package: "Domain"),
                 .product(name: "Utils", package: "ProxyPackage"),
+                .product(name: "CommonUI", package: "ProxyPackage")
             ]
         )
     ]

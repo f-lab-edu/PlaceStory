@@ -7,6 +7,7 @@
 
 import AuthenticationServices
 import Combine
+import CommonUI
 import ModernRIBs
 import ProxyPackage
 import SnapKit
@@ -83,5 +84,15 @@ final class LoggedOutViewController: UIViewController, LoggedOutPresentable, Log
     @objc
     private func didTappedAppleLoginButton() {
         listener?.handleSignInWithApple()
+    }
+    
+    // MARK: - LoggedOutPresentable
+    func showAppleLoginErrorAlert(_ error: Error) {
+        PlaceStoryAlert.showAlertWithOneAction(
+            self,
+            "로그인",
+            error.localizedDescription,
+            nil
+        )
     }
 }
