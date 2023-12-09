@@ -5,17 +5,40 @@ import PackageDescription
 
 let package = Package(
     name: "ProxyPackage",
+    platforms: [.iOS(.v17)],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ProxyPackage",
             targets: ["ProxyPackage"]),
+        .library(
+            name: "Utils",
+            targets: ["Utils"]),
+        .library(
+            name: "CommonUI",
+            targets: ["CommonUI"]
+        )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/DevYeom/ModernRIBs.git", from: "1.0.0"),
+        .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.0.1")),
+        .package(url: "https://github.com/realm/realm-swift.git", .upToNextMajor(from: "10.40.0"))
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "ProxyPackage"),
+            name: "ProxyPackage",
+            dependencies: [
+                .product(name: "ModernRIBs", package: "ModernRIBs"),
+                .product(name: "SnapKit", package: "SnapKit"),
+                .product(name: "Realm", package: "realm-swift"),
+                .product(name: "RealmSwift", package: "realm-swift")
+            ]
+        ),
+        .target(
+            name: "Utils"
+        ),
+        .target(
+            name: "CommonUI"
+        ),
         .testTarget(
             name: "ProxyPackageTests",
             dependencies: ["ProxyPackage"]),
