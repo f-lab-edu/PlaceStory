@@ -20,9 +20,6 @@
 		9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */ = {isa = PBXBuildFile; productRef = 9857A7392B1B2A9F008A9827 /* LoggedOut */; };
 		9877075A2B2477D000D93897 /* Model in Frameworks */ = {isa = PBXBuildFile; productRef = 987707592B2477D000D93897 /* Model */; };
 		9877075F2B24A04F00D93897 /* LocalStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 9877075E2B24A04F00D93897 /* LocalStorage */; };
-		987707612B24A05400D93897 /* CommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 987707602B24A05400D93897 /* CommonUI */; };
-		987707632B24A05400D93897 /* ProxyPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 987707622B24A05400D93897 /* ProxyPackage */; };
-		987707652B24A05400D93897 /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 987707642B24A05400D93897 /* Utils */; };
 		988C78E32B1B07A4007E5440 /* AppComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988C78E22B1B07A4007E5440 /* AppComponent.swift */; };
 		988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */ = {isa = PBXBuildFile; productRef = 988C791D2B1B1D55007E5440 /* AppRoot */; };
 		98EAA3E62B1F723F00937B0E /* UseCase in Frameworks */ = {isa = PBXBuildFile; productRef = 98EAA3E52B1F723F00937B0E /* UseCase */; };
@@ -59,9 +56,6 @@
 		337214DE2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceStoryUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		33A056772B21A7F3005DE8B2 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
 		9857A7302B1B27E4008A9827 /* LoggedOut */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoggedOut; sourceTree = "<group>"; };
-		9877075B2B249F7A00D93897 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
-		9877075C2B249FA500D93897 /* Platform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Platform; sourceTree = "<group>"; };
-		9877075D2B249FB400D93897 /* ProxyPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProxyPackage; sourceTree = "<group>"; };
 		988C78E22B1B07A4007E5440 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
 		988C791C2B1B1C79007E5440 /* AppRoot */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppRoot; sourceTree = "<group>"; };
 		98EAA3E02B1F66C100937B0E /* PlaceStory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlaceStory.entitlements; sourceTree = "<group>"; };
@@ -74,14 +68,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				9877075A2B2477D000D93897 /* Model in Frameworks */,
-				987707612B24A05400D93897 /* CommonUI in Frameworks */,
 				33A72A222B202DBA00E41887 /* Repositories in Frameworks */,
 				98EAA3E62B1F723F00937B0E /* UseCase in Frameworks */,
 				988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */,
 				33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */,
-				987707652B24A05400D93897 /* Utils in Frameworks */,
 				9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */,
-				987707632B24A05400D93897 /* ProxyPackage in Frameworks */,
 				9877075F2B24A04F00D93897 /* LocalStorage in Frameworks */,
 				98EAA3E82B1F7A3200937B0E /* Entities in Frameworks */,
 				33A056782B21A7F3005DE8B2 /* OSLog.framework in Frameworks */,
@@ -108,9 +99,6 @@
 		337214AF2B19D1BD007622F7 = {
 			isa = PBXGroup;
 			children = (
-				9877075D2B249FB400D93897 /* ProxyPackage */,
-				9877075C2B249FA500D93897 /* Platform */,
-				9877075B2B249F7A00D93897 /* Domain */,
 				9857A7302B1B27E4008A9827 /* LoggedOut */,
 				988C791C2B1B1C79007E5440 /* AppRoot */,
 				337214BA2B19D1BD007622F7 /* PlaceStory */,
@@ -211,9 +199,6 @@
 				33A0567D2B21B096005DE8B2 /* RepositoryImps */,
 				987707592B2477D000D93897 /* Model */,
 				9877075E2B24A04F00D93897 /* LocalStorage */,
-				987707602B24A05400D93897 /* CommonUI */,
-				987707622B24A05400D93897 /* ProxyPackage */,
-				987707642B24A05400D93897 /* Utils */,
 			);
 			productName = PlaceStory;
 			productReference = 337214B82B19D1BD007622F7 /* PlaceStory.app */;
@@ -689,18 +674,6 @@
 		9877075E2B24A04F00D93897 /* LocalStorage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LocalStorage;
-		};
-		987707602B24A05400D93897 /* CommonUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CommonUI;
-		};
-		987707622B24A05400D93897 /* ProxyPackage */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ProxyPackage;
-		};
-		987707642B24A05400D93897 /* Utils */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Utils;
 		};
 		988C791D2B1B1D55007E5440 /* AppRoot */ = {
 			isa = XCSwiftPackageProductDependency;
