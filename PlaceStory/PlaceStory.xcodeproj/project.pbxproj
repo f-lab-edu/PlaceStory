@@ -56,6 +56,7 @@
 		337214DE2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceStoryUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		33A056772B21A7F3005DE8B2 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
 		9857A7302B1B27E4008A9827 /* LoggedOut */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoggedOut; sourceTree = "<group>"; };
+		9872E5C72B24A33900168842 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
 		988C78E22B1B07A4007E5440 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
 		988C791C2B1B1C79007E5440 /* AppRoot */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppRoot; sourceTree = "<group>"; };
 		98EAA3E02B1F66C100937B0E /* PlaceStory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlaceStory.entitlements; sourceTree = "<group>"; };
@@ -99,6 +100,7 @@
 		337214AF2B19D1BD007622F7 = {
 			isa = PBXGroup;
 			children = (
+				9872E5C72B24A33900168842 /* Domain */,
 				9857A7302B1B27E4008A9827 /* LoggedOut */,
 				988C791C2B1B1C79007E5440 /* AppRoot */,
 				337214BA2B19D1BD007622F7 /* PlaceStory */,
