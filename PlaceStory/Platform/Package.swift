@@ -28,20 +28,24 @@ let package = Package(
             name: "LocalStorage",
             dependencies: [
                 "ProxyPackage",
-                .product(name: "Utils", package: "ProxyPackage")
+                .product(name: "Utils", package: "ProxyPackage"),
+                "Model"
             ]
         ),
         .target(
             name: "Model",
             dependencies: [
-                "ProxyPackage"
+                "ProxyPackage",
+                .product(name: "Entities", package: "Domain")
             ]
         ),
         .target(
             name: "RepositoryImps",
             dependencies: [
                 .product(name: "Repositories", package: "Domain"),
-                "LocalStorage"
+                "LocalStorage",
+                .product(name: "Utils", package: "ProxyPackage"),
+                "Model"
             ]
         ),
     ]

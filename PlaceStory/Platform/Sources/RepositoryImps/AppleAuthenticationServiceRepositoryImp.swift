@@ -10,7 +10,9 @@ import Combine
 import Entities
 import Foundation
 import LocalStorage
+import Model
 import Repositories
+import Utils
 
 public final class AppleAuthenticationServiceRepositoryImp: NSObject, AppleAuthenticationServiceRepository {
     
@@ -67,7 +69,7 @@ extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDele
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         
         guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-            print("CJHLOG: ‼️ Invalid state: A login callback was received, but no login request was sent.")
+            Log.error("Invalid state: A login callback was received, but no login request was sent.", "[\(#file)-\(#function) - \(#line)]")
             return
         }
         
@@ -83,26 +85,24 @@ extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDele
         
         if email.isEmpty {
             let decodeResult = decodeWith(idToken: idTokenToString)
-            print("CJHLOG: decodeResult = \(decodeResult)")
+            Log.info("decodeResult = \(decodeResult)", "[\(#file)-\(#function) - \(#line)]")
             email = decodeResult["email"] as? String ?? ""
         }
         
         let familyName = appleIDCredential.fullName?.familyName ?? ""
         let givenName = appleIDCredential.fullName?.givenName ?? ""
         let fullName = "\(familyName)\(givenName)"
-        let imgPath = "https://appleid.apple.com\(idTokenToString)/picture"
         
-        let appleUser = AppleUser(
-            userIdentifier: user,
-            email: email,
-            name: fullName,
-            accessToken: codeStr,
-            identityToken: idTokenToString,
-            imgPath: imgPath
-        )
+        let userInfo = UserInfo()
+        userInfo.userIdentifier = user
+        userInfo.email = email
+        userInfo.name = fullName
+        userInfo.accessToken = codeStr
+        userInfo.identityToken = idTokenToString
+        userInfo.imgPath = nil
         
-        signInSubject.send(appleUser)
+        signInSubject.send(userInfo.toDomain())
         
-        // Todo. Realm에 저장
+        RealmDatabaseImp.shared.create(userInfo)
     }
 }

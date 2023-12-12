@@ -62,13 +62,13 @@ final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, Lo
                 
                 switch completion {
                 case .finished:
-                    Log.debug("Finished.", "[\(#function) - \(#line)]")
+                    Log.debug("Finished.", "[\(#file)-\(#function) - \(#line)]")
                 case let .failure(error):
                     self.presenter.showAppleLoginErrorAlert(error)
-                    Log.error("\(error.localizedDescription)", "[\(#function) - \(#line)]")
+                    Log.error("\(error.localizedDescription)", "[\(#file)-\(#function) - \(#line)]")
                 }
             } receiveValue: { appleUser in
-                print("appleUser is \(appleUser)")
+                Log.info("UserInfo is \(appleUser)", "[\(#file)-\(#function) - \(#line)]")
             }
             .store(in: &cancellables)
     }
