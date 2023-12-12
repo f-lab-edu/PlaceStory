@@ -24,4 +24,9 @@ final class AppRootViewController: UIViewController, AppRootPresentable, AppRoot
         title = "Place Story"
         view.backgroundColor = .systemPink
     }
+    
+    func present(viewController: ModernRIBs.ViewControllable) {
+        viewController.uiviewController.modalPresentationStyle = .fullScreen
+        present(viewController.uiviewController, animated: true, completion: nil)
+    }
 }

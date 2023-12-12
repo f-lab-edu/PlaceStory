@@ -13,12 +13,14 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../ProxyPackage"),
+        .package(path: "../LoggedOut")
     ],
     targets: [
         .target(
             name: "AppRoot",
             dependencies: [
                 "ProxyPackage",
+                "LoggedOut"
             ]
         )
     ]
