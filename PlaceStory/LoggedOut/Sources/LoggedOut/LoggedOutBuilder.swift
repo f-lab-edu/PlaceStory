@@ -6,10 +6,10 @@
 //
 
 import ModernRIBs
+import UseCase
 
 public protocol LoggedOutDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase { get }
 }
 
 final class LoggedOutComponent: Component<LoggedOutDependency> {
@@ -32,8 +32,12 @@ public final class LoggedOutBuilder: Builder<LoggedOutDependency>, LoggedOutBuil
     public func build(withListener listener: LoggedOutListener) -> LoggedOutRouting {
         let component = LoggedOutComponent(dependency: dependency)
         let viewController = LoggedOutViewController()
-        let interactor = LoggedOutInteractor(presenter: viewController)
+        let interactor = LoggedOutInteractor(
+            presenter: viewController,
+            appleAuthenticationServiceUseCase: dependency.appleAuthenticationServiceUseCase
+        )
         interactor.listener = listener
+        
         return LoggedOutRouter(interactor: interactor, viewController: viewController)
     }
 }

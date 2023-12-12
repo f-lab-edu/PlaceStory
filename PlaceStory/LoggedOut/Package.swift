@@ -12,17 +12,18 @@ let package = Package(
             targets: ["LoggedOut"]),
     ],
     dependencies: [
-        .package(path: "../ProxyPackage")
+        .package(path: "../ProxyPackage"),
+        .package(path: "../Domain")
     ],
     targets: [
         .target(
             name: "LoggedOut",
             dependencies: [
-                "ProxyPackage"
+                "ProxyPackage",
+                .product(name: "UseCase", package: "Domain"),
+                .product(name: "Utils", package: "ProxyPackage"),
+                .product(name: "CommonUI", package: "ProxyPackage")
             ]
-        ),
-        .testTarget(
-            name: "LoggedOutTests",
-            dependencies: ["LoggedOut"]),
+        )
     ]
 )
