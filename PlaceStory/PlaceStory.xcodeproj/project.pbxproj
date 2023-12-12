@@ -15,14 +15,15 @@
 		337214DD2B19D1BE007622F7 /* PlaceStoryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214DC2B19D1BE007622F7 /* PlaceStoryUITests.swift */; };
 		337214DF2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214DE2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift */; };
 		33A056782B21A7F3005DE8B2 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A056772B21A7F3005DE8B2 /* OSLog.framework */; };
-		33A0567A2B21AA3C005DE8B2 /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 33A056792B21AA3C005DE8B2 /* Utils */; };
-		33A0567C2B21AF3D005DE8B2 /* CommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 33A0567B2B21AF3D005DE8B2 /* CommonUI */; };
 		33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */ = {isa = PBXBuildFile; productRef = 33A0567D2B21B096005DE8B2 /* RepositoryImps */; };
 		33A72A222B202DBA00E41887 /* Repositories in Frameworks */ = {isa = PBXBuildFile; productRef = 33A72A212B202DBA00E41887 /* Repositories */; };
 		9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */ = {isa = PBXBuildFile; productRef = 9857A7392B1B2A9F008A9827 /* LoggedOut */; };
+		9872E5CB2B24A4C000168842 /* CommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9872E5CA2B24A4C000168842 /* CommonUI */; };
+		9872E5CD2B24A4C000168842 /* ProxyPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 9872E5CC2B24A4C000168842 /* ProxyPackage */; };
+		9872E5CF2B24A4C000168842 /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 9872E5CE2B24A4C000168842 /* Utils */; };
+		9877075A2B2477D000D93897 /* Model in Frameworks */ = {isa = PBXBuildFile; productRef = 987707592B2477D000D93897 /* Model */; };
+		9877075F2B24A04F00D93897 /* LocalStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 9877075E2B24A04F00D93897 /* LocalStorage */; };
 		988C78E32B1B07A4007E5440 /* AppComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988C78E22B1B07A4007E5440 /* AppComponent.swift */; };
-		988C78F92B1B0CCD007E5440 /* ProxyPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 988C78F82B1B0CCD007E5440 /* ProxyPackage */; };
-		988C79122B1B18BC007E5440 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 988C79112B1B18BC007E5440 /* .gitignore */; };
 		988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */ = {isa = PBXBuildFile; productRef = 988C791D2B1B1D55007E5440 /* AppRoot */; };
 		98EAA3E62B1F723F00937B0E /* UseCase in Frameworks */ = {isa = PBXBuildFile; productRef = 98EAA3E52B1F723F00937B0E /* UseCase */; };
 		98EAA3E82B1F7A3200937B0E /* Entities in Frameworks */ = {isa = PBXBuildFile; productRef = 98EAA3E72B1F7A3200937B0E /* Entities */; };
@@ -58,11 +59,10 @@
 		337214DE2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceStoryUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		33A056772B21A7F3005DE8B2 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
 		9857A7302B1B27E4008A9827 /* LoggedOut */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoggedOut; sourceTree = "<group>"; };
-		988C78CB2B1B0016007E5440 /* ProxyPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProxyPackage; sourceTree = "<group>"; };
-		988C78CC2B1B0058007E5440 /* Platform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Platform; sourceTree = "<group>"; };
-		988C78CD2B1B0075007E5440 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
+		9872E5C72B24A33900168842 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
+		9872E5C82B24A3D100168842 /* Platform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Platform; sourceTree = "<group>"; };
+		9872E5C92B24A46100168842 /* ProxyPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProxyPackage; sourceTree = "<group>"; };
 		988C78E22B1B07A4007E5440 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
-		988C79112B1B18BC007E5440 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		988C791C2B1B1C79007E5440 /* AppRoot */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppRoot; sourceTree = "<group>"; };
 		98EAA3E02B1F66C100937B0E /* PlaceStory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlaceStory.entitlements; sourceTree = "<group>"; };
 		98EAA3E42B1F6D2E00937B0E /* ko */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = ko; path = ko.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -73,14 +73,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				33A0567A2B21AA3C005DE8B2 /* Utils in Frameworks */,
-				33A0567C2B21AF3D005DE8B2 /* CommonUI in Frameworks */,
+				9877075A2B2477D000D93897 /* Model in Frameworks */,
+				9872E5CB2B24A4C000168842 /* CommonUI in Frameworks */,
 				33A72A222B202DBA00E41887 /* Repositories in Frameworks */,
 				98EAA3E62B1F723F00937B0E /* UseCase in Frameworks */,
 				988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */,
 				33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */,
+				9872E5CF2B24A4C000168842 /* Utils in Frameworks */,
 				9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */,
-				988C78F92B1B0CCD007E5440 /* ProxyPackage in Frameworks */,
+				9872E5CD2B24A4C000168842 /* ProxyPackage in Frameworks */,
+				9877075F2B24A04F00D93897 /* LocalStorage in Frameworks */,
 				98EAA3E82B1F7A3200937B0E /* Entities in Frameworks */,
 				33A056782B21A7F3005DE8B2 /* OSLog.framework in Frameworks */,
 			);
@@ -108,9 +110,9 @@
 			children = (
 				9857A7302B1B27E4008A9827 /* LoggedOut */,
 				988C791C2B1B1C79007E5440 /* AppRoot */,
-				988C78CD2B1B0075007E5440 /* Domain */,
-				988C78CC2B1B0058007E5440 /* Platform */,
-				988C78CB2B1B0016007E5440 /* ProxyPackage */,
+				9872E5C72B24A33900168842 /* Domain */,
+				9872E5C82B24A3D100168842 /* Platform */,
+				9872E5C92B24A46100168842 /* ProxyPackage */,
 				337214BA2B19D1BD007622F7 /* PlaceStory */,
 				337214D12B19D1BE007622F7 /* PlaceStoryTests */,
 				337214DB2B19D1BE007622F7 /* PlaceStoryUITests */,
@@ -135,7 +137,6 @@
 				98EAA3E02B1F66C100937B0E /* PlaceStory.entitlements */,
 				988C78D82B1B04F5007E5440 /* App */,
 				988C78D72B1B04EA007E5440 /* Resources */,
-				988C79112B1B18BC007E5440 /* .gitignore */,
 			);
 			path = PlaceStory;
 			sourceTree = "<group>";
@@ -202,15 +203,17 @@
 			);
 			name = PlaceStory;
 			packageProductDependencies = (
-				988C78F82B1B0CCD007E5440 /* ProxyPackage */,
 				988C791D2B1B1D55007E5440 /* AppRoot */,
 				9857A7392B1B2A9F008A9827 /* LoggedOut */,
 				98EAA3E52B1F723F00937B0E /* UseCase */,
 				98EAA3E72B1F7A3200937B0E /* Entities */,
 				33A72A212B202DBA00E41887 /* Repositories */,
-				33A056792B21AA3C005DE8B2 /* Utils */,
-				33A0567B2B21AF3D005DE8B2 /* CommonUI */,
 				33A0567D2B21B096005DE8B2 /* RepositoryImps */,
+				987707592B2477D000D93897 /* Model */,
+				9877075E2B24A04F00D93897 /* LocalStorage */,
+				9872E5CA2B24A4C000168842 /* CommonUI */,
+				9872E5CC2B24A4C000168842 /* ProxyPackage */,
+				9872E5CE2B24A4C000168842 /* Utils */,
 			);
 			productName = PlaceStory;
 			productReference = 337214B82B19D1BD007622F7 /* PlaceStory.app */;
@@ -301,7 +304,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				337214C82B19D1BE007622F7 /* LaunchScreen.storyboard in Resources */,
-				988C79122B1B18BC007E5440 /* .gitignore in Resources */,
 				337214C52B19D1BE007622F7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -668,14 +670,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		33A056792B21AA3C005DE8B2 /* Utils */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Utils;
-		};
-		33A0567B2B21AF3D005DE8B2 /* CommonUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CommonUI;
-		};
 		33A0567D2B21B096005DE8B2 /* RepositoryImps */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RepositoryImps;
@@ -688,9 +682,25 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = LoggedOut;
 		};
-		988C78F82B1B0CCD007E5440 /* ProxyPackage */ = {
+		9872E5CA2B24A4C000168842 /* CommonUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CommonUI;
+		};
+		9872E5CC2B24A4C000168842 /* ProxyPackage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ProxyPackage;
+		};
+		9872E5CE2B24A4C000168842 /* Utils */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Utils;
+		};
+		987707592B2477D000D93897 /* Model */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Model;
+		};
+		9877075E2B24A04F00D93897 /* LocalStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LocalStorage;
 		};
 		988C791D2B1B1D55007E5440 /* AppRoot */ = {
 			isa = XCSwiftPackageProductDependency;
