@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import Model
 import RealmSwift
 import Utils
 
@@ -34,11 +35,17 @@ public final class RealmDatabaseImp: RealmDatabase {
     private let realmDatabase: Realm
     
     private init() {
+        let config = RealmMigrationManager.performMigration()
+        Realm.Configuration.defaultConfiguration = config
+        
         self.realmDatabase = try! Realm()
+        
+        self.realmLocation()
     }
     
-    func realmLocation() {
-        Log.info("\(realmDatabase.configuration.fileURL!)", "\(#file) - \(#function) - \(#line)")
+
+    private func realmLocation() {
+        Log.info("\(realmDatabase.configuration.fileURL!)", "[\(#file)-\(#function) - \(#line)]")
     }
     
     public func create<T>(_ object: T) where T : Object {
@@ -47,7 +54,7 @@ public final class RealmDatabaseImp: RealmDatabase {
                 realmDatabase.add(object)
             }
         } catch {
-            Log.error(error.localizedDescription, "\(#file) - \(#function) - \(#line)")
+            Log.error(error.localizedDescription, "[\(#file)-\(#function) - \(#line)]")
         }
     }
     
@@ -73,12 +80,12 @@ public final class RealmDatabaseImp: RealmDatabase {
                 return Just(objectToUpdate).setFailureType(to: Error.self)
                     .eraseToAnyPublisher()
             } else {
-                Log.error(RealmDatabaseError.objectNotFound.errorDescription, "\(#file) - \(#function) - \(#line)")
+                Log.error(RealmDatabaseError.objectNotFound.errorDescription, "[\(#file)-\(#function) - \(#line)]")
                 return Fail(error: RealmDatabaseError.objectNotFound)
                     .eraseToAnyPublisher()
             }
         } catch {
-            Log.error(error.localizedDescription, "\(#file) - \(#function) - \(#line)")
+            Log.error(error.localizedDescription, "[\(#file)-\(#function) - \(#line)]")
             return Fail(error: error)
                 .eraseToAnyPublisher()
         }
@@ -90,7 +97,7 @@ public final class RealmDatabaseImp: RealmDatabase {
                 realmDatabase.delete(object)
             }
         } catch {
-            Log.error(error.localizedDescription, "\(#file) - \(#function) - \(#line)")
+            Log.error(error.localizedDescription, "[\(#file)-\(#function) - \(#line)]")
         }
     }
 }

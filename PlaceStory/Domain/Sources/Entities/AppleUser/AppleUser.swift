@@ -8,12 +8,12 @@
 import Foundation
 
 public struct AppleUser {
-    let userIdentifier: String
-    let email: String
-    let name: String
-    let accessToken: String
-    let identityToken: String
-    let imgPath: String
+    public let userIdentifier: String
+    public let email: String
+    public let name: String
+    public let accessToken: String
+    public let identityToken: String
+    public let imgPath: Data?
     
     public init(
         userIdentifier: String,
@@ -21,7 +21,7 @@ public struct AppleUser {
         name: String,
         accessToken: String,
         identityToken: String,
-        imgPath: String
+        imgPath: Data?
     ) {
         self.userIdentifier = userIdentifier
         self.email = email
