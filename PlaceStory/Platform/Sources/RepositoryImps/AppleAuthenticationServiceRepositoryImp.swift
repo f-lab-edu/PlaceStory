@@ -15,10 +15,43 @@ import Repositories
 import SecurityServices
 import Utils
 
-public final class AppleAuthenticationServiceRepositoryImp: NSObject, AppleAuthenticationServiceRepository {
-    
+public final class AppleAuthenticationServiceRepositoryImp: NSObject {
     private let signInSubject = PassthroughSubject<AppleUser, Error>()
     
+    private func fetchUserInfo(from credential: ASAuthorizationAppleIDCredential) -> UserInfo {
+        var codeStr = ""
+        if let code = credential.authorizationCode {
+            codeStr = String(data: code, encoding: .utf8) ?? ""
+        }
+        
+        let user = credential.user
+        var email = credential.email ?? ""
+        let idToken = credential.identityToken ?? Data()
+        let idTokenToString = String(data: idToken, encoding: .utf8) ?? ""
+        
+        if email.isEmpty {
+            let decodeResult = decodeWith(idToken: idTokenToString)
+            Log.info("decodeResult = \(decodeResult)", "[\(#file)-\(#function) - \(#line)]")
+            email = decodeResult["email"] as? String ?? ""
+        }
+        
+        let familyName = credential.fullName?.familyName ?? ""
+        let givenName = credential.fullName?.givenName ?? ""
+        let fullName = "\(familyName)\(givenName)"
+        
+        let userInfo = UserInfo()
+        userInfo.userIdentifier = user
+        userInfo.email = email
+        userInfo.name = fullName
+        userInfo.accessToken = codeStr
+        userInfo.identityToken = idTokenToString
+        userInfo.imgPath = nil
+        
+        return userInfo
+    }
+}
+
+extension AppleAuthenticationServiceRepositoryImp: AppleAuthenticationServiceRepository {
     public func signIn() -> AnyPublisher<AppleUser, Error> {
         let request = ASAuthorizationAppleIDProvider().createRequest()
         request.requestedScopes = [.fullName, .email]
@@ -59,6 +92,40 @@ public final class AppleAuthenticationServiceRepositoryImp: NSObject, AppleAuthe
         let segments = idToken.components(separatedBy: ".")
         return decodeToken(segments[1]) ?? [:]
     }
+    
+    public func fetchAppleSignInStatus(_ completionHandler: @escaping (Bool) -> Void) {
+        let readResult = KeychainService.shared.read("userIdentifier")
+        Log.info("readResult = \(readResult.readValue) / \(readResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+        if let userIdentifier = readResult.readValue {
+            Log.debug(readResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+            
+            let appleIDProvider = ASAuthorizationAppleIDProvider()
+            appleIDProvider.getCredentialState(forUserID: userIdentifier) { credentialState, error in
+                if let error {
+                    Log.error("error is \(error.localizedDescription)", "[\(#file)-\(#function) - \(#line)]")
+                    
+                    completionHandler(false)
+                } else {
+                    switch credentialState {
+                    case .revoked:
+                        completionHandler(false)
+                    case .authorized:
+                        completionHandler(true)
+                    case .notFound:
+                        completionHandler(false)
+                    case .transferred:
+                        completionHandler(false)
+                    @unknown default:
+                        completionHandler(false)
+                    }
+                }
+            }
+        } else {
+            Log.error(readResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+            
+            completionHandler(false)
+        }
+    }
 }
 
 extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDelegate {
@@ -74,44 +141,18 @@ extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDele
             return
         }
         
-        var codeStr = ""
-        if let code = appleIDCredential.authorizationCode {
-            codeStr = String(data: code, encoding: .utf8) ?? ""
-        }
-        
-        let user = appleIDCredential.user
-        var email = appleIDCredential.email ?? ""
-        let idToken = appleIDCredential.identityToken ?? Data()
-        let idTokenToString = String(data: idToken, encoding: .utf8) ?? ""
-        
-        if email.isEmpty {
-            let decodeResult = decodeWith(idToken: idTokenToString)
-            Log.info("decodeResult = \(decodeResult)", "[\(#file)-\(#function) - \(#line)]")
-            email = decodeResult["email"] as? String ?? ""
-        }
-        
-        let familyName = appleIDCredential.fullName?.familyName ?? ""
-        let givenName = appleIDCredential.fullName?.givenName ?? ""
-        let fullName = "\(familyName)\(givenName)"
-        
-        let userInfo = UserInfo()
-        userInfo.userIdentifier = user
-        userInfo.email = email
-        userInfo.name = fullName
-        userInfo.accessToken = codeStr
-        userInfo.identityToken = idTokenToString
-        userInfo.imgPath = nil
+        let userInfo = fetchUserInfo(from: appleIDCredential)
         
         signInSubject.send(userInfo.toDomain())
         
         RealmDatabaseImp.shared.create(userInfo)
         
-        let createResult = KeychainService.shared.create(userInfo.userIdentifier, "userIdentifier")
+        let createResult = KeychainService.shared.create("userIdentifier", userInfo.userIdentifier)
         
         if createResult.isSucceed {
-            Log.debug(createResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+            Log.debug("Success - \(createResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
         } else {
-            Log.error(createResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+            Log.error("Failed - \(createResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
         }
     }
 }

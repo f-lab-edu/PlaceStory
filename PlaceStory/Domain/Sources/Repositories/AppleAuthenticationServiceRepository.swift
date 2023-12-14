@@ -12,4 +12,5 @@ import Foundation
 public protocol AppleAuthenticationServiceRepository {
     func signIn() -> AnyPublisher<AppleUser, Error>
     func decodeWith(idToken: String) -> [String: Any]
+    func fetchAppleSignInStatus(_ completionHandler: @escaping (Bool) -> Void)
 }

@@ -6,6 +6,7 @@
 //
 
 import ModernRIBs
+import UseCase
 
 public protocol AppRootRouting: ViewableRouting {
     func attachLoggedOut()
@@ -24,10 +25,15 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
 
     weak var router: AppRootRouting?
     weak var listener: AppRootListener?
-
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: AppRootPresentable) {
+    
+    private let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+    
+    init(
+        presenter: AppRootPresentable,
+        appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+    ) {
+        self.appleAuthenticationServiceUseCase = appleAuthenticationServiceUseCase
+        
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -35,7 +41,15 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
     override func didBecomeActive() {
         super.didBecomeActive()
         
-        router?.attachLoggedOut()
+        appleAuthenticationServiceUseCase.checkPreviousSignInWithApple { [weak self] hasPreviousSignInWithApple in
+            guard let self else { return }
+            
+            if hasPreviousSignInWithApple {
+                print("사용자 정보 가져오기!")
+            } else {
+                self.router?.attachLoggedOut()
+            }
+        }
     }
 
     override func willResignActive() {
