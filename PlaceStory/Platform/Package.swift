@@ -18,6 +18,10 @@ let package = Package(
         .library(
             name: "RepositoryImps",
             targets: ["RepositoryImps"]),
+        .library(
+            name: "SecurityServices",
+            targets: ["SecurityServices"]
+        )
     ],
     dependencies: [
       .package(path: "../Domain"),
@@ -45,8 +49,12 @@ let package = Package(
                 .product(name: "Repositories", package: "Domain"),
                 "LocalStorage",
                 .product(name: "Utils", package: "ProxyPackage"),
-                "Model"
+                "Model",
+                "SecurityServices"
             ]
         ),
+        .target(
+            name: "SecurityServices"
+        )
     ]
 )

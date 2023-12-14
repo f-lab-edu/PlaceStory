@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		333F697A2B2A9A0800BF9C83 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333F69792B2A9A0800BF9C83 /* Security.framework */; };
+		334F10EB2B2AD45900FFEE0A /* SecurityServices in Frameworks */ = {isa = PBXBuildFile; productRef = 334F10EA2B2AD45900FFEE0A /* SecurityServices */; };
 		337214BC2B19D1BD007622F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214BB2B19D1BD007622F7 /* AppDelegate.swift */; };
 		337214BE2B19D1BD007622F7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214BD2B19D1BD007622F7 /* SceneDelegate.swift */; };
 		337214C52B19D1BE007622F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 337214C42B19D1BE007622F7 /* Assets.xcassets */; };
@@ -47,6 +49,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		333F69792B2A9A0800BF9C83 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		337214B82B19D1BD007622F7 /* PlaceStory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlaceStory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		337214BB2B19D1BD007622F7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		337214BD2B19D1BD007622F7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -78,10 +81,12 @@
 				33A72A222B202DBA00E41887 /* Repositories in Frameworks */,
 				98EAA3E62B1F723F00937B0E /* UseCase in Frameworks */,
 				988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */,
+				333F697A2B2A9A0800BF9C83 /* Security.framework in Frameworks */,
 				33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */,
 				9872E5CF2B24A4C000168842 /* Utils in Frameworks */,
 				9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */,
 				9872E5CD2B24A4C000168842 /* ProxyPackage in Frameworks */,
+				334F10EB2B2AD45900FFEE0A /* SecurityServices in Frameworks */,
 				9877075F2B24A04F00D93897 /* LocalStorage in Frameworks */,
 				98EAA3E82B1F7A3200937B0E /* Entities in Frameworks */,
 				33A056782B21A7F3005DE8B2 /* OSLog.framework in Frameworks */,
@@ -181,6 +186,7 @@
 		988C78D92B1B067D007E5440 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				333F69792B2A9A0800BF9C83 /* Security.framework */,
 				33A056772B21A7F3005DE8B2 /* OSLog.framework */,
 			);
 			name = Frameworks;
@@ -214,6 +220,7 @@
 				9872E5CA2B24A4C000168842 /* CommonUI */,
 				9872E5CC2B24A4C000168842 /* ProxyPackage */,
 				9872E5CE2B24A4C000168842 /* Utils */,
+				334F10EA2B2AD45900FFEE0A /* SecurityServices */,
 			);
 			productName = PlaceStory;
 			productReference = 337214B82B19D1BD007622F7 /* PlaceStory.app */;
@@ -670,6 +677,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		334F10EA2B2AD45900FFEE0A /* SecurityServices */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SecurityServices;
+		};
 		33A0567D2B21B096005DE8B2 /* RepositoryImps */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RepositoryImps;

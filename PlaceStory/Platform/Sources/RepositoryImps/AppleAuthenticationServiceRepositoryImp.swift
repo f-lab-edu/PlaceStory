@@ -12,6 +12,7 @@ import Foundation
 import LocalStorage
 import Model
 import Repositories
+import SecurityServices
 import Utils
 
 public final class AppleAuthenticationServiceRepositoryImp: NSObject, AppleAuthenticationServiceRepository {
@@ -104,5 +105,13 @@ extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDele
         signInSubject.send(userInfo.toDomain())
         
         RealmDatabaseImp.shared.create(userInfo)
+        
+        let createResult = KeychainService.shared.create(userInfo.userIdentifier, "userIdentifier")
+        
+        if createResult.isSucceed {
+            Log.debug(createResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+        } else {
+            Log.error(createResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+        }
     }
 }
