@@ -24,7 +24,7 @@ enum RealmDatabaseError: Error {
 
 public protocol RealmDatabase {
     func create<T: Object>(_ object: T)
-    func read<T: Object>(_ object: T.Type) -> AnyPublisher<Results<T>, Error>
+    func read<T: Object>(_ object: T.Type, forKey key: ObjectId) -> T?
     func update<T: Object>(_ object: T.Type, forKey key: ObjectId, with updateData: [String: Any]) -> AnyPublisher<T, Error>
     func delete<T: Object>(_ object: T)
 }
@@ -58,11 +58,11 @@ public final class RealmDatabaseImp: RealmDatabase {
         }
     }
     
-    public func read<T>(_ object: T.Type) -> AnyPublisher<Results<T>, Error> where T : Object {
-        let objects = realmDatabase.objects(object)
-        return Just(objects)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+    public func read<T>(
+        _ object: T.Type,
+        forKey key: ObjectId
+    ) -> T? where T : Object {
+        return realmDatabase.objects(object).first
     }
     
     public func update<T>(

@@ -11,6 +11,7 @@ import Entities
 import Foundation
 import LocalStorage
 import Model
+import RealmSwift
 import Repositories
 import SecurityServices
 import Utils
@@ -48,6 +49,14 @@ public final class AppleAuthenticationServiceRepositoryImp: NSObject {
         userInfo.imgPath = nil
         
         return userInfo
+    }
+    
+    private func checkForDuplicate(of userInfo: UserInfo) -> UserInfo? {
+        if let userInfo = RealmDatabaseImp.shared.read(UserInfo.self, forKey: userInfo.id) {
+            return userInfo
+        } else {
+            return nil
+        }
     }
 }
 
@@ -95,10 +104,8 @@ extension AppleAuthenticationServiceRepositoryImp: AppleAuthenticationServiceRep
     
     public func fetchAppleSignInStatus(_ completionHandler: @escaping (Bool) -> Void) {
         let readResult = KeychainService.shared.read("userIdentifier")
-        Log.info("readResult = \(readResult.readValue) / \(readResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+        
         if let userIdentifier = readResult.readValue {
-            Log.debug(readResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
-            
             let appleIDProvider = ASAuthorizationAppleIDProvider()
             appleIDProvider.getCredentialState(forUserID: userIdentifier) { credentialState, error in
                 if let error {
@@ -126,6 +133,22 @@ extension AppleAuthenticationServiceRepositoryImp: AppleAuthenticationServiceRep
             completionHandler(false)
         }
     }
+    
+    public func fetchUserInfo() -> AppleUser? {
+        let readResult = KeychainService.shared.read("objectId")
+        Log.debug("readResult = \(readResult.readValue), \(readResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+        if let readValue = readResult.readValue {
+            let objectId = try! ObjectId(string: readValue)
+            
+            guard let userInfo = RealmDatabaseImp.shared.read(UserInfo.self, forKey: objectId) else {
+                return nil
+            }
+            
+            return userInfo.toDomain()
+        }
+        
+        return nil
+    }
 }
 
 extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDelegate {
@@ -143,16 +166,22 @@ extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDele
         
         let userInfo = fetchUserInfo(from: appleIDCredential)
         
-        signInSubject.send(userInfo.toDomain())
-        
-        RealmDatabaseImp.shared.create(userInfo)
-        
-        let createResult = KeychainService.shared.create("userIdentifier", userInfo.userIdentifier)
-        
-        if createResult.isSucceed {
-            Log.debug("Success - \(createResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+        if let userInfo = checkForDuplicate(of: userInfo) {
+            signInSubject.send(userInfo.toDomain())
         } else {
-            Log.error("Failed - \(createResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+            RealmDatabaseImp.shared.create(userInfo)
+            
+            let createForUserIdentifierResult = KeychainService.shared.create("userIdentifier", userInfo.userIdentifier)
+            let createForObjectIdResult = KeychainService.shared.create("objectId", userInfo.id.stringValue)
+            
+            if createForUserIdentifierResult.isSucceed &&
+                createForObjectIdResult.isSucceed {
+                Log.debug("Success - \(createForUserIdentifierResult.resultMessage), \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+            } else {
+                Log.error("Failed - \(createForUserIdentifierResult.resultMessage), , \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+            }
+            
+            signInSubject.send(userInfo.toDomain())
         }
     }
 }

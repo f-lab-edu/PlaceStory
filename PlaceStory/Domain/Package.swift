@@ -18,6 +18,9 @@ let package = Package(
             name: "Repositories",
             targets: ["Repositories"])
     ],
+    dependencies: [
+        .package(path: "ProxyPackage")
+    ],
     targets: [
         .target(
             name: "Entities"
@@ -26,13 +29,15 @@ let package = Package(
             name: "UseCase",
             dependencies: [
                 "Entities",
-                "Repositories"
+                "Repositories",
+                "ProxyPackage"
             ]
         ),
         .target(
             name: "Repositories",
             dependencies: [
-                "Entities"
+                "Entities",
+                "ProxyPackage"
             ]
         )
     ]

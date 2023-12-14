@@ -8,11 +8,13 @@
 import Combine
 import Entities
 import Foundation
+import RealmSwift
 import Repositories
 
 public protocol AppleAuthenticationServiceUseCase {
     func signInWithApple() -> AnyPublisher<AppleUser, Error>
     func checkPreviousSignInWithApple(_ completionHandler: @escaping (Bool) -> Void)
+    func fetchUserInfo() -> AppleUser?
 }
 
 public final class AppleAuthenticationServiceUseCaseImp: AppleAuthenticationServiceUseCase {
@@ -33,5 +35,9 @@ public final class AppleAuthenticationServiceUseCaseImp: AppleAuthenticationServ
         appleAuthenticationServiceRepository.fetchAppleSignInStatus { hasPreviousSignInWithApple in
             completionHandler(hasPreviousSignInWithApple)
         }
+    }
+    
+    public func fetchUserInfo() -> AppleUser? {
+        return appleAuthenticationServiceRepository.fetchUserInfo()
     }
 }

@@ -7,6 +7,7 @@
 
 import ModernRIBs
 import UseCase
+import Utils
 
 public protocol AppRootRouting: ViewableRouting {
     func attachLoggedOut()
@@ -45,7 +46,9 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
             guard let self else { return }
             
             if hasPreviousSignInWithApple {
-                print("사용자 정보 가져오기!")
+                if let userInfo = self.appleAuthenticationServiceUseCase.fetchUserInfo() {
+                    Log.info("UserInfo is \(userInfo)", "[\(#file)-\(#function) - \(#line)]")
+                }
             } else {
                 self.router?.attachLoggedOut()
             }
