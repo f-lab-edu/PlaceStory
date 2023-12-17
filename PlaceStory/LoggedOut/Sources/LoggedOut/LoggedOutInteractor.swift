@@ -22,7 +22,7 @@ protocol LoggedOutPresentable: Presentable {
 }
 
 public protocol LoggedOutListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func detachLoggedOut()
 }
 
 final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, LoggedOutInteractable, LoggedOutPresentableListener {
@@ -67,8 +67,11 @@ final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, Lo
                     self.presenter.showAppleLoginErrorAlert(error)
                     Log.error("\(error.localizedDescription)", "[\(#file)-\(#function) - \(#line)]")
                 }
-            } receiveValue: { appleUser in
+            } receiveValue: { [weak self] appleUser in
+                guard let self else { return }
+                
                 Log.info("UserInfo is \(appleUser)", "[\(#file)-\(#function) - \(#line)]")
+                self.listener?.detachLoggedOut()
             }
             .store(in: &cancellables)
     }

@@ -9,9 +9,7 @@ import ModernRIBs
 import UIKit
 
 protocol AppRootPresentableListener: AnyObject {
-    // TODO: Declare properties and methods that the view controller can invoke to perform
-    // business logic, such as signIn(). This protocol is implemented by the corresponding
-    // interactor class.
+    func attachLoggedIn()
 }
 
 final class AppRootViewController: UIViewController, AppRootPresentable, AppRootViewControllable {
@@ -33,5 +31,20 @@ final class AppRootViewController: UIViewController, AppRootPresentable, AppRoot
     func present(viewController: ModernRIBs.ViewControllable) {
         viewController.uiviewController.modalPresentationStyle = .fullScreen
         present(viewController.uiviewController, animated: true, completion: nil)
+    }
+    
+    func dismiss(viewController: ViewControllable) {
+        viewController.uiviewController.dismiss(animated: true) { [weak self] in
+            guard let self else { return }
+            
+            self.listener?.attachLoggedIn()
+        }
+    }
+    
+    func presentLoggedIn() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.listener?.attachLoggedIn()
+        }
     }
 }

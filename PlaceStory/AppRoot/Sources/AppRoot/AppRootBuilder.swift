@@ -9,6 +9,7 @@ import Repositories
 import RepositoryImps
 import ModernRIBs
 import LoggedOut
+import LoggedIn
 import UseCase
 
 public protocol AppRootDependency: Dependency {
@@ -16,7 +17,7 @@ public protocol AppRootDependency: Dependency {
     // created by this RIB.
 }
 
-final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency {
+final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency, LoggedInDependency {
     let appleAuthenticationServiceUseCase: UseCase.AppleAuthenticationServiceUseCase
     
     override init(
@@ -49,11 +50,13 @@ public final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable 
         )
         
         let loggedOutBuilder = LoggedOutBuilder(dependency: component)
+        let loggedInBuilder = LoggedInBuilder(dependency: component)
         
         let router = AppRootRouter(
             interactor: interactor,
             viewController: viewController,
-            loggedOutBuilder: loggedOutBuilder
+            loggedOutBuilder: loggedOutBuilder,
+            loggedInBuilder: loggedInBuilder
         )
         
         return router

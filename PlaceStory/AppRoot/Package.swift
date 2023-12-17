@@ -15,7 +15,8 @@ let package = Package(
         .package(path: "../ProxyPackage"),
         .package(path: "../LoggedOut"),
         .package(path: "../Domain"),
-        .package(path: "../Platform")
+        .package(path: "../Platform"),
+        .package(path: "../LoggedIn")
     ],
     targets: [
         .target(
@@ -24,7 +25,8 @@ let package = Package(
                 "ProxyPackage",
                 "LoggedOut",
                 .product(name: "UseCase", package: "Domain"),
-                .product(name: "RepositoryImps", package: "Platform")
+                .product(name: "RepositoryImps", package: "Platform"),
+                "LoggedIn",
             ]
         )
     ]

@@ -11,11 +11,14 @@ import Utils
 
 public protocol AppRootRouting: ViewableRouting {
     func attachLoggedOut()
+    func detachLoggedOut()
+    func attachLoggedIn()
 }
 
 protocol AppRootPresentable: Presentable {
     var listener: AppRootPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
+    
+    func presentLoggedIn()
 }
 
 public protocol AppRootListener: AnyObject {
@@ -48,6 +51,8 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
             if hasPreviousSignInWithApple {
                 if let userInfo = self.appleAuthenticationServiceUseCase.fetchUserInfo() {
                     Log.info("UserInfo is \(userInfo)", "[\(#file)-\(#function) - \(#line)]")
+                    
+                    presenter.presentLoggedIn()
                 }
             } else {
                 self.router?.attachLoggedOut()
@@ -58,5 +63,13 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+    
+    func detachLoggedOut() {
+        router?.detachLoggedOut()
+    }
+    
+    func attachLoggedIn() {
+        router?.attachLoggedIn()
     }
 }
