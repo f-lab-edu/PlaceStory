@@ -13,6 +13,6 @@ import RealmSwift
 public protocol AppleAuthenticationServiceRepository {
     func signIn() -> AnyPublisher<AppleUser, Error>
     func decodeWith(idToken: String) -> [String: Any]
-    func fetchAppleSignInStatus(_ completionHandler: @escaping (Bool) -> Void)
+    func fetchAppleSignInStatus() -> Future<Bool, Error>
     func fetchUserInfo() -> AppleUser?
 }

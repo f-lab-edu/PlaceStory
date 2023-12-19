@@ -5,7 +5,10 @@
 //  Created by 최제환 on 12/2/23.
 //
 
+import Combine
+import Foundation
 import ModernRIBs
+import Repositories
 import UseCase
 import Utils
 
@@ -28,12 +31,17 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
     weak var listener: AppRootListener?
     
     private let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+    private let appleAuthenticationServiceRepository: AppleAuthenticationServiceRepository
+    private var cancellables: Set<AnyCancellable>
     
     init(
         presenter: AppRootPresentable,
-        appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+        appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase,
+        appleAuthenticationServiceRepository: AppleAuthenticationServiceRepository
     ) {
         self.appleAuthenticationServiceUseCase = appleAuthenticationServiceUseCase
+        self.appleAuthenticationServiceRepository = appleAuthenticationServiceRepository
+        self.cancellables = .init()
         
         super.init(presenter: presenter)
         presenter.listener = self
@@ -42,17 +50,31 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
     override func didBecomeActive() {
         super.didBecomeActive()
         
-        appleAuthenticationServiceUseCase.checkPreviousSignInWithApple { [weak self] hasPreviousSignInWithApple in
-            guard let self else { return }
-            
-            if hasPreviousSignInWithApple {
-                if let userInfo = self.appleAuthenticationServiceUseCase.fetchUserInfo() {
-                    Log.info("UserInfo is \(userInfo)", "[\(#file)-\(#function) - \(#line)]")
+        appleAuthenticationServiceUseCase.checkPreviousSignInWithApple()
+            .sink { [weak self] completion in
+                guard let self else { return }
+                
+                switch completion {
+                case .failure(let error):
+                    Log.error("error is \(error)", "[\(#file)-\(#function) - \(#line)]")
+                    self.router?.attachLoggedOut()
+                    
+                case .finished:
+                    break
                 }
-            } else {
-                self.router?.attachLoggedOut()
+            } receiveValue: { [weak self] hasPrevious in
+                guard let self else { return }
+                
+                if hasPrevious {
+                    if let userInfo = self.appleAuthenticationServiceUseCase.fetchUserInfo() {
+                        Log.info("UserInfo is \(userInfo)", "[\(#file)-\(#function) - \(#line)]")
+                    }
+                } else {
+                    self.router?.attachLoggedOut()
+                }
             }
-        }
+            .store(in: &cancellables)
+
     }
 
     override func willResignActive() {

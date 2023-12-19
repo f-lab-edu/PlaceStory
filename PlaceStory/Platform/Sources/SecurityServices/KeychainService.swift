@@ -8,13 +8,18 @@
 import Foundation
 import Security
 
-public final class KeychainService {
-    
-    public static let shared = KeychainService()
+protocol KeychainService {
+    func create(_ account: String, _ value: String) -> (isSucceed: Bool, resultMessage: String)
+    func read(_ account: String) -> (readValue: String?, resultMessage: String)
+    func update(_ account: String, _ value: String) -> (isSucceed: Bool, resultMessage: String)
+    func deleteItem(key: String) -> (isSucceed: Bool, resultMessage: String)
+}
+
+public final class KeychainServiceImp: KeychainService {
     
     private let service: String
     
-    private init() {
+    public init() {
         self.service = "randychoi.PlaceStory"
     }
     

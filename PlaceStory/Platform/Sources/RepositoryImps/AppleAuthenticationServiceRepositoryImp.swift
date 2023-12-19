@@ -18,6 +18,16 @@ import Utils
 
 public final class AppleAuthenticationServiceRepositoryImp: NSObject {
     private let signInSubject = PassthroughSubject<AppleUser, Error>()
+    private let database: RealmDatabaseImp
+    private let keychain: KeychainServiceImp
+    
+    public init(
+        database: RealmDatabaseImp,
+        keychain: KeychainServiceImp
+    ) {
+        self.database = database
+        self.keychain = keychain
+    }
     
     private func fetchUserInfo(from credential: ASAuthorizationAppleIDCredential) -> UserInfo {
         var codeStr = ""
@@ -52,7 +62,7 @@ public final class AppleAuthenticationServiceRepositoryImp: NSObject {
     }
     
     private func checkForDuplicate(of userInfo: UserInfo) -> UserInfo? {
-        if let userInfo = RealmDatabaseImp.shared.read(UserInfo.self, forKey: userInfo.id) {
+        if let userInfo = database.read(UserInfo.self, forKey: userInfo.id) {
             return userInfo
         } else {
             return nil
@@ -102,45 +112,47 @@ extension AppleAuthenticationServiceRepositoryImp: AppleAuthenticationServiceRep
         return decodeToken(segments[1]) ?? [:]
     }
     
-    public func fetchAppleSignInStatus(_ completionHandler: @escaping (Bool) -> Void) {
-        let readResult = KeychainService.shared.read("userIdentifier")
-        
-        if let userIdentifier = readResult.readValue {
-            let appleIDProvider = ASAuthorizationAppleIDProvider()
-            appleIDProvider.getCredentialState(forUserID: userIdentifier) { credentialState, error in
-                if let error {
-                    Log.error("error is \(error.localizedDescription)", "[\(#file)-\(#function) - \(#line)]")
-                    
-                    completionHandler(false)
-                } else {
-                    switch credentialState {
-                    case .revoked:
-                        completionHandler(false)
-                    case .authorized:
-                        completionHandler(true)
-                    case .notFound:
-                        completionHandler(false)
-                    case .transferred:
-                        completionHandler(false)
-                    @unknown default:
-                        completionHandler(false)
+    public func fetchAppleSignInStatus() -> Future<Bool, Error> {
+        return Future { promise in
+            let readResult = self.keychain.read("userIdentifier")
+            
+            if let userIdentifier = readResult.readValue {
+                let appleIDProvider = ASAuthorizationAppleIDProvider()
+                Log.debug("userIdentifier = \(userIdentifier)", "[\(#file)-\(#function) - \(#line)]")
+                appleIDProvider.getCredentialState(forUserID: userIdentifier) { credentialState, error in
+                    if let error = error {
+                        Log.error("error is \(error.localizedDescription)", "[\(#file)-\(#function) - \(#line)]")
+                        promise(.failure(error))
+                    } else {
+                        Log.error("credentialState is \(credentialState)", "[\(#file)-\(#function) - \(#line)]")
+                        switch credentialState {
+                        case .revoked:
+                            promise(.success(false))
+                        case .authorized:
+                            promise(.success(true))
+                        case .notFound:
+                            promise(.success(false))
+                        case .transferred:
+                            promise(.success(false))
+                        @unknown default:
+                            promise(.success(false))
+                        }
                     }
                 }
+            } else {
+                Log.error(readResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+                promise(.success(false))
             }
-        } else {
-            Log.error(readResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
-            
-            completionHandler(false)
         }
     }
     
     public func fetchUserInfo() -> AppleUser? {
-        let readResult = KeychainService.shared.read("objectId")
-        Log.debug("readResult = \(readResult.readValue), \(readResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+        let readResult = keychain.read("objectId")
+        
         if let readValue = readResult.readValue {
             let objectId = try! ObjectId(string: readValue)
             
-            guard let userInfo = RealmDatabaseImp.shared.read(UserInfo.self, forKey: objectId) else {
+            guard let userInfo = database.read(UserInfo.self, forKey: objectId) else {
                 return nil
             }
             
@@ -169,10 +181,10 @@ extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDele
         if let userInfo = checkForDuplicate(of: userInfo) {
             signInSubject.send(userInfo.toDomain())
         } else {
-            RealmDatabaseImp.shared.create(userInfo)
+            database.create(userInfo)
             
-            let createForUserIdentifierResult = KeychainService.shared.create("userIdentifier", userInfo.userIdentifier)
-            let createForObjectIdResult = KeychainService.shared.create("objectId", userInfo.id.stringValue)
+            let createForUserIdentifierResult = keychain.create("userIdentifier", userInfo.userIdentifier)
+            let createForObjectIdResult = keychain.create("objectId", userInfo.id.stringValue)
             
             if createForUserIdentifierResult.isSucceed &&
                 createForObjectIdResult.isSucceed {
