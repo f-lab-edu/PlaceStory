@@ -29,22 +29,41 @@ final class LoggedInViewController: UITabBarController, LoggedInPresentable, Log
         tabBar.backgroundColor = UIColor(named: "tabbarBackground")
         tabBar.tintColor = UIColor(named: "tabbarSelectedIcon")
         tabBar.unselectedItemTintColor = UIColor(named: "tabbarUnselectedIcon")
+        tabBar.itemWidth = (tabBar.bounds.width - 40) / 3
     }
     
-    func setViewControllers() {
-        let vc1 = UIViewController()
-        vc1.view.backgroundColor = .white
-        vc1.title = "홈"
-        vc1.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
+    private func wrapViewControllerInNavigation(_ viewController: UIViewController) -> UIViewController {
+        let nav = UINavigationController(rootViewController: viewController)
+        nav.navigationBar.isTranslucent = false
+        nav.navigationBar.backgroundColor = .white
+        nav.navigationBar.scrollEdgeAppearance = nav.navigationBar.standardAppearance
         
+        return nav
+    }
+    
+    // MARK: - LoggedInViewControllable
+    func setViewControllers(_ viewControllables: [ViewControllable]) {
         let vc2 = UIViewController()
         vc2.view.backgroundColor = .white
-        vc2.title = "장소 기록"
-        vc2.tabBarItem = UITabBarItem(title: "장소 기록", image: UIImage(systemName: "mappin.and.ellipse.circle"), selectedImage: UIImage(systemName: "mappin.and.ellipse.circle.fill"))
+        vc2.title = "장소 모음"
+        vc2.tabBarItem = UITabBarItem(title: "장소 모음", image: UIImage(systemName: "list.bullet.rectangle"), selectedImage: UIImage(systemName: "list.bullet.rectangle.fill"))
         
-        let nav1 = UINavigationController(rootViewController: vc1)
-        let nav2 = UINavigationController(rootViewController: vc2)
+        let vc3 = UIViewController()
+        vc3.view.backgroundColor = .white
+        vc3.title = "설정"
+        vc3.tabBarItem = UITabBarItem(title: "설정", image: UIImage(systemName: "gearshape"), selectedImage: UIImage(systemName: "gearshape.fill"))
         
-        self.setViewControllers([nav1, nav2], animated: true)
+        var viewControllers: [UIViewController] = []
+        viewControllables.forEach {
+            viewControllers.append(wrapViewControllerInNavigation($0.uiviewController))
+        }
+        
+        let nav2 = wrapViewControllerInNavigation(vc2)
+        viewControllers.append(nav2)
+        
+        let nav3 = wrapViewControllerInNavigation(vc3)
+        viewControllers.append(nav3)
+        
+        self.setViewControllers(viewControllers, animated: true)
     }
 }

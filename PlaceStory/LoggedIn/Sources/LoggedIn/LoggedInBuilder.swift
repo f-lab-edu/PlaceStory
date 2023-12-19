@@ -6,15 +6,14 @@
 //
 
 import ModernRIBs
+import MyLocation
 
 public protocol LoggedInDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    
 }
 
-final class LoggedInComponent: Component<LoggedInDependency> {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+final class LoggedInComponent: Component<LoggedInDependency>, MyLocationDependency {
+    
 }
 
 // MARK: - Builder
@@ -34,6 +33,13 @@ public final class LoggedInBuilder: Builder<LoggedInDependency>, LoggedInBuildab
         let viewController = LoggedInViewController()
         let interactor = LoggedInInteractor(presenter: viewController)
         interactor.listener = listener
-        return LoggedInRouter(interactor: interactor, viewController: viewController)
+        
+        let myLocationBuilder = MyLocationBuilder(dependency: component)
+        
+        return LoggedInRouter(
+            interactor: interactor,
+            viewController: viewController,
+            myLocationBuilder: myLocationBuilder
+        )
     }
 }

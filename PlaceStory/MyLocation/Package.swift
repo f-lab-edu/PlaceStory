@@ -4,29 +4,25 @@
 import PackageDescription
 
 let package = Package(
-    name: "LoggedIn",
+    name: "MyLocation",
     platforms: [.iOS(.v17)],
     products: [
         .library(
-            name: "LoggedIn",
-            targets: ["LoggedIn"]),
+            name: "MyLocation",
+            targets: ["MyLocation"]),
     ],
     dependencies: [
         .package(path: "../ProxyPackage"),
-        .package(path: "../Domain"),
-        .package(path: "../MyLocation")
     ],
     targets: [
         .target(
-            name: "LoggedIn",
+            name: "MyLocation",
             dependencies: [
                 "ProxyPackage",
-                .product(name: "Entities", package: "Domain"),
-                "MyLocation"
             ]
         ),
         .testTarget(
-            name: "LoggedInTests",
-            dependencies: ["LoggedIn"]),
+            name: "MyLocationTests",
+            dependencies: ["MyLocation"]),
     ]
 )
