@@ -25,26 +25,4 @@ final class AppRootViewController: UIViewController, AppRootPresentable, AppRoot
         
         view.backgroundColor = .systemBackground
     }
-    
-    // MARK: - AppRootViewControllable
-    
-    func present(viewController: ModernRIBs.ViewControllable) {
-        viewController.uiviewController.modalPresentationStyle = .fullScreen
-        present(viewController.uiviewController, animated: true, completion: nil)
-    }
-    
-    func dismiss(viewController: ViewControllable) {
-        viewController.uiviewController.dismiss(animated: true) { [weak self] in
-            guard let self else { return }
-            
-            self.listener?.attachLoggedIn()
-        }
-    }
-    
-    func presentLoggedIn() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            self.listener?.attachLoggedIn()
-        }
-    }
 }

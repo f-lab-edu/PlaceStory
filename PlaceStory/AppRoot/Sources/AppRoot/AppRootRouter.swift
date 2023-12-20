@@ -15,8 +15,7 @@ protocol AppRootInteractable: Interactable, LoggedOutListener, LoggedInListener 
 }
 
 protocol AppRootViewControllable: ViewControllable {
-    func present(viewController: ViewControllable)
-    func dismiss(viewController: ViewControllable)
+    
 }
 
 final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControllable>, AppRootRouting {
@@ -47,13 +46,17 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         loggedOutRouter = router
         attachChild(router)
         
-        viewController.present(viewController: router.viewControllable)
+        let vc = router.viewControllable.uiviewController
+        vc.modalPresentationStyle = .fullScreen
+        
+        viewControllable.uiviewController.present(vc, animated: true)
     }
     
     func detachLoggedOut() {
         guard let router = loggedOutRouter else { return }
         
-        viewController.dismiss(viewController: router.viewControllable)
+        viewControllable.uiviewController.dismiss(animated: false)
+        
         detachChild(router)
         loggedOutRouter = nil
     }
@@ -65,6 +68,9 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         loggedInRouter = router
         attachChild(router)
         
-        viewController.present(viewController: router.viewControllable)
+        let vc = router.viewControllable.uiviewController
+        vc.modalPresentationStyle = .fullScreen
+        
+        viewControllable.uiviewController.present(vc, animated: true)
     }
 }

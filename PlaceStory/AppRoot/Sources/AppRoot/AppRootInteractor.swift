@@ -5,6 +5,7 @@
 //  Created by 최제환 on 12/2/23.
 //
 
+import Foundation
 import ModernRIBs
 import UseCase
 import Utils
@@ -17,8 +18,6 @@ public protocol AppRootRouting: ViewableRouting {
 
 protocol AppRootPresentable: Presentable {
     var listener: AppRootPresentableListener? { get set }
-    
-    func presentLoggedIn()
 }
 
 public protocol AppRootListener: AnyObject {
@@ -52,7 +51,9 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
                 if let userInfo = self.appleAuthenticationServiceUseCase.fetchUserInfo() {
                     Log.info("UserInfo is \(userInfo)", "[\(#file)-\(#function) - \(#line)]")
                     
-                    presenter.presentLoggedIn()
+                    DispatchQueue.main.async {
+                        self.router?.attachLoggedIn()
+                    }
                 }
             } else {
                 self.router?.attachLoggedOut()
