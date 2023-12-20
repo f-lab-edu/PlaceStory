@@ -9,7 +9,7 @@ import ModernRIBs
 import UIKit
 
 protocol AppRootPresentableListener: AnyObject {
-    func attachLoggedIn()
+    
 }
 
 final class AppRootViewController: UIViewController, AppRootPresentable, AppRootViewControllable {

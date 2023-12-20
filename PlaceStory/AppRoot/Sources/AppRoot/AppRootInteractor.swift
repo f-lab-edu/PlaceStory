@@ -69,8 +69,4 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
     func detachLoggedOut() {
         router?.detachLoggedOut()
     }
-    
-    func attachLoggedIn() {
-        router?.attachLoggedIn()
-    }
 }
