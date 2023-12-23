@@ -8,8 +8,11 @@
 import Repositories
 import RepositoryImps
 import ModernRIBs
+import LocalStorage
 import LoggedOut
+import SecurityServices
 import UseCase
+
 
 public protocol AppRootDependency: Dependency {
     // TODO: Declare the set of dependencies required by this RIB, but cannot be
@@ -17,12 +20,24 @@ public protocol AppRootDependency: Dependency {
 }
 
 final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency {
-    let appleAuthenticationServiceUseCase: UseCase.AppleAuthenticationServiceUseCase
+    let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+    let appleAuthenticationServiceRepository: AppleAuthenticationServiceRepository
     
     override init(
         dependency: AppRootDependency
     ) {
-        self.appleAuthenticationServiceUseCase = AppleAuthenticationServiceUseCaseImp(appleAuthenticationServiceRepository: AppleAuthenticationServiceRepositoryImp())
+        let realmDatabase = RealmDatabaseImp()
+        let keychainService = KeychainServiceImp()
+        self.appleAuthenticationServiceRepository = AppleAuthenticationServiceRepositoryImp(
+            database: realmDatabase,
+            keychain: keychainService
+        )
+        self.appleAuthenticationServiceUseCase = AppleAuthenticationServiceUseCaseImp(
+            appleAuthenticationServiceRepository: AppleAuthenticationServiceRepositoryImp(
+                database: realmDatabase,
+                keychain: keychainService
+            )
+        )
         
         super.init(dependency: dependency)
     }
@@ -35,15 +50,19 @@ public protocol AppRootBuildable: Buildable {
 }
 
 public final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable {
-
+    
     public override init(dependency: AppRootDependency) {
         super.init(dependency: dependency)
     }
-
+    
     public func build() -> LaunchRouting {
         let component = AppRootComponent(dependency: dependency)
         let viewController = AppRootViewController()
-        let interactor = AppRootInteractor(presenter: viewController)
+        let interactor = AppRootInteractor(
+            presenter: viewController,
+            appleAuthenticationServiceUseCase: component.appleAuthenticationServiceUseCase,
+            appleAuthenticationServiceRepository: component.appleAuthenticationServiceRepository
+        )
         
         let loggedOutBuilder = LoggedOutBuilder(dependency: component)
         

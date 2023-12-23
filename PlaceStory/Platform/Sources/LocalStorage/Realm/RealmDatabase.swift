@@ -22,47 +22,46 @@ enum RealmDatabaseError: Error {
     }
 }
 
-public protocol RealmDatabase {
+protocol RealmDatabase {
     func create<T: Object>(_ object: T)
-    func read<T: Object>(_ object: T.Type) -> AnyPublisher<Results<T>, Error>
+    func read<T: Object>(_ object: T.Type, forKey key: ObjectId) -> T?
     func update<T: Object>(_ object: T.Type, forKey key: ObjectId, with updateData: [String: Any]) -> AnyPublisher<T, Error>
     func delete<T: Object>(_ object: T)
 }
 
 public final class RealmDatabaseImp: RealmDatabase {
-    public static let shared = RealmDatabaseImp()
-    
-    private let realmDatabase: Realm
-    
-    private init() {
+    public init() {
         let config = RealmMigrationManager.performMigration()
         Realm.Configuration.defaultConfiguration = config
-        
-        self.realmDatabase = try! Realm()
         
         self.realmLocation()
     }
     
 
     private func realmLocation() {
-        Log.info("\(realmDatabase.configuration.fileURL!)", "[\(#file)-\(#function) - \(#line)]")
+        let realm = try! Realm()
+        Log.info("\(realm.configuration.fileURL!)", "[\(#file)-\(#function) - \(#line)]")
     }
     
     public func create<T>(_ object: T) where T : Object {
+        let realm = try! Realm()
+        
         do {
-            try realmDatabase.write {
-                realmDatabase.add(object)
+            try realm.write {
+                realm.add(object)
             }
         } catch {
             Log.error(error.localizedDescription, "[\(#file)-\(#function) - \(#line)]")
         }
     }
     
-    public func read<T>(_ object: T.Type) -> AnyPublisher<Results<T>, Error> where T : Object {
-        let objects = realmDatabase.objects(object)
-        return Just(objects)
-            .setFailureType(to: Error.self)
-            .eraseToAnyPublisher()
+    public func read<T>(
+        _ object: T.Type,
+        forKey key: ObjectId
+    ) -> T? where T : Object {
+        let realm = try! Realm()
+        
+        return realm.objects(object).first
     }
     
     public func update<T>(
@@ -71,8 +70,10 @@ public final class RealmDatabaseImp: RealmDatabase {
         with updateData: [String : Any]
     ) -> AnyPublisher<T, Error> where T : Object {
         do {
-            if let objectToUpdate = realmDatabase.object(ofType: object, forPrimaryKey: key) {
-                try realmDatabase.write {
+            let realm = try! Realm()
+            
+            if let objectToUpdate = realm.object(ofType: object, forPrimaryKey: key) {
+                try realm.write {
                     for (key, value) in updateData {
                         objectToUpdate.setValue(value, forKey: key)
                     }
@@ -92,9 +93,11 @@ public final class RealmDatabaseImp: RealmDatabase {
     }
     
     public func delete<T>(_ object: T) where T : Object {
+        let realm = try! Realm()
+        
         do {
-            try realmDatabase.write {
-                realmDatabase.delete(object)
+            try realm.write {
+                realm.delete(object)
             }
         } catch {
             Log.error(error.localizedDescription, "[\(#file)-\(#function) - \(#line)]")

@@ -11,14 +11,66 @@ import Entities
 import Foundation
 import LocalStorage
 import Model
+import RealmSwift
 import Repositories
 import SecurityServices
 import Utils
 
-public final class AppleAuthenticationServiceRepositoryImp: NSObject, AppleAuthenticationServiceRepository {
-    
+public final class AppleAuthenticationServiceRepositoryImp: NSObject {
     private let signInSubject = PassthroughSubject<AppleUser, Error>()
+    private let database: RealmDatabaseImp
+    private let keychain: KeychainServiceImp
     
+    public init(
+        database: RealmDatabaseImp,
+        keychain: KeychainServiceImp
+    ) {
+        self.database = database
+        self.keychain = keychain
+    }
+    
+    private func fetchUserInfo(from credential: ASAuthorizationAppleIDCredential) -> UserInfo {
+        var codeStr = ""
+        if let code = credential.authorizationCode {
+            codeStr = String(data: code, encoding: .utf8) ?? ""
+        }
+        
+        let user = credential.user
+        var email = credential.email ?? ""
+        let idToken = credential.identityToken ?? Data()
+        let idTokenToString = String(data: idToken, encoding: .utf8) ?? ""
+        
+        if email.isEmpty {
+            let decodeResult = decodeWith(idToken: idTokenToString)
+            Log.info("decodeResult = \(decodeResult)", "[\(#file)-\(#function) - \(#line)]")
+            email = decodeResult["email"] as? String ?? ""
+        }
+        
+        let familyName = credential.fullName?.familyName ?? ""
+        let givenName = credential.fullName?.givenName ?? ""
+        let fullName = "\(familyName)\(givenName)"
+        
+        let userInfo = UserInfo()
+        userInfo.userIdentifier = user
+        userInfo.email = email
+        userInfo.name = fullName
+        userInfo.accessToken = codeStr
+        userInfo.identityToken = idTokenToString
+        userInfo.imgPath = nil
+        
+        return userInfo
+    }
+    
+    private func checkForDuplicate(of userInfo: UserInfo) -> UserInfo? {
+        if let userInfo = database.read(UserInfo.self, forKey: userInfo.id) {
+            return userInfo
+        } else {
+            return nil
+        }
+    }
+}
+
+extension AppleAuthenticationServiceRepositoryImp: AppleAuthenticationServiceRepository {
     public func signIn() -> AnyPublisher<AppleUser, Error> {
         let request = ASAuthorizationAppleIDProvider().createRequest()
         request.requestedScopes = [.fullName, .email]
@@ -59,6 +111,56 @@ public final class AppleAuthenticationServiceRepositoryImp: NSObject, AppleAuthe
         let segments = idToken.components(separatedBy: ".")
         return decodeToken(segments[1]) ?? [:]
     }
+    
+    public func fetchAppleSignInStatus() -> Future<Bool, Error> {
+        return Future { promise in
+            let readResult = self.keychain.read("userIdentifier")
+            
+            if let userIdentifier = readResult.readValue {
+                let appleIDProvider = ASAuthorizationAppleIDProvider()
+                Log.debug("userIdentifier = \(userIdentifier)", "[\(#file)-\(#function) - \(#line)]")
+                appleIDProvider.getCredentialState(forUserID: userIdentifier) { credentialState, error in
+                    if let error = error {
+                        Log.error("error is \(error.localizedDescription)", "[\(#file)-\(#function) - \(#line)]")
+                        promise(.failure(error))
+                    } else {
+                        Log.error("credentialState is \(credentialState)", "[\(#file)-\(#function) - \(#line)]")
+                        switch credentialState {
+                        case .revoked:
+                            promise(.success(false))
+                        case .authorized:
+                            promise(.success(true))
+                        case .notFound:
+                            promise(.success(false))
+                        case .transferred:
+                            promise(.success(false))
+                        @unknown default:
+                            promise(.success(false))
+                        }
+                    }
+                }
+            } else {
+                Log.error(readResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+                promise(.success(false))
+            }
+        }
+    }
+    
+    public func fetchUserInfo() -> AppleUser? {
+        let readResult = keychain.read("objectId")
+        
+        if let readValue = readResult.readValue {
+            let objectId = try! ObjectId(string: readValue)
+            
+            guard let userInfo = database.read(UserInfo.self, forKey: objectId) else {
+                return nil
+            }
+            
+            return userInfo.toDomain()
+        }
+        
+        return nil
+    }
 }
 
 extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDelegate {
@@ -74,44 +176,24 @@ extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDele
             return
         }
         
-        var codeStr = ""
-        if let code = appleIDCredential.authorizationCode {
-            codeStr = String(data: code, encoding: .utf8) ?? ""
-        }
+        let userInfo = fetchUserInfo(from: appleIDCredential)
         
-        let user = appleIDCredential.user
-        var email = appleIDCredential.email ?? ""
-        let idToken = appleIDCredential.identityToken ?? Data()
-        let idTokenToString = String(data: idToken, encoding: .utf8) ?? ""
-        
-        if email.isEmpty {
-            let decodeResult = decodeWith(idToken: idTokenToString)
-            Log.info("decodeResult = \(decodeResult)", "[\(#file)-\(#function) - \(#line)]")
-            email = decodeResult["email"] as? String ?? ""
-        }
-        
-        let familyName = appleIDCredential.fullName?.familyName ?? ""
-        let givenName = appleIDCredential.fullName?.givenName ?? ""
-        let fullName = "\(familyName)\(givenName)"
-        
-        let userInfo = UserInfo()
-        userInfo.userIdentifier = user
-        userInfo.email = email
-        userInfo.name = fullName
-        userInfo.accessToken = codeStr
-        userInfo.identityToken = idTokenToString
-        userInfo.imgPath = nil
-        
-        signInSubject.send(userInfo.toDomain())
-        
-        RealmDatabaseImp.shared.create(userInfo)
-        
-        let createResult = KeychainService.shared.create(userInfo.userIdentifier, "userIdentifier")
-        
-        if createResult.isSucceed {
-            Log.debug(createResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+        if let userInfo = checkForDuplicate(of: userInfo) {
+            signInSubject.send(userInfo.toDomain())
         } else {
-            Log.error(createResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
+            database.create(userInfo)
+            
+            let createForUserIdentifierResult = keychain.create("userIdentifier", userInfo.userIdentifier)
+            let createForObjectIdResult = keychain.create("objectId", userInfo.id.stringValue)
+            
+            if createForUserIdentifierResult.isSucceed &&
+                createForObjectIdResult.isSucceed {
+                Log.debug("Success - \(createForUserIdentifierResult.resultMessage), \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+            } else {
+                Log.error("Failed - \(createForUserIdentifierResult.resultMessage), , \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+            }
+            
+            signInSubject.send(userInfo.toDomain())
         }
     }
 }

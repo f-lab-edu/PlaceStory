@@ -8,8 +8,11 @@
 import Combine
 import Entities
 import Foundation
+import RealmSwift
 
 public protocol AppleAuthenticationServiceRepository {
     func signIn() -> AnyPublisher<AppleUser, Error>
     func decodeWith(idToken: String) -> [String: Any]
+    func fetchAppleSignInStatus() -> Future<Bool, Error>
+    func fetchUserInfo() -> AppleUser?
 }

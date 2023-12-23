@@ -12,6 +12,8 @@ import Repositories
 
 public protocol AppleAuthenticationServiceUseCase {
     func signInWithApple() -> AnyPublisher<AppleUser, Error>
+    func checkPreviousSignInWithApple() -> Future<Bool, Error>
+    func fetchUserInfo() -> AppleUser?
 }
 
 public final class AppleAuthenticationServiceUseCaseImp: AppleAuthenticationServiceUseCase {
@@ -26,5 +28,13 @@ public final class AppleAuthenticationServiceUseCaseImp: AppleAuthenticationServ
     
     public func signInWithApple() -> AnyPublisher<AppleUser, Error> {
         appleAuthenticationServiceRepository.signIn()
+    }
+    
+    public func checkPreviousSignInWithApple() -> Future<Bool, Error> {
+        appleAuthenticationServiceRepository.fetchAppleSignInStatus()
+    }
+    
+    public func fetchUserInfo() -> AppleUser? {
+        return appleAuthenticationServiceRepository.fetchUserInfo()
     }
 }

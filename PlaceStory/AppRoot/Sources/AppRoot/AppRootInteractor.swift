@@ -5,7 +5,12 @@
 //  Created by 최제환 on 12/2/23.
 //
 
+import Combine
+import Foundation
 import ModernRIBs
+import Repositories
+import UseCase
+import Utils
 
 public protocol AppRootRouting: ViewableRouting {
     func attachLoggedOut()
@@ -24,10 +29,20 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
 
     weak var router: AppRootRouting?
     weak var listener: AppRootListener?
-
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: AppRootPresentable) {
+    
+    private let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+    private let appleAuthenticationServiceRepository: AppleAuthenticationServiceRepository
+    private var cancellables: Set<AnyCancellable>
+    
+    init(
+        presenter: AppRootPresentable,
+        appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase,
+        appleAuthenticationServiceRepository: AppleAuthenticationServiceRepository
+    ) {
+        self.appleAuthenticationServiceUseCase = appleAuthenticationServiceUseCase
+        self.appleAuthenticationServiceRepository = appleAuthenticationServiceRepository
+        self.cancellables = .init()
+        
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -35,7 +50,31 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
     override func didBecomeActive() {
         super.didBecomeActive()
         
-        router?.attachLoggedOut()
+        appleAuthenticationServiceUseCase.checkPreviousSignInWithApple()
+            .sink { [weak self] completion in
+                guard let self else { return }
+                
+                switch completion {
+                case .failure(let error):
+                    Log.error("error is \(error)", "[\(#file)-\(#function) - \(#line)]")
+                    self.router?.attachLoggedOut()
+                    
+                case .finished:
+                    break
+                }
+            } receiveValue: { [weak self] hasPrevious in
+                guard let self else { return }
+                
+                if hasPrevious {
+                    if let userInfo = self.appleAuthenticationServiceUseCase.fetchUserInfo() {
+                        Log.info("UserInfo is \(userInfo)", "[\(#file)-\(#function) - \(#line)]")
+                    }
+                } else {
+                    self.router?.attachLoggedOut()
+                }
+            }
+            .store(in: &cancellables)
+
     }
 
     override func willResignActive() {
