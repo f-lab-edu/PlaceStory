@@ -19,13 +19,15 @@
 		33A056782B21A7F3005DE8B2 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A056772B21A7F3005DE8B2 /* OSLog.framework */; };
 		33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */ = {isa = PBXBuildFile; productRef = 33A0567D2B21B096005DE8B2 /* RepositoryImps */; };
 		33A72A222B202DBA00E41887 /* Repositories in Frameworks */ = {isa = PBXBuildFile; productRef = 33A72A212B202DBA00E41887 /* Repositories */; };
+		9845E1DC2B308CEE009E13E2 /* AppComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9845E1DB2B308CEE009E13E2 /* AppComponent.swift */; };
+		9845E1DE2B308D46009E13E2 /* MyLocation in Frameworks */ = {isa = PBXBuildFile; productRef = 9845E1DD2B308D46009E13E2 /* MyLocation */; };
 		9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */ = {isa = PBXBuildFile; productRef = 9857A7392B1B2A9F008A9827 /* LoggedOut */; };
 		9872E5CB2B24A4C000168842 /* CommonUI in Frameworks */ = {isa = PBXBuildFile; productRef = 9872E5CA2B24A4C000168842 /* CommonUI */; };
 		9872E5CD2B24A4C000168842 /* ProxyPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 9872E5CC2B24A4C000168842 /* ProxyPackage */; };
 		9872E5CF2B24A4C000168842 /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 9872E5CE2B24A4C000168842 /* Utils */; };
 		9877075A2B2477D000D93897 /* Model in Frameworks */ = {isa = PBXBuildFile; productRef = 987707592B2477D000D93897 /* Model */; };
 		9877075F2B24A04F00D93897 /* LocalStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 9877075E2B24A04F00D93897 /* LocalStorage */; };
-		988C78E32B1B07A4007E5440 /* AppComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988C78E22B1B07A4007E5440 /* AppComponent.swift */; };
+		9882F32B2B2EE972009FC18A /* LoggedIn in Frameworks */ = {isa = PBXBuildFile; productRef = 9882F32A2B2EE972009FC18A /* LoggedIn */; };
 		988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */ = {isa = PBXBuildFile; productRef = 988C791D2B1B1D55007E5440 /* AppRoot */; };
 		98EAA3E62B1F723F00937B0E /* UseCase in Frameworks */ = {isa = PBXBuildFile; productRef = 98EAA3E52B1F723F00937B0E /* UseCase */; };
 		98EAA3E82B1F7A3200937B0E /* Entities in Frameworks */ = {isa = PBXBuildFile; productRef = 98EAA3E72B1F7A3200937B0E /* Entities */; };
@@ -50,6 +52,7 @@
 
 /* Begin PBXFileReference section */
 		333F69792B2A9A0800BF9C83 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		3346D1432B303F20000CB726 /* MyLocation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MyLocation; sourceTree = "<group>"; };
 		337214B82B19D1BD007622F7 /* PlaceStory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlaceStory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		337214BB2B19D1BD007622F7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		337214BD2B19D1BD007622F7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -61,14 +64,15 @@
 		337214DC2B19D1BE007622F7 /* PlaceStoryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceStoryUITests.swift; sourceTree = "<group>"; };
 		337214DE2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceStoryUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		33A056772B21A7F3005DE8B2 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
+		9845E1DB2B308CEE009E13E2 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
 		9857A7302B1B27E4008A9827 /* LoggedOut */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoggedOut; sourceTree = "<group>"; };
 		9872E5C72B24A33900168842 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
 		9872E5C82B24A3D100168842 /* Platform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Platform; sourceTree = "<group>"; };
 		9872E5C92B24A46100168842 /* ProxyPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProxyPackage; sourceTree = "<group>"; };
-		988C78E22B1B07A4007E5440 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
 		988C791C2B1B1C79007E5440 /* AppRoot */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppRoot; sourceTree = "<group>"; };
 		98EAA3E02B1F66C100937B0E /* PlaceStory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlaceStory.entitlements; sourceTree = "<group>"; };
 		98EAA3E42B1F6D2E00937B0E /* ko */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = ko; path = ko.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		98F9EBA82B2DF363005A1A55 /* LoggedIn */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoggedIn; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,12 +82,14 @@
 			files = (
 				9877075A2B2477D000D93897 /* Model in Frameworks */,
 				9872E5CB2B24A4C000168842 /* CommonUI in Frameworks */,
+				9882F32B2B2EE972009FC18A /* LoggedIn in Frameworks */,
 				33A72A222B202DBA00E41887 /* Repositories in Frameworks */,
 				98EAA3E62B1F723F00937B0E /* UseCase in Frameworks */,
 				988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */,
 				333F697A2B2A9A0800BF9C83 /* Security.framework in Frameworks */,
 				33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */,
 				9872E5CF2B24A4C000168842 /* Utils in Frameworks */,
+				9845E1DE2B308D46009E13E2 /* MyLocation in Frameworks */,
 				9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */,
 				9872E5CD2B24A4C000168842 /* ProxyPackage in Frameworks */,
 				334F10EB2B2AD45900FFEE0A /* SecurityServices in Frameworks */,
@@ -113,6 +119,8 @@
 		337214AF2B19D1BD007622F7 = {
 			isa = PBXGroup;
 			children = (
+				3346D1432B303F20000CB726 /* MyLocation */,
+				98F9EBA82B2DF363005A1A55 /* LoggedIn */,
 				9857A7302B1B27E4008A9827 /* LoggedOut */,
 				988C791C2B1B1C79007E5440 /* AppRoot */,
 				9872E5C72B24A33900168842 /* Domain */,
@@ -178,7 +186,7 @@
 			children = (
 				337214BB2B19D1BD007622F7 /* AppDelegate.swift */,
 				337214BD2B19D1BD007622F7 /* SceneDelegate.swift */,
-				988C78E22B1B07A4007E5440 /* AppComponent.swift */,
+				9845E1DB2B308CEE009E13E2 /* AppComponent.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -221,6 +229,8 @@
 				9872E5CC2B24A4C000168842 /* ProxyPackage */,
 				9872E5CE2B24A4C000168842 /* Utils */,
 				334F10EA2B2AD45900FFEE0A /* SecurityServices */,
+				9882F32A2B2EE972009FC18A /* LoggedIn */,
+				9845E1DD2B308D46009E13E2 /* MyLocation */,
 			);
 			productName = PlaceStory;
 			productReference = 337214B82B19D1BD007622F7 /* PlaceStory.app */;
@@ -338,7 +348,7 @@
 			files = (
 				337214BC2B19D1BD007622F7 /* AppDelegate.swift in Sources */,
 				337214BE2B19D1BD007622F7 /* SceneDelegate.swift in Sources */,
-				988C78E32B1B07A4007E5440 /* AppComponent.swift in Sources */,
+				9845E1DC2B308CEE009E13E2 /* AppComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -689,6 +699,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Repositories;
 		};
+		9845E1DD2B308D46009E13E2 /* MyLocation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MyLocation;
+		};
 		9857A7392B1B2A9F008A9827 /* LoggedOut */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LoggedOut;
@@ -712,6 +726,10 @@
 		9877075E2B24A04F00D93897 /* LocalStorage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LocalStorage;
+		};
+		9882F32A2B2EE972009FC18A /* LoggedIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LoggedIn;
 		};
 		988C791D2B1B1D55007E5440 /* AppRoot */ = {
 			isa = XCSwiftPackageProductDependency;

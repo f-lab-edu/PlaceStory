@@ -4,7 +4,6 @@
 //
 //  Created by 최제환 on 12/2/23.
 //
-
 import Combine
 import Foundation
 import ModernRIBs
@@ -14,11 +13,12 @@ import Utils
 
 public protocol AppRootRouting: ViewableRouting {
     func attachLoggedOut()
+    func detachLoggedOut()
+    func attachLoggedIn()
 }
 
 protocol AppRootPresentable: Presentable {
     var listener: AppRootPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
 public protocol AppRootListener: AnyObject {
@@ -26,27 +26,25 @@ public protocol AppRootListener: AnyObject {
 }
 
 final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRootInteractable, AppRootPresentableListener {
-
+    
     weak var router: AppRootRouting?
     weak var listener: AppRootListener?
     
     private let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
-    private let appleAuthenticationServiceRepository: AppleAuthenticationServiceRepository
+    
     private var cancellables: Set<AnyCancellable>
     
     init(
         presenter: AppRootPresentable,
-        appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase,
-        appleAuthenticationServiceRepository: AppleAuthenticationServiceRepository
+        appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
     ) {
         self.appleAuthenticationServiceUseCase = appleAuthenticationServiceUseCase
-        self.appleAuthenticationServiceRepository = appleAuthenticationServiceRepository
         self.cancellables = .init()
         
         super.init(presenter: presenter)
         presenter.listener = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
         
@@ -68,17 +66,25 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
                 if hasPrevious {
                     if let userInfo = self.appleAuthenticationServiceUseCase.fetchUserInfo() {
                         Log.info("UserInfo is \(userInfo)", "[\(#file)-\(#function) - \(#line)]")
+                        
+                        DispatchQueue.main.async {
+                            self.router?.attachLoggedIn()
+                        }
                     }
                 } else {
                     self.router?.attachLoggedOut()
+                    
                 }
             }
             .store(in: &cancellables)
-
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+    
+    func detachLoggedOut() {
+        router?.detachLoggedOut()
     }
 }

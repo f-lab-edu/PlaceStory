@@ -11,6 +11,7 @@ import ModernRIBs
 import LocalStorage
 import LoggedOut
 import SecurityServices
+import LoggedIn
 import UseCase
 
 
@@ -19,24 +20,20 @@ public protocol AppRootDependency: Dependency {
     // created by this RIB.
 }
 
-final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency {
-    let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
-    let appleAuthenticationServiceRepository: AppleAuthenticationServiceRepository
+final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency, LoggedInDependency {
+    let appleAuthenticationServiceUseCase: UseCase.AppleAuthenticationServiceUseCase
     
     override init(
         dependency: AppRootDependency
     ) {
         let realmDatabase = RealmDatabaseImp()
         let keychainService = KeychainServiceImp()
-        self.appleAuthenticationServiceRepository = AppleAuthenticationServiceRepositoryImp(
+        let appleAuthenticationServiceRepository = AppleAuthenticationServiceRepositoryImp(
             database: realmDatabase,
             keychain: keychainService
         )
         self.appleAuthenticationServiceUseCase = AppleAuthenticationServiceUseCaseImp(
-            appleAuthenticationServiceRepository: AppleAuthenticationServiceRepositoryImp(
-                database: realmDatabase,
-                keychain: keychainService
-            )
+            appleAuthenticationServiceRepository: appleAuthenticationServiceRepository
         )
         
         super.init(dependency: dependency)
@@ -60,16 +57,17 @@ public final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable 
         let viewController = AppRootViewController()
         let interactor = AppRootInteractor(
             presenter: viewController,
-            appleAuthenticationServiceUseCase: component.appleAuthenticationServiceUseCase,
-            appleAuthenticationServiceRepository: component.appleAuthenticationServiceRepository
+            appleAuthenticationServiceUseCase: component.appleAuthenticationServiceUseCase
         )
         
         let loggedOutBuilder = LoggedOutBuilder(dependency: component)
+        let loggedInBuilder = LoggedInBuilder(dependency: component)
         
         let router = AppRootRouter(
             interactor: interactor,
             viewController: viewController,
-            loggedOutBuilder: loggedOutBuilder
+            loggedOutBuilder: loggedOutBuilder,
+            loggedInBuilder: loggedInBuilder
         )
         
         return router
