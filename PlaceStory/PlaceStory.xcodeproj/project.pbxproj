@@ -19,6 +19,7 @@
 		33A056782B21A7F3005DE8B2 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A056772B21A7F3005DE8B2 /* OSLog.framework */; };
 		33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */ = {isa = PBXBuildFile; productRef = 33A0567D2B21B096005DE8B2 /* RepositoryImps */; };
 		33A72A222B202DBA00E41887 /* Repositories in Frameworks */ = {isa = PBXBuildFile; productRef = 33A72A212B202DBA00E41887 /* Repositories */; };
+		98143F482B3B17760007839C /* PlaceSearcher in Frameworks */ = {isa = PBXBuildFile; productRef = 98143F472B3B17760007839C /* PlaceSearcher */; };
 		9845E1DC2B308CEE009E13E2 /* AppComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9845E1DB2B308CEE009E13E2 /* AppComponent.swift */; };
 		9845E1DE2B308D46009E13E2 /* MyLocation in Frameworks */ = {isa = PBXBuildFile; productRef = 9845E1DD2B308D46009E13E2 /* MyLocation */; };
 		9857A73A2B1B2A9F008A9827 /* LoggedOut in Frameworks */ = {isa = PBXBuildFile; productRef = 9857A7392B1B2A9F008A9827 /* LoggedOut */; };
@@ -94,6 +95,7 @@
 				9872E5CD2B24A4C000168842 /* ProxyPackage in Frameworks */,
 				334F10EB2B2AD45900FFEE0A /* SecurityServices in Frameworks */,
 				9877075F2B24A04F00D93897 /* LocalStorage in Frameworks */,
+				98143F482B3B17760007839C /* PlaceSearcher in Frameworks */,
 				98EAA3E82B1F7A3200937B0E /* Entities in Frameworks */,
 				33A056782B21A7F3005DE8B2 /* OSLog.framework in Frameworks */,
 			);
@@ -231,6 +233,7 @@
 				334F10EA2B2AD45900FFEE0A /* SecurityServices */,
 				9882F32A2B2EE972009FC18A /* LoggedIn */,
 				9845E1DD2B308D46009E13E2 /* MyLocation */,
+				98143F472B3B17760007839C /* PlaceSearcher */,
 			);
 			productName = PlaceStory;
 			productReference = 337214B82B19D1BD007622F7 /* PlaceStory.app */;
@@ -698,6 +701,10 @@
 		33A72A212B202DBA00E41887 /* Repositories */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Repositories;
+		};
+		98143F472B3B17760007839C /* PlaceSearcher */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PlaceSearcher;
 		};
 		9845E1DD2B308D46009E13E2 /* MyLocation */ = {
 			isa = XCSwiftPackageProductDependency;

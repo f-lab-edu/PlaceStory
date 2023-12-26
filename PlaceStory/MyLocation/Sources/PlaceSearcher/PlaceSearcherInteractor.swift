@@ -7,7 +7,7 @@
 
 import ModernRIBs
 
-protocol PlaceSearcherRouting: ViewableRouting {
+public protocol PlaceSearcherRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
 }
 

@@ -10,6 +10,9 @@ let package = Package(
         .library(
             name: "MyLocation",
             targets: ["MyLocation"]),
+        .library(
+            name: "PlaceSearcher",
+            targets: ["PlaceSearcher"])
     ],
     dependencies: [
         .package(path: "../ProxyPackage"),
@@ -21,6 +24,7 @@ let package = Package(
                 "ProxyPackage",
             ]
         ),
+        .target(name: "PlaceSearcher"),
         .testTarget(
             name: "MyLocationTests",
             dependencies: ["MyLocation"]),
