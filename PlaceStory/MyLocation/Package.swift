@@ -24,7 +24,12 @@ let package = Package(
                 "ProxyPackage",
             ]
         ),
-        .target(name: "PlaceSearcher"),
+        .target(
+            name: "PlaceSearcher",
+            dependencies: [
+                "ProxyPackage"
+            ]
+        ),
         .testTarget(
             name: "MyLocationTests",
             dependencies: ["MyLocation"]),

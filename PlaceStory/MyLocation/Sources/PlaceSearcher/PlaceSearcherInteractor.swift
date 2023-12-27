@@ -16,7 +16,7 @@ protocol PlaceSearcherPresentable: Presentable {
     // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
-protocol PlaceSearcherListener: AnyObject {
+public protocol PlaceSearcherListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
