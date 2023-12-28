@@ -5,7 +5,8 @@
 //  Created by 최제환 on 12/18/23.
 //
 
-import Repositories
+import Combine
+import UseCase
 import ModernRIBs
 
 public protocol MyLocationRouting: ViewableRouting {
@@ -14,7 +15,8 @@ public protocol MyLocationRouting: ViewableRouting {
 
 protocol MyLocationPresentable: Presentable {
     var listener: MyLocationPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
+    
+    func showRequestLocationAlert()
 }
 
 public protocol MyLocationListener: AnyObject {
@@ -26,16 +28,25 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     weak var router: MyLocationRouting?
     weak var listener: MyLocationListener?
 
+    private let locationServiceUseCase: LocationServiceUseCase
     
+    private var cancellables: Set<AnyCancellable>
     
-    override init(presenter: MyLocationPresentable) {
+    init(
+        presenter: MyLocationPresentable,
+        locationServiceUseCase: LocationServiceUseCase
+    ) {
+        self.locationServiceUseCase = locationServiceUseCase
+        self.cancellables = .init()
+        
         super.init(presenter: presenter)
         presenter.listener = self
     }
 
     override func didBecomeActive() {
         super.didBecomeActive()
-        // TODO: Implement business logic here.
+        
+        checkAndHandleLocationPermission()
     }
 
     override func willResignActive() {
@@ -44,6 +55,20 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     }
     
     func checkPermissionLocation() {
-        
+        checkAndHandleLocationPermission()
+    }
+    
+    private func checkAndHandleLocationPermission() {
+        locationServiceUseCase.verifyLocationPermission()
+            .sink { [weak self] isLocationPermissionGranted in
+                guard let self else { return }
+                
+                if isLocationPermissionGranted {
+                    print("위치 권한 허용 O")
+                } else {
+                    self.presenter.showRequestLocationAlert()
+                }
+            }
+            .store(in: &cancellables)
     }
 }
