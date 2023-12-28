@@ -5,6 +5,7 @@
 //  Created by 최제환 on 12/18/23.
 //
 
+import Repositories
 import ModernRIBs
 
 public protocol MyLocationRouting: ViewableRouting {
@@ -25,8 +26,8 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     weak var router: MyLocationRouting?
     weak var listener: MyLocationListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
+    
+    
     override init(presenter: MyLocationPresentable) {
         super.init(presenter: presenter)
         presenter.listener = self
@@ -40,5 +41,9 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+    
+    func checkPermissionLocation() {
+        
     }
 }

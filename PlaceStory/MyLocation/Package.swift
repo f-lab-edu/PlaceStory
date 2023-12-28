@@ -16,12 +16,14 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../ProxyPackage"),
+        .package(path: "../Domain")
     ],
     targets: [
         .target(
             name: "MyLocation",
             dependencies: [
                 "ProxyPackage",
+                .product(name: "UseCase", package: "Domain")
             ]
         ),
         .target(

@@ -6,6 +6,7 @@
 //
 
 import ModernRIBs
+import UseCase
 
 public protocol MyLocationDependency: Dependency {
     // TODO: Declare the set of dependencies required by this RIB, but cannot be
@@ -14,7 +15,15 @@ public protocol MyLocationDependency: Dependency {
 
 final class MyLocationComponent: Component<MyLocationDependency> {
 
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+    let locationServiceUseCase: LocationServiceUseCase
+    
+    override init(
+        dependency: MyLocationDependency
+    ) {
+        self.locationServiceUseCase = LocationServiceUseCaseImp()
+        
+        super.init(dependency: dependency)
+    }
 }
 
 // MARK: - Builder
