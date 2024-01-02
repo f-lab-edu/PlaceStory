@@ -13,6 +13,7 @@ import UIKit
 
 protocol MyLocationPresentableListener: AnyObject {
     func checkPermissionLocation()
+    func didTappedMyLocationButton()
 }
 
 final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable {
@@ -21,6 +22,7 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
     
     lazy var myPlaceMapView: MapView = {
         let mapView = MapView()
+        mapView.myLocationButton.addTarget(self, action: #selector(didTappedMyLocationButton), for: .touchUpInside)
         
         return mapView
     }()
@@ -59,6 +61,11 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         }
     }
     
+    @objc
+    private func didTappedMyLocationButton() {
+        listener?.didTappedMyLocationButton()
+    }
+    
     // MARK: - MyLocationPresentable
     
     func showRequestLocationAlert() {
@@ -77,5 +84,19 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
             "나중에 하기",
             nil
         )
+    }
+    
+    func showFailedLocationAlert(_ error: Error) {
+        PlaceStoryAlert.showAlertWithOneAction(
+            self,
+            "위치 불러오기",
+            error.localizedDescription,
+            nil
+        )
+    }
+    
+    func updateCurrentLocation(with location: CLLocation) {
+        myPlaceMapView.mapView.showsUserLocation = true
+        myPlaceMapView.mapView.setUserTrackingMode(.follow, animated: true)
     }
 }

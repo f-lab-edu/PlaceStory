@@ -26,7 +26,8 @@ let package = Package(
                 "ProxyPackage",
                 .product(name: "UseCase", package: "Domain"),
                 .product(name: "RepositoryImps", package: "Platform"),
-                .product(name: "CommonUI", package: "ProxyPackage")
+                .product(name: "CommonUI", package: "ProxyPackage"),
+                .product(name: "Utils", package: "ProxyPackage"),
             ]
         ),
         .target(

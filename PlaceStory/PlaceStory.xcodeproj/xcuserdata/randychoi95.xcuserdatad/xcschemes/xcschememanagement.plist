@@ -9,14 +9,14 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>16</integer>
+			<integer>25</integer>
 		</dict>
 		<key>GettingStarted (Playground) 2.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>17</integer>
+			<integer>26</integer>
 		</dict>
 		<key>GettingStarted (Playground) 3.xcscheme</key>
 		<dict>
@@ -65,7 +65,7 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>15</integer>
+			<integer>24</integer>
 		</dict>
 		<key>PlaceStory.xcscheme_^#shared#^_</key>
 		<dict>
@@ -77,7 +77,7 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>13</integer>
+			<integer>22</integer>
 		</dict>
 		<key>SnapKitPlayground (Playground) 10.xcscheme</key>
 		<dict>
@@ -98,7 +98,7 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>14</integer>
+			<integer>23</integer>
 		</dict>
 		<key>SnapKitPlayground (Playground) 3.xcscheme</key>
 		<dict>
@@ -154,7 +154,7 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>12</integer>
+			<integer>21</integer>
 		</dict>
 	</dict>
 </dict>

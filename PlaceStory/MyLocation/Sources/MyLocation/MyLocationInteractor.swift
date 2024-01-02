@@ -5,9 +5,11 @@
 //  Created by 최제환 on 12/18/23.
 //
 
+import CoreLocation
 import Combine
-import UseCase
 import ModernRIBs
+import UseCase
+import Utils
 
 public protocol MyLocationRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
@@ -17,6 +19,8 @@ protocol MyLocationPresentable: Presentable {
     var listener: MyLocationPresentableListener? { get set }
     
     func showRequestLocationAlert()
+    func showFailedLocationAlert(_ error: Error)
+    func updateCurrentLocation(with location: CLLocation)
 }
 
 public protocol MyLocationListener: AnyObject {
@@ -54,21 +58,56 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
         // TODO: Pause any business logic.
     }
     
-    func checkPermissionLocation() {
-        checkAndHandleLocationPermission()
-    }
-    
     private func checkAndHandleLocationPermission() {
         locationServiceUseCase.verifyLocationPermission()
             .sink { [weak self] isLocationPermissionGranted in
                 guard let self else { return }
                 
                 if isLocationPermissionGranted {
-                    print("위치 권한 허용 O")
+                    updateCurrentUserLocation()
                 } else {
                     self.presenter.showRequestLocationAlert()
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    private func updateCurrentUserLocation() {
+        self.locationServiceUseCase.movedToUserLocation()
+            .sink { [weak self] completion in
+                guard let self else { return }
+                
+                switch completion {
+                case .failure(let error):
+                    Log.error("error is \(error)", "[\(#file)-\(#function) - \(#line)]")
+                    
+                    self.presenter.showFailedLocationAlert(error)
+                    
+                case .finished:
+                    break
+                }
+            } receiveValue: { [weak self] location in
+                guard let self else { return }
+                
+                Log.info("[현재 위치] - (\(location.coordinate.latitude), \(location.coordinate.longitude))", "[\(#file)-\(#function) - \(#line)]")
+                
+                self.presenter.updateCurrentLocation(with: location)
+                self.requestStopLocationUpdates()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func requestStopLocationUpdates() {
+        locationServiceUseCase.stopLocationTracking()
+    }
+    
+    // MARK: - MyLocationPresentableListener
+    
+    func checkPermissionLocation() {
+        checkAndHandleLocationPermission()
+    }
+    
+    func didTappedMyLocationButton() {
+        checkAndHandleLocationPermission()
     }
 }
