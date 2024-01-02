@@ -5,7 +5,9 @@
 //  Created by 최제환 on 12/18/23.
 //
 
+import RepositoryImps
 import ModernRIBs
+import UseCase
 
 public protocol MyLocationDependency: Dependency {
     // TODO: Declare the set of dependencies required by this RIB, but cannot be
@@ -14,7 +16,17 @@ public protocol MyLocationDependency: Dependency {
 
 final class MyLocationComponent: Component<MyLocationDependency> {
 
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+    let locationServiceUseCase: LocationServiceUseCase
+    
+    override init(
+        dependency: MyLocationDependency
+    ) {
+        self.locationServiceUseCase = LocationServiceUseCaseImp(
+            locationServiceRepository: LocationServiceRepositoryImp()
+        )
+        
+        super.init(dependency: dependency)
+    }
 }
 
 // MARK: - Builder
@@ -32,7 +44,10 @@ public final class MyLocationBuilder: Builder<MyLocationDependency>, MyLocationB
     public func build(withListener listener: MyLocationListener) -> MyLocationRouting {
         let component = MyLocationComponent(dependency: dependency)
         let viewController = MyLocationViewController()
-        let interactor = MyLocationInteractor(presenter: viewController)
+        let interactor = MyLocationInteractor(
+            presenter: viewController,
+            locationServiceUseCase: component.locationServiceUseCase
+        )
         interactor.listener = listener
         return MyLocationRouter(interactor: interactor, viewController: viewController)
     }
