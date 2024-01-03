@@ -7,6 +7,7 @@
 
 import RepositoryImps
 import ModernRIBs
+import PlaceSearcher
 import UseCase
 
 public protocol MyLocationDependency: Dependency {
@@ -14,7 +15,7 @@ public protocol MyLocationDependency: Dependency {
     // created by this RIB.
 }
 
-final class MyLocationComponent: Component<MyLocationDependency> {
+final class MyLocationComponent: Component<MyLocationDependency>, PlaceSearcherDependency {
 
     let locationServiceUseCase: LocationServiceUseCase
     
@@ -49,6 +50,13 @@ public final class MyLocationBuilder: Builder<MyLocationDependency>, MyLocationB
             locationServiceUseCase: component.locationServiceUseCase
         )
         interactor.listener = listener
-        return MyLocationRouter(interactor: interactor, viewController: viewController)
+        
+        let placeSearchBuilder = PlaceSearcherBuilder(dependency: component)
+        
+        return MyLocationRouter(
+            interactor: interactor,
+            viewController: viewController,
+            placeSearcherBuilder: placeSearchBuilder
+        )
     }
 }

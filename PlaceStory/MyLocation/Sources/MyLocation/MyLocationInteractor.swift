@@ -7,12 +7,14 @@
 
 import CoreLocation
 import Combine
+import CommonUI
 import ModernRIBs
 import UseCase
 import Utils
 
 public protocol MyLocationRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
+    func attachPlaceSearcher()
+    func detachPlaceSearcher()
 }
 
 protocol MyLocationPresentable: Presentable {
@@ -27,7 +29,7 @@ public protocol MyLocationListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
-final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, MyLocationInteractable, MyLocationPresentableListener {
+final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, MyLocationInteractable, MyLocationPresentableListener, ModalAdaptivePresentationControllerDelegate {
 
     weak var router: MyLocationRouting?
     weak var listener: MyLocationListener?
@@ -35,6 +37,7 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     private let locationServiceUseCase: LocationServiceUseCase
     
     private var cancellables: Set<AnyCancellable>
+    var modalAdaptivePresentationControllerDelegateProxy: ModalAdaptivePresentationControllerDelegateProxy
     
     init(
         presenter: MyLocationPresentable,
@@ -42,9 +45,11 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     ) {
         self.locationServiceUseCase = locationServiceUseCase
         self.cancellables = .init()
+        self.modalAdaptivePresentationControllerDelegateProxy = ModalAdaptivePresentationControllerDelegateProxy()
         
         super.init(presenter: presenter)
         presenter.listener = self
+        modalAdaptivePresentationControllerDelegateProxy.delegate = self
     }
 
     override func didBecomeActive() {
@@ -109,5 +114,13 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     
     func didTappedMyLocationButton() {
         checkAndHandleLocationPermission()
+    }
+    
+    func didTappedPlaceSearchButton() {
+        router?.attachPlaceSearcher()
+    }
+    
+    func presentationControllerDidDismiss() {
+        router?.detachPlaceSearcher()
     }
 }

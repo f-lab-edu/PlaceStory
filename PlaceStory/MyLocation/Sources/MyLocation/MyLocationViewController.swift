@@ -14,6 +14,7 @@ import UIKit
 protocol MyLocationPresentableListener: AnyObject {
     func checkPermissionLocation()
     func didTappedMyLocationButton()
+    func didTappedPlaceSearchButton()
 }
 
 final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable {
@@ -23,6 +24,7 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
     lazy var myPlaceMapView: MapView = {
         let mapView = MapView()
         mapView.myLocationButton.addTarget(self, action: #selector(didTappedMyLocationButton), for: .touchUpInside)
+        mapView.placeSearchButton.addTarget(self, action: #selector(didTappedPlaceSearchButton), for: .touchUpInside)
         
         return mapView
     }()
@@ -40,7 +42,7 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
     }
     
     private func configureUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         title = "장소 검색"
         
         view.addSubview(myPlaceMapView)
@@ -64,6 +66,11 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
     @objc
     private func didTappedMyLocationButton() {
         listener?.didTappedMyLocationButton()
+    }
+    
+    @objc
+    private func didTappedPlaceSearchButton() {
+        listener?.didTappedPlaceSearchButton()
     }
     
     // MARK: - MyLocationPresentable

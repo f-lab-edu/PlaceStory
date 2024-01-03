@@ -28,12 +28,14 @@ let package = Package(
                 .product(name: "RepositoryImps", package: "Platform"),
                 .product(name: "CommonUI", package: "ProxyPackage"),
                 .product(name: "Utils", package: "ProxyPackage"),
+                "PlaceSearcher"
             ]
         ),
         .target(
             name: "PlaceSearcher",
             dependencies: [
-                "ProxyPackage"
+                "ProxyPackage",
+                .product(name: "CommonUI", package: "ProxyPackage")
             ]
         ),
         .testTarget(
