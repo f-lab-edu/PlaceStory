@@ -26,13 +26,16 @@ let package = Package(
                 "ProxyPackage",
                 .product(name: "UseCase", package: "Domain"),
                 .product(name: "RepositoryImps", package: "Platform"),
-                .product(name: "CommonUI", package: "ProxyPackage")
+                .product(name: "CommonUI", package: "ProxyPackage"),
+                .product(name: "Utils", package: "ProxyPackage"),
+                "PlaceSearcher"
             ]
         ),
         .target(
             name: "PlaceSearcher",
             dependencies: [
-                "ProxyPackage"
+                "ProxyPackage",
+                .product(name: "CommonUI", package: "ProxyPackage")
             ]
         ),
         .testTarget(

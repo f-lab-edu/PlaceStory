@@ -17,4 +17,14 @@ protocol PlaceSearcherPresentableListener: AnyObject {
 final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresentable, PlaceSearcherViewControllable {
 
     weak var listener: PlaceSearcherPresentableListener?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        configureUI()
+    }
+    
+    private func configureUI() {
+        view.backgroundColor = .systemBackground
+    }
 }

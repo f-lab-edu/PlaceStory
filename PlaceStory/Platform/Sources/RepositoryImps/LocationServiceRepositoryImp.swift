@@ -13,6 +13,7 @@ import Repositories
 public final class LocationServiceRepositoryImp: NSObject {
     private let locationManager: CLLocationManager
     private let authorizationStatusSubject = PassthroughSubject<Bool, Never>()
+    private let updateLocationSubject = PassthroughSubject<CLLocation, Error>()
     
     public override init() {
         self.locationManager = CLLocationManager()
@@ -32,6 +33,7 @@ public final class LocationServiceRepositoryImp: NSObject {
             
         case .authorizedAlways, .authorizedWhenInUse: // 앱을 사용중일 때, 위치 서비스를 이용할 수 있는 상태
             authorizationStatusSubject.send(true)
+            locationManager.startUpdatingLocation()
             
         @unknown default:
             authorizationStatusSubject.send(false)
@@ -49,6 +51,13 @@ extension LocationServiceRepositoryImp: LocationServiceRepository {
         return authorizationStatusSubject.eraseToAnyPublisher()
     }
     
+    public func publishCurrentLocation() -> AnyPublisher<CLLocation, Error> {
+        return updateLocationSubject.eraseToAnyPublisher()
+    }
+    
+    public func stopLocationUpdates() {
+        locationManager.stopUpdatingLocation()
+    }
 }
 
 // MARK: - CLLocationManagerDelegate
@@ -56,5 +65,15 @@ extension LocationServiceRepositoryImp: CLLocationManagerDelegate {
     public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let authorizationStatus = manager.authorizationStatus
         checkCurrentLocationAuthorization(authorizationStatus)
+    }
+    
+    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            updateLocationSubject.send(location)
+        }
+    }
+    
+    public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        updateLocationSubject.send(completion: .failure(error))
     }
 }

@@ -5,11 +5,14 @@
 //  Created by 최제환 on 12/18/23.
 //
 
+import CommonUI
 import ModernRIBs
+import PlaceSearcher
 
-protocol MyLocationInteractable: Interactable {
+protocol MyLocationInteractable: Interactable, PlaceSearcherListener {
     var router: MyLocationRouting? { get set }
     var listener: MyLocationListener? { get set }
+    var modalAdaptivePresentationControllerDelegateProxy: ModalAdaptivePresentationControllerDelegateProxy { get }
 }
 
 protocol MyLocationViewControllable: ViewControllable {
@@ -18,9 +21,38 @@ protocol MyLocationViewControllable: ViewControllable {
 
 final class MyLocationRouter: ViewableRouter<MyLocationInteractable, MyLocationViewControllable>, MyLocationRouting {
 
-    // TODO: Constructor inject child builder protocols to allow building children.
-    override init(interactor: MyLocationInteractable, viewController: MyLocationViewControllable) {
+    private let placeSearcherBuilder: PlaceSearcherBuilder
+    private var placeSearcherRouter: PlaceSearcherRouting?
+    
+    init(
+        interactor: MyLocationInteractable, 
+        viewController: MyLocationViewControllable,
+        placeSearcherBuilder: PlaceSearcherBuilder
+    ) {
+        self.placeSearcherBuilder = placeSearcherBuilder
+        
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
+    }
+    
+    func attachPlaceSearcher() {
+        guard placeSearcherRouter == nil else { return }
+        
+        let router = placeSearcherBuilder.build(withListener: interactor)
+        
+        placeSearcherRouter = router
+        attachChild(router)
+        
+        let vc = router.viewControllable.uiviewController
+        vc.presentationController?.delegate = interactor.modalAdaptivePresentationControllerDelegateProxy
+        
+        viewControllable.uiviewController.present(vc, animated: true)
+    }
+    
+    func detachPlaceSearcher() {
+        guard let router = placeSearcherRouter else { return }
+        
+        detachChild(router)
+        placeSearcherRouter = nil
     }
 }
