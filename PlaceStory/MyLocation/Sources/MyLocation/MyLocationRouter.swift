@@ -52,6 +52,7 @@ final class MyLocationRouter: ViewableRouter<MyLocationInteractable, MyLocationV
     func detachPlaceSearcher() {
         guard let router = placeSearcherRouter else { return }
         
+        router.viewControllable.uiviewController.dismiss(animated: true)
         detachChild(router)
         placeSearcherRouter = nil
     }

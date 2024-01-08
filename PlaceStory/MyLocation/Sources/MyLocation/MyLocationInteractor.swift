@@ -123,4 +123,9 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     func presentationControllerDidDismiss() {
         router?.detachPlaceSearcher()
     }
+    
+    // MARK: - MyLocationInteractor
+    func placeSearcherDidTapClose() {
+        router?.detachPlaceSearcher()
+    }
 }
