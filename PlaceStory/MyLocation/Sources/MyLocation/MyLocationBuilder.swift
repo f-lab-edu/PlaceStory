@@ -19,11 +19,16 @@ final class MyLocationComponent: Component<MyLocationDependency>, PlaceSearcherD
 
     let locationServiceUseCase: LocationServiceUseCase
     
+    var mapServiceUseCase: MapServiceUseCase
+    
     override init(
         dependency: MyLocationDependency
     ) {
         self.locationServiceUseCase = LocationServiceUseCaseImp(
             locationServiceRepository: LocationServiceRepositoryImp()
+        )
+        self.mapServiceUseCase = MapServiceUseCaseImp(
+            mapServiceRepository: MapServiceRepositoryImp()
         )
         
         super.init(dependency: dependency)

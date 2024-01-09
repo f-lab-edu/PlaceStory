@@ -9,11 +9,11 @@ import SnapKit
 import Utils
 import UIKit
 
-class SearchTableViewCell: UITableViewCell {
+final class SearchTableViewCell: UITableViewCell {
     
     // MARK: - UI Components
     
-    lazy var placeLabel: UILabel = {
+    let placeLabel: UILabel = {
         let uiLabel = UILabel()
         uiLabel.font = .systemFont(ofSize: 14, weight: .semibold)
         uiLabel.textColor = .lightGray

@@ -36,7 +36,8 @@ let package = Package(
             dependencies: [
                 "ProxyPackage",
                 .product(name: "CommonUI", package: "ProxyPackage"),
-                .product(name: "Utils", package: "ProxyPackage")
+                .product(name: "Utils", package: "ProxyPackage"),
+                .product(name: "UseCase", package: "Domain")
             ]
         ),
         .testTarget(

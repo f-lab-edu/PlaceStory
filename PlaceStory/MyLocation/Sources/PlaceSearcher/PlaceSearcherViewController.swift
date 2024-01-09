@@ -13,8 +13,9 @@ import Utils
 import UIKit
 
 protocol PlaceSearcherPresentableListener: AnyObject {
-    func didTappedCloseButton()
-    func didSelected(for result: MKLocalSearchCompletion)
+    func didTapCloseButton()
+    func didChangeSearchText(_ text: String)
+    func didSelect(at index: Int)
 }
 
 final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresentable, PlaceSearcherViewControllable {
@@ -85,8 +86,7 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
     // MARK: - Property
     
     weak var listener: PlaceSearcherPresentableListener?
-    private var searchCompleter = MKLocalSearchCompleter()
-    private var searchResults = [MKLocalSearchCompletion]()
+    var searchPlaceResults: [MKLocalSearchCompletion] = []
     
     // MARK: - View Cycle
     
@@ -95,7 +95,6 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
         
         configureUI()
         configureSearchBar()
-        configureSearchCompleter()
         configureSearchTableView()
     }
     
@@ -163,11 +162,6 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
         searchBar.delegate = self
     }
     
-    private func configureSearchCompleter() {
-        searchCompleter.delegate = self
-        searchCompleter.resultTypes = .pointOfInterest
-    }
-    
     private func configureSearchTableView() {
         searchTableView.dataSource = self
         searchTableView.delegate = self
@@ -180,7 +174,7 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
         }
         
         cell.selectionStyle = .none
-        cell.configureUI(searchResults[indexPath.row].title)
+        cell.configureUI(searchPlaceResults[indexPath.row].title)
         
         return cell
     }
@@ -189,7 +183,14 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
     
     @objc
     private func didTappedCloseButton() {
-        listener?.didTappedCloseButton()
+        listener?.didTapCloseButton()
+    }
+    
+    // MARK: - PlaceSearcherPresentable
+    
+    func updateSearchCompletion(_ results: [MKLocalSearchCompletion]) {
+        searchPlaceResults = results
+        searchTableView.reloadData()
     }
 }
 
@@ -197,7 +198,7 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
 
 extension PlaceSearcherViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        return searchPlaceResults.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -209,7 +210,7 @@ extension PlaceSearcherViewController: UITableViewDataSource {
 
 extension PlaceSearcherViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        listener?.didSelected(for: searchResults[indexPath.row])
+        listener?.didSelect(at: indexPath.row)
     }
 }
 
@@ -217,23 +218,10 @@ extension PlaceSearcherViewController: UITableViewDelegate {
 
 extension PlaceSearcherViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchCompleter.queryFragment = searchText
+        listener?.didChangeSearchText(searchText)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         view.endEditing(true)
-    }
-}
-
-// MARK: - MKLocalSearchCompleterDelegate
-
-extension PlaceSearcherViewController: MKLocalSearchCompleterDelegate {
-    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        searchResults = completer.results
-        searchTableView.reloadData()
-    }
-    
-    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
-        Log.error("[completer] error is \(error.localizedDescription)", "[\(#file)-\(#function) - \(#line)]")
     }
 }
