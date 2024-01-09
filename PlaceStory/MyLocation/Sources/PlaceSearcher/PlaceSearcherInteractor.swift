@@ -20,6 +20,7 @@ protocol PlaceSearcherPresentable: Presentable {
 
 public protocol PlaceSearcherListener: AnyObject {
     func placeSearcherDidTapClose()
+    func selectedLocation(_ coordinate: CLLocation, _ locationTitle: String)
 }
 
 final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresentable>, PlaceSearcherInteractable, PlaceSearcherPresentableListener {
@@ -53,7 +54,9 @@ final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresenta
     func didSelected(for result: MKLocalSearchCompletion) {
         let searchReqeust = MKLocalSearch.Request(completion: result)
         let search = MKLocalSearch(request: searchReqeust)
-        search.start { response, error in
+        search.start { [weak self] response, error in
+            guard let self else { return }
+            
             guard error == nil else {
                 Log.error("[MKLocalSearch] error is \(error.debugDescription)", "[\(#file)-\(#function) - \(#line)]")
                 return
@@ -61,7 +64,12 @@ final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresenta
             
             guard let placeMark = response?.mapItems[0].placemark else { return }
             
-            Log.info("placeMark is \(placeMark)", "[\(#file)-\(#function) - \(#line)]")
+            let latitude = placeMark.coordinate.latitude
+            let longitude = placeMark.coordinate.longitude
+            let coordinate = CLLocation(latitude: latitude, longitude: longitude)
+            let locationTitle = result.title
+            
+            self.listener?.selectedLocation(coordinate, locationTitle)
         }
     }
 }
