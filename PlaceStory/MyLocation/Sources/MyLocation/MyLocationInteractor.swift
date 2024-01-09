@@ -23,6 +23,7 @@ protocol MyLocationPresentable: Presentable {
     func showRequestLocationAlert()
     func showFailedLocationAlert(_ error: Error)
     func updateCurrentLocation(with location: CLLocation)
+    func movedLocation(to cLLocation: CLLocation, _ locationTitle: String)
 }
 
 public protocol MyLocationListener: AnyObject {
@@ -121,6 +122,16 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     }
     
     func presentationControllerDidDismiss() {
+        router?.detachPlaceSearcher()
+    }
+    
+    // MARK: - MyLocationInteractor
+    func placeSearcherDidTapClose() {
+        router?.detachPlaceSearcher()
+    }
+    
+    func selectedLocation(_ coordinate: CLLocation, _ locationTitle: String) {
+        presenter.movedLocation(to: coordinate, locationTitle)
         router?.detachPlaceSearcher()
     }
 }

@@ -5,7 +5,11 @@
 //  Created by 최제환 on 12/26/23.
 //
 
+import Combine
+import MapKit
 import ModernRIBs
+import UseCase
+import Utils
 
 public protocol PlaceSearcherRouting: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
@@ -13,11 +17,13 @@ public protocol PlaceSearcherRouting: ViewableRouting {
 
 protocol PlaceSearcherPresentable: Presentable {
     var listener: PlaceSearcherPresentableListener? { get set }
-    // TODO: Declare methods the interactor can invoke the presenter to present data.
+    
+    func updateSearchCompletion(_ results: [MKLocalSearchCompletion])
 }
 
 public protocol PlaceSearcherListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func placeSearcherDidTapClose()
+    func selectedLocation(_ coordinate: CLLocation, _ locationTitle: String)
 }
 
 final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresentable>, PlaceSearcherInteractable, PlaceSearcherPresentableListener {
@@ -25,9 +31,17 @@ final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresenta
     weak var router: PlaceSearcherRouting?
     weak var listener: PlaceSearcherListener?
 
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: PlaceSearcherPresentable) {
+    private let mapServiceUseCase: MapServiceUseCase
+    
+    private var cancellables: Set<AnyCancellable>
+    
+    init(
+        presenter: PlaceSearcherPresentable,
+        mapServiceUseCase: MapServiceUseCase
+    ) {
+        self.mapServiceUseCase = mapServiceUseCase
+        self.cancellables = .init()
+        
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -40,5 +54,31 @@ final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresenta
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+    
+    // MARK: - PlaceSearcherPresentableListener
+    
+    func didTapCloseButton() {
+        listener?.placeSearcherDidTapClose()
+    }
+    
+    func didChangeSearchText(_ text: String) {
+        mapServiceUseCase.updateSearchText(text)
+            .sink(receiveValue: { [weak self] searchCompletion in
+                guard let self else { return }
+                
+                self.presenter.updateSearchCompletion(searchCompletion)
+            })
+            .store(in: &cancellables)
+    }
+    
+    func didSelect(at index: Int) {
+        mapServiceUseCase.selectedLocation(at: index)
+            .sink { [weak self] coordinate, locationTitle in
+                guard let self else { return }
+                
+                self.listener?.selectedLocation(coordinate, locationTitle)
+            }
+            .store(in: &cancellables)
     }
 }

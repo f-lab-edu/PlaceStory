@@ -106,4 +106,19 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         myPlaceMapView.mapView.showsUserLocation = true
         myPlaceMapView.mapView.setUserTrackingMode(.follow, animated: true)
     }
+    
+    func movedLocation(to cLLocation: CLLocation, _ locationTitle: String) {
+        let location = CLLocationCoordinate2D(latitude: cLLocation.coordinate.latitude, longitude: cLLocation.coordinate.longitude)
+        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        let region = MKCoordinateRegion(center: location, span: span)
+        
+        myPlaceMapView.mapView.setRegion(region, animated: true)
+        
+        let annotation = MKPointAnnotation()
+        
+        annotation.coordinate = location
+        annotation.title = locationTitle
+        
+        myPlaceMapView.mapView.addAnnotation(annotation)
+    }
 }
