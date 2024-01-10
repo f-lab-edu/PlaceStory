@@ -6,7 +6,7 @@
 //
 
 import Combine
-import MapKit
+import Entities
 import ModernRIBs
 import UseCase
 import Utils
@@ -18,12 +18,12 @@ public protocol PlaceSearcherRouting: ViewableRouting {
 protocol PlaceSearcherPresentable: Presentable {
     var listener: PlaceSearcherPresentableListener? { get set }
     
-    func updateSearchCompletion(_ results: [MKLocalSearchCompletion])
+    func updateSearchCompletion(_ results: PlaceSearchResult)
 }
 
 public protocol PlaceSearcherListener: AnyObject {
     func placeSearcherDidTapClose()
-    func selectedLocation(_ coordinate: CLLocation, _ locationTitle: String)
+    func selectedLocation(_ placeRecord: PlaceRecord)
 }
 
 final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresentable>, PlaceSearcherInteractable, PlaceSearcherPresentableListener {
@@ -64,20 +64,20 @@ final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresenta
     
     func didChangeSearchText(_ text: String) {
         mapServiceUseCase.updateSearchText(text)
-            .sink(receiveValue: { [weak self] searchCompletion in
+            .sink(receiveValue: { [weak self] placeSearchResults in
                 guard let self else { return }
                 
-                self.presenter.updateSearchCompletion(searchCompletion)
+                self.presenter.updateSearchCompletion(placeSearchResults)
             })
             .store(in: &cancellables)
     }
     
     func didSelect(at index: Int) {
         mapServiceUseCase.selectedLocation(at: index)
-            .sink { [weak self] coordinate, locationTitle in
+            .sink { [weak self] placeRecord in
                 guard let self else { return }
                 
-                self.listener?.selectedLocation(coordinate, locationTitle)
+                self.listener?.selectedLocation(placeRecord)
             }
             .store(in: &cancellables)
     }

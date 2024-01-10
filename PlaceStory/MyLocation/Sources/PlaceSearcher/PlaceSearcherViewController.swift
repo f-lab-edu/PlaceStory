@@ -6,6 +6,7 @@
 //
 
 import CommonUI
+import Entities
 import MapKit
 import ModernRIBs
 import SnapKit
@@ -188,8 +189,8 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
     
     // MARK: - PlaceSearcherPresentable
     
-    func updateSearchCompletion(_ results: [MKLocalSearchCompletion]) {
-        searchPlaceResults = results
+    func updateSearchCompletion(_ placeSearchResults: PlaceSearchResult) {
+        searchPlaceResults = placeSearchResults.results
         searchTableView.reloadData()
     }
 }

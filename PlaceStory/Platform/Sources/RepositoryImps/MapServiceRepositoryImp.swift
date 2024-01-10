@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Entities
 import Foundation
 import MapKit
 import Repositories
@@ -14,8 +15,8 @@ import Utils
 public final class MapServiceRepositoryImp: NSObject {
     
     private var searchCompleter: MKLocalSearchCompleter
-    private var searchResultsSubject = CurrentValueSubject<[MKLocalSearchCompletion], Never>([])
-    private var localSearchSubject = PassthroughSubject<(CLLocation, String), Never>()
+    private var searchResultsSubject = CurrentValueSubject<PlaceSearchResult, Never>(PlaceSearchResult(results: []))
+    private var localSearchSubject = PassthroughSubject<PlaceRecord, Never>()
     
     public override init() {
         self.searchCompleter = MKLocalSearchCompleter()
@@ -33,13 +34,13 @@ public final class MapServiceRepositoryImp: NSObject {
 // MARK: - MapServiceRepository
 
 extension MapServiceRepositoryImp: MapServiceRepository {
-    public func searchPlace(from text: String) -> AnyPublisher<[MKLocalSearchCompletion], Never> {
+    public func searchPlace(from text: String) -> AnyPublisher<PlaceSearchResult, Never> {
         searchCompleter.queryFragment = text
         return searchResultsSubject.eraseToAnyPublisher()
     }
     
-    public func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<(CLLocation, String), Never> {
-        let result = searchResultsSubject.value[index]
+    public func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<PlaceRecord, Never> {
+        let result = searchResultsSubject.value.results[index]
         let searchReqeust = MKLocalSearch.Request(completion: result)
         let search = MKLocalSearch(request: searchReqeust)
         
@@ -55,10 +56,11 @@ extension MapServiceRepositoryImp: MapServiceRepository {
             
             let latitude = placeMark.coordinate.latitude
             let longitude = placeMark.coordinate.longitude
-            let coordinate = CLLocation(latitude: latitude, longitude: longitude)
             let locationTitle = result.title
             
-            localSearchSubject.send((coordinate, locationTitle))
+            let placeRecord = PlaceRecord(latitude: latitude, longitude: longitude, placeName: locationTitle, placeDescription: "", placeImages: [])
+            
+            localSearchSubject.send(placeRecord)
         }
         
         return localSearchSubject.eraseToAnyPublisher()
@@ -69,7 +71,11 @@ extension MapServiceRepositoryImp: MapServiceRepository {
 
 extension MapServiceRepositoryImp: MKLocalSearchCompleterDelegate {
     public func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        searchResultsSubject.send(completer.results)
+        let results = completer.results
+        Log.info("results = \(results)", "[\(#file)-\(#function) - \(#line)]")
+        let placeSearchResults = PlaceSearchResult(results: results)
+        Log.info("placeSearchResults.results = \(placeSearchResults.results)", "[\(#file)-\(#function) - \(#line)]")
+        searchResultsSubject.send(placeSearchResults)
     }
     
     public func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
