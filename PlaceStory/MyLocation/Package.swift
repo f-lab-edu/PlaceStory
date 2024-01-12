@@ -48,6 +48,7 @@ let package = Package(
                 .product(name: "Entities", package: "Domain"),
                 .product(name: "UseCase", package: "Domain"),
                 .product(name: "Repositories", package: "Domain"),
+                "PlaceSearcher"
             ]),
     ]
 )

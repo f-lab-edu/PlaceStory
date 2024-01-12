@@ -2,6 +2,7 @@ import Combine
 import CommonUI
 import CoreLocation
 import Entities
+import PlaceSearcher
 import Repositories
 import ModernRIBs
 import UseCase
@@ -190,5 +191,55 @@ final class MyLocationInteractorTests: XCTestCase {
         XCTAssertEqual(locationServiceRepositoryMock.publishCurrentLocationCallCount, 1)
         XCTAssertEqual(locationServiceUseCase.stopLocationTrackingCallCount, 1)
         XCTAssertEqual(locationServiceRepositoryMock.stopLocationUpdatesCallCount, 1)
+    }
+}
+
+final class MyLocationRouterTests: XCTestCase {
+    private var placeSearcherBuilder: PlaceSearcherBuildableMock!
+    private var myLocationInteractor: MyLocationInteractableMock!
+    private var myLocationRouter: MyLocationRouter!
+    
+    override func setUp() {
+        placeSearcherBuilder = PlaceSearcherBuildableMock()
+        myLocationInteractor = MyLocationInteractableMock()
+        myLocationRouter = MyLocationRouter(
+            interactor: myLocationInteractor,
+            viewController: MyLocationViewControllableMock(),
+            placeSearcherBuilder: placeSearcherBuilder
+        )
+    }
+    
+    func test_attachPlaceSearcher() {
+        // Given
+        let placeSearcherRouter = PlaceSearcherRoutingMock(interactable: PlaceSearcherInteractableMock(), viewControllable: PlaceSearcherViewControllableMock())
+        var assignedListener: PlaceSearcherListener? = nil
+        let buildHandler = { (_ listener: PlaceSearcherListener) -> (PlaceSearcherRouting) in
+            assignedListener = listener
+            return placeSearcherRouter
+          }
+        placeSearcherBuilder.buildHandler = buildHandler
+        
+        // When
+        myLocationRouter.attachPlaceSearcher()
+        
+        // Then
+        XCTAssertTrue(assignedListener === myLocationInteractor)
+        XCTAssertEqual(placeSearcherBuilder.buildCallCount, 1)
+        XCTAssertEqual(placeSearcherRouter.loadCallCount, 1)
+    }
+    
+    func test_detachPlaceSearch() {
+        // Given
+        let placeSearcherInteractable = PlaceSearcherInteractableMock()
+        let placeSearcherViewControllable = PlaceSearcherViewControllableMock()
+        let placeSearcherRouter = PlaceSearcherRoutingMock(interactable: placeSearcherInteractable, viewControllable: placeSearcherViewControllable)
+        myLocationRouter.placeSearcherRouter = placeSearcherRouter
+        
+        // When
+        myLocationRouter.detachPlaceSearcher()
+        
+        // Then
+        XCTAssertNil(myLocationRouter.placeSearcherRouter)
+        XCTAssertEqual(placeSearcherInteractable.deactivateCallCount, 1)
     }
 }

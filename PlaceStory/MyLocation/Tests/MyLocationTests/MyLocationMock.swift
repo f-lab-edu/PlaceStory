@@ -34,6 +34,8 @@ final class MyLocationBuildableMock: MyLocationBuildable {
     }
 }
 
+// MARK: - MyLocationInteractable Mock
+
 final class MyLocationInteractableMock: MyLocationInteractable {
     
     var router: MyLocationRouting? { didSet { routerSetCallCount += 1 } }
@@ -60,7 +62,7 @@ final class MyLocationInteractableMock: MyLocationInteractable {
     var placeSearcherDidTapCloseHandler: (() -> ())?
     var placeSearcherDidTapCloseCallCount = 0
     
-    var selectedLocation: ((_ placeRecord: PlaceRecord) -> ())?
+    var selectedLocationHandler: ((_ placeRecord: PlaceRecord) -> ())?
     var selectedLocationCallCount = 0
     
     init() {}
@@ -87,12 +89,14 @@ final class MyLocationInteractableMock: MyLocationInteractable {
     }
     
     func selectedLocation(_ placeRecord: PlaceRecord) {
-        placeSearcherDidTapCloseCallCount += 1
-        if let placeSearcherDidTapCloseHandler {
-            return placeSearcherDidTapCloseHandler()
+        selectedLocationCallCount += 1
+        if let selectedLocationHandler {
+            return selectedLocationHandler(placeRecord)
         }
     }
 }
+
+// MARK: - MyLocationRouting Mock
 
 final class MyLocationRoutingMock: MyLocationRouting {
     
@@ -157,6 +161,8 @@ final class MyLocationRoutingMock: MyLocationRouting {
     }
 }
 
+// MARK: - MyLocationViewControllable Mock
+
 final class MyLocationViewControllableMock: MyLocationViewControllable, MyLocationPresentable {
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
     var uiviewControllerSetCallCount = 0
@@ -198,14 +204,13 @@ final class MyLocationViewControllableMock: MyLocationViewControllable, MyLocati
     }
 }
 
+// MARK: - MyLocationListener Mock
 
 final class MyLocationListenerMock: MyLocationListener {
     
 }
 
-enum LocationError: Error {
-    case failed
-}
+// MARK: - LocationServiceUseCase Mock
 
 final class LocationServiceUseCaseMock: LocationServiceUseCase {
     var repository: LocationServiceRepository! { didSet { repositorySetCallCount += 1 } }
@@ -242,6 +247,7 @@ final class LocationServiceUseCaseMock: LocationServiceUseCase {
     }
 }
 
+// MARK: - LocationServiceRepository Mock
 final class LocationServiceRepositoryMock: LocationServiceRepository {
     
     var isLocationPermissionGrantedHandler: (() -> AnyPublisher<Bool, Never>)?
