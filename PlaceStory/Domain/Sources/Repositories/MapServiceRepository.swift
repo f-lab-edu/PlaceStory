@@ -10,6 +10,6 @@ import Entities
 import Foundation
 
 public protocol MapServiceRepository {
-    func searchPlace(from text: String) -> AnyPublisher<PlaceSearchResult, Never>
+    func searchPlace(from text: String) -> AnyPublisher<[PlaceSearchResult], Never>
     func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<PlaceRecord, Never>
 }

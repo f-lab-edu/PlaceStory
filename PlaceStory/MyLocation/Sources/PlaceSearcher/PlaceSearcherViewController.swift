@@ -7,7 +7,6 @@
 
 import CommonUI
 import Entities
-import MapKit
 import ModernRIBs
 import SnapKit
 import Utils
@@ -87,7 +86,7 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
     // MARK: - Property
     
     weak var listener: PlaceSearcherPresentableListener?
-    var searchPlaceResults: [MKLocalSearchCompletion] = []
+    var searchPlaceResults: [PlaceSearchResult] = []
     
     // MARK: - View Cycle
     
@@ -189,8 +188,8 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
     
     // MARK: - PlaceSearcherPresentable
     
-    func updateSearchCompletion(_ placeSearchResults: PlaceSearchResult) {
-        searchPlaceResults = placeSearchResults.results
+    func updateSearchCompletion(_ placeSearchResults: [PlaceSearchResult]) {
+        searchPlaceResults = placeSearchResults
         searchTableView.reloadData()
     }
 }

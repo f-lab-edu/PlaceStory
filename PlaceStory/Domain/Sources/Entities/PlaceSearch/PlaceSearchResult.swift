@@ -8,12 +8,21 @@
 import Foundation
 import MapKit
 
-public struct PlaceSearchResult {
-    public let results: [MKLocalSearchCompletion]
+public class PlaceSearchResult: NSObject {
+    public let title: String
+    public let titleHighlightRanges: [NSValue]
+    public let subtitle: String
+    public let subtitleHighlightRanges: [NSValue]
     
     public init(
-        results: [MKLocalSearchCompletion]
+        title: String,
+        titleHighlightRanges: [NSValue],
+        subtitle: String,
+        subtitleHighlightRanges: [NSValue]
     ) {
-        self.results = results
+        self.title = title
+        self.titleHighlightRanges = titleHighlightRanges
+        self.subtitle = subtitle
+        self.subtitleHighlightRanges = subtitleHighlightRanges
     }
 }

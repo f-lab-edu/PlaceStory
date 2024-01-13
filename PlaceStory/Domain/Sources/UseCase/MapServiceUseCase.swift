@@ -11,7 +11,7 @@ import Foundation
 import Repositories
 
 public protocol MapServiceUseCase {
-    func updateSearchText(_ text: String) -> AnyPublisher<PlaceSearchResult, Never>
+    func updateSearchText(_ text: String) -> AnyPublisher<[PlaceSearchResult], Never>
     func selectedLocation(at index: Int) -> AnyPublisher<PlaceRecord, Never>
 }
 
@@ -25,7 +25,7 @@ public final class MapServiceUseCaseImp: MapServiceUseCase {
         self.mapServiceRepository = mapServiceRepository
     }
     
-    public func updateSearchText(_ text: String) -> AnyPublisher<PlaceSearchResult, Never> {
+    public func updateSearchText(_ text: String) -> AnyPublisher<[PlaceSearchResult], Never> {
         mapServiceRepository.searchPlace(from: text)
     }
     

@@ -18,7 +18,7 @@ public protocol PlaceSearcherRouting: ViewableRouting {
 protocol PlaceSearcherPresentable: Presentable {
     var listener: PlaceSearcherPresentableListener? { get set }
     
-    func updateSearchCompletion(_ results: PlaceSearchResult)
+    func updateSearchCompletion(_ results: [PlaceSearchResult])
 }
 
 public protocol PlaceSearcherListener: AnyObject {
