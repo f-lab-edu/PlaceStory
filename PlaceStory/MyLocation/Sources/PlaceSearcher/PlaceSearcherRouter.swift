@@ -7,7 +7,7 @@
 
 import ModernRIBs
 
-protocol PlaceSearcherInteractable: Interactable {
+public protocol PlaceSearcherInteractable: Interactable {
     var router: PlaceSearcherRouting? { get set }
     var listener: PlaceSearcherListener? { get set }
 }

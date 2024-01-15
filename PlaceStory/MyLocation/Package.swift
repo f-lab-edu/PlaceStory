@@ -42,6 +42,13 @@ let package = Package(
         ),
         .testTarget(
             name: "MyLocationTests",
-            dependencies: ["MyLocation"]),
+            dependencies: [
+                "MyLocation",
+                .product(name: "CommonUI", package: "ProxyPackage"),
+                .product(name: "Entities", package: "Domain"),
+                .product(name: "UseCase", package: "Domain"),
+                .product(name: "Repositories", package: "Domain"),
+                "PlaceSearcher"
+            ]),
     ]
 )
