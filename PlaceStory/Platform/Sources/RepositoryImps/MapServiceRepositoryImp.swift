@@ -1,11 +1,12 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by 최제환 on 1/9/24.
 //
 
 import Combine
+import Entities
 import Foundation
 import MapKit
 import Repositories
@@ -14,8 +15,9 @@ import Utils
 public final class MapServiceRepositoryImp: NSObject {
     
     private var searchCompleter: MKLocalSearchCompleter
-    private var searchResultsSubject = CurrentValueSubject<[MKLocalSearchCompletion], Never>([])
-    private var localSearchSubject = PassthroughSubject<(CLLocation, String), Never>()
+    private var searchResultsSubject = CurrentValueSubject<[PlaceSearchResult], Never>([])
+    private var searchResults = [MKLocalSearchCompletion]()
+    private var localSearchSubject = PassthroughSubject<PlaceRecord, Never>()
     
     public override init() {
         self.searchCompleter = MKLocalSearchCompleter()
@@ -23,24 +25,30 @@ public final class MapServiceRepositoryImp: NSObject {
         
         configureSearchCompleter()
     }
-
+    
     private func configureSearchCompleter() {
         searchCompleter.delegate = self
         searchCompleter.resultTypes = .pointOfInterest
     }
-}
-
-// MARK: - MapServiceRepository
-
-extension MapServiceRepositoryImp: MapServiceRepository {
-    public func searchPlace(from text: String) -> AnyPublisher<[MKLocalSearchCompletion], Never> {
-        searchCompleter.queryFragment = text
-        return searchResultsSubject.eraseToAnyPublisher()
+    
+    private func setSearchResultsData(with searchCompletions: [MKLocalSearchCompletion]) {
+        var placeSearchResults = [PlaceSearchResult]()
+        for searchCompletion in searchCompletions {
+            let placeSearchResult = PlaceSearchResult(
+                title: searchCompletion.title,
+                titleHighlightRanges: searchCompletion.titleHighlightRanges,
+                subtitle: searchCompletion.subtitle,
+                subtitleHighlightRanges: searchCompletion.subtitleHighlightRanges
+            )
+            placeSearchResults.append(placeSearchResult)
+        }
+        searchResultsSubject.send(placeSearchResults)
+        
+        searchResults = searchCompletions
     }
     
-    public func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<(CLLocation, String), Never> {
-        let result = searchResultsSubject.value[index]
-        let searchReqeust = MKLocalSearch.Request(completion: result)
+    private func performLocalSearch(with completion: MKLocalSearchCompletion) -> AnyPublisher<PlaceRecord, Never> {
+        let searchReqeust = MKLocalSearch.Request(completion: completion)
         let search = MKLocalSearch(request: searchReqeust)
         
         search.start { [weak self] response, error in
@@ -55,13 +63,29 @@ extension MapServiceRepositoryImp: MapServiceRepository {
             
             let latitude = placeMark.coordinate.latitude
             let longitude = placeMark.coordinate.longitude
-            let coordinate = CLLocation(latitude: latitude, longitude: longitude)
-            let locationTitle = result.title
+            let locationTitle = completion.title
             
-            localSearchSubject.send((coordinate, locationTitle))
+            let placeRecord = PlaceRecord(latitude: latitude, longitude: longitude, placeName: locationTitle, placeDescription: "", placeImages: [])
+            
+            localSearchSubject.send(placeRecord)
         }
         
         return localSearchSubject.eraseToAnyPublisher()
+    }
+}
+
+// MARK: - MapServiceRepository
+
+extension MapServiceRepositoryImp: MapServiceRepository {
+    public func searchPlace(from text: String) -> AnyPublisher<[PlaceSearchResult], Never> {
+        searchCompleter.queryFragment = text
+        return searchResultsSubject.eraseToAnyPublisher()
+    }
+    
+    public func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<PlaceRecord, Never> {
+        let result = searchResults[index]
+        
+        return performLocalSearch(with: result)
     }
 }
 
@@ -69,7 +93,10 @@ extension MapServiceRepositoryImp: MapServiceRepository {
 
 extension MapServiceRepositoryImp: MKLocalSearchCompleterDelegate {
     public func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        searchResultsSubject.send(completer.results)
+        let results = completer.results
+        Log.info("results = \(results)", "[\(#file)-\(#function) - \(#line)]")
+        
+        setSearchResultsData(with: results)
     }
     
     public func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {

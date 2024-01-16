@@ -8,6 +8,7 @@
 import CoreLocation
 import Combine
 import CommonUI
+import Entities
 import ModernRIBs
 import UseCase
 import Utils
@@ -130,8 +131,9 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
         router?.detachPlaceSearcher()
     }
     
-    func selectedLocation(_ coordinate: CLLocation, _ locationTitle: String) {
-        presenter.movedLocation(to: coordinate, locationTitle)
+    func selectedLocation(_ placeRecord: PlaceRecord) {
+        let cLLocation = CLLocation(latitude: placeRecord.latitude, longitude: placeRecord.longitude)
+        presenter.movedLocation(to: cLLocation, placeRecord.placeName)
         router?.detachPlaceSearcher()
     }
 }

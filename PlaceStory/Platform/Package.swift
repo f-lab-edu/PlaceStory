@@ -50,7 +50,8 @@ let package = Package(
                 "LocalStorage",
                 .product(name: "Utils", package: "ProxyPackage"),
                 "Model",
-                "SecurityServices"
+                "SecurityServices",
+                .product(name: "Entities", package: "Domain")
             ]
         ),
         .target(

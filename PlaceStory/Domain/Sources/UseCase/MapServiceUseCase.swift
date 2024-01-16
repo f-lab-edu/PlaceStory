@@ -6,13 +6,13 @@
 //
 
 import Combine
+import Entities
 import Foundation
-import MapKit
 import Repositories
 
 public protocol MapServiceUseCase {
-    func updateSearchText(_ text: String) -> AnyPublisher<[MKLocalSearchCompletion], Never>
-    func selectedLocation(at index: Int) -> AnyPublisher<(CLLocation, String), Never>
+    func updateSearchText(_ text: String) -> AnyPublisher<[PlaceSearchResult], Never>
+    func selectedLocation(at index: Int) -> AnyPublisher<PlaceRecord, Never>
 }
 
 public final class MapServiceUseCaseImp: MapServiceUseCase {
@@ -25,11 +25,11 @@ public final class MapServiceUseCaseImp: MapServiceUseCase {
         self.mapServiceRepository = mapServiceRepository
     }
     
-    public func updateSearchText(_ text: String) -> AnyPublisher<[MKLocalSearchCompletion], Never> {
+    public func updateSearchText(_ text: String) -> AnyPublisher<[PlaceSearchResult], Never> {
         mapServiceRepository.searchPlace(from: text)
     }
     
-    public func selectedLocation(at index: Int) -> AnyPublisher<(CLLocation, String), Never> {
+    public func selectedLocation(at index: Int) -> AnyPublisher<PlaceRecord, Never> {
         mapServiceRepository.startSearchWithLocalSearchCompletion(at: index)
     }
 }
