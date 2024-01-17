@@ -21,13 +21,13 @@ protocol MyLocationViewControllable: ViewControllable {
 
 final class MyLocationRouter: ViewableRouter<MyLocationInteractable, MyLocationViewControllable>, MyLocationRouting {
 
-    private let placeSearcherBuilder: PlaceSearcherBuilder
-    private var placeSearcherRouter: PlaceSearcherRouting?
+    private let placeSearcherBuilder: PlaceSearcherBuildable
+    var placeSearcherRouter: PlaceSearcherRouting?
     
     init(
         interactor: MyLocationInteractable, 
         viewController: MyLocationViewControllable,
-        placeSearcherBuilder: PlaceSearcherBuilder
+        placeSearcherBuilder: PlaceSearcherBuildable
     ) {
         self.placeSearcherBuilder = placeSearcherBuilder
         
@@ -52,6 +52,7 @@ final class MyLocationRouter: ViewableRouter<MyLocationInteractable, MyLocationV
     func detachPlaceSearcher() {
         guard let router = placeSearcherRouter else { return }
         
+        router.viewControllable.uiviewController.dismiss(animated: true)
         detachChild(router)
         placeSearcherRouter = nil
     }

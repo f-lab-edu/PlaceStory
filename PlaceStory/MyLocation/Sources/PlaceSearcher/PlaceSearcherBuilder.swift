@@ -6,15 +6,15 @@
 //
 
 import ModernRIBs
+import UseCase
 
 public protocol PlaceSearcherDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var mapServiceUseCase: MapServiceUseCase { get }
 }
 
 final class PlaceSearcherComponent: Component<PlaceSearcherDependency> {
 
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+    var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
 }
 
 // MARK: - Builder
@@ -32,7 +32,10 @@ public final class PlaceSearcherBuilder: Builder<PlaceSearcherDependency>, Place
     public func build(withListener listener: PlaceSearcherListener) -> PlaceSearcherRouting {
         let component = PlaceSearcherComponent(dependency: dependency)
         let viewController = PlaceSearcherViewController()
-        let interactor = PlaceSearcherInteractor(presenter: viewController)
+        let interactor = PlaceSearcherInteractor(
+            presenter: viewController,
+            mapServiceUseCase: dependency.mapServiceUseCase
+        )
         interactor.listener = listener
         return PlaceSearcherRouter(interactor: interactor, viewController: viewController)
     }

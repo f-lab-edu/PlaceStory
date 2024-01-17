@@ -8,6 +8,7 @@
 import CoreLocation
 import Combine
 import CommonUI
+import Entities
 import ModernRIBs
 import UseCase
 import Utils
@@ -23,6 +24,7 @@ protocol MyLocationPresentable: Presentable {
     func showRequestLocationAlert()
     func showFailedLocationAlert(_ error: Error)
     func updateCurrentLocation(with location: CLLocation)
+    func movedLocation(to cLLocation: CLLocation, _ locationTitle: String)
 }
 
 public protocol MyLocationListener: AnyObject {
@@ -121,6 +123,17 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     }
     
     func presentationControllerDidDismiss() {
+        router?.detachPlaceSearcher()
+    }
+    
+    // MARK: - MyLocationInteractor
+    func placeSearcherDidTapClose() {
+        router?.detachPlaceSearcher()
+    }
+    
+    func selectedLocation(_ placeRecord: PlaceRecord) {
+        let cLLocation = CLLocation(latitude: placeRecord.latitude, longitude: placeRecord.longitude)
+        presenter.movedLocation(to: cLLocation, placeRecord.placeName)
         router?.detachPlaceSearcher()
     }
 }

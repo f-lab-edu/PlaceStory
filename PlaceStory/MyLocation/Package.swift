@@ -35,11 +35,20 @@ let package = Package(
             name: "PlaceSearcher",
             dependencies: [
                 "ProxyPackage",
-                .product(name: "CommonUI", package: "ProxyPackage")
+                .product(name: "CommonUI", package: "ProxyPackage"),
+                .product(name: "Utils", package: "ProxyPackage"),
+                .product(name: "UseCase", package: "Domain")
             ]
         ),
         .testTarget(
             name: "MyLocationTests",
-            dependencies: ["MyLocation"]),
+            dependencies: [
+                "MyLocation",
+                .product(name: "CommonUI", package: "ProxyPackage"),
+                .product(name: "Entities", package: "Domain"),
+                .product(name: "UseCase", package: "Domain"),
+                .product(name: "Repositories", package: "Domain"),
+                "PlaceSearcher"
+            ]),
     ]
 )
