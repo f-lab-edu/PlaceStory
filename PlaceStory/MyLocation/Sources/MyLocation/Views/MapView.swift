@@ -14,6 +14,7 @@ final class MapView: UIView {
     
     lazy var mapView: MKMapView = {
         let mapView = MKMapView()
+        mapView.register(PlaceAnnotationView.self, forAnnotationViewWithReuseIdentifier: PlaceAnnotationView.identifier)
         
         return mapView
     }()

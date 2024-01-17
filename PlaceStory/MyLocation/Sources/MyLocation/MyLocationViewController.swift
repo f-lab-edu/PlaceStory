@@ -26,6 +26,8 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         mapView.myLocationButton.addTarget(self, action: #selector(didTappedMyLocationButton), for: .touchUpInside)
         mapView.placeSearchButton.addTarget(self, action: #selector(didTappedPlaceSearchButton), for: .touchUpInside)
         
+        mapView.mapView.delegate = self
+        
         return mapView
     }()
     
@@ -73,6 +75,46 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         listener?.didTappedPlaceSearchButton()
     }
     
+    private func isDuplicateAnnotation(_ annotation: [MKAnnotation], _ currentLocation: CLLocationCoordinate2D) -> Bool {
+        return annotation.contains { existingAnnotation in
+            existingAnnotation.coordinate.latitude == currentLocation.latitude &&
+            existingAnnotation.coordinate.longitude == currentLocation.longitude
+        }
+    }
+    
+    private func addAnotation(_ location: CLLocationCoordinate2D, _ locationTitle: String) {
+        let annotations = myPlaceMapView.mapView.annotations
+        
+        guard !isDuplicateAnnotation(annotations, location) else { return }
+        
+        let placeAnnotation = PlaceAnnotation(
+            title: locationTitle,
+            coordinate: location
+        )
+        placeAnnotation.imageName = "pins"
+        
+        self.myPlaceMapView.mapView.addAnnotation(placeAnnotation)
+    }
+    
+    private func configureAnnotationView(for annotation: PlaceAnnotation, on mapView: MKMapView) -> MKAnnotationView {
+        return mapView.dequeueReusableAnnotationView(withIdentifier: PlaceAnnotationView.identifier, for: annotation)
+    }
+    
+    private func animateAnnotationView(_ annotationView: MKAnnotationView) {
+        let endFrame = annotationView.frame
+        annotationView.frame = endFrame.offsetBy(dx: 0, dy: -500)
+        
+        UIView.animate(
+            withDuration: 1.5,
+            delay: 0.1,
+            usingSpringWithDamping: 0.5,
+            initialSpringVelocity: 1,
+            options: .curveEaseInOut,
+            animations: {
+            annotationView.frame = endFrame
+        }, completion: nil)
+    }
+    
     // MARK: - MyLocationPresentable
     
     func showRequestLocationAlert() {
@@ -109,16 +151,41 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
     
     func movedLocation(to cLLocation: CLLocation, _ locationTitle: String) {
         let location = CLLocationCoordinate2D(latitude: cLLocation.coordinate.latitude, longitude: cLLocation.coordinate.longitude)
-        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        let region = MKCoordinateRegion(center: location, span: span)
+        let region = MKCoordinateRegion(center: location, latitudinalMeters: 500, longitudinalMeters: 500)
         
         myPlaceMapView.mapView.setRegion(region, animated: true)
         
-        let annotation = MKPointAnnotation()
+        addAnotation(location, locationTitle)
+    }
+}
+
+extension MyLocationViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard !annotation.isKind(of: MKUserLocation.self) else { return nil }
         
-        annotation.coordinate = location
-        annotation.title = locationTitle
+        var annotationView: MKAnnotationView?
         
-        myPlaceMapView.mapView.addAnnotation(annotation)
+        if let placeAnnotation = annotation as? PlaceAnnotation {
+            annotationView = configureAnnotationView(for: placeAnnotation, on: mapView)
+        }
+        
+        return annotationView
+    }
+    
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        for view in views {
+            guard let annotationView = view as? PlaceAnnotationView else { continue }
+            
+            animateAnnotationView(annotationView)
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let placeAnnotation = view.annotation as? PlaceAnnotation {
+            let clLocation = CLLocation(latitude: placeAnnotation.coordinate.latitude, longitude: placeAnnotation.coordinate.longitude)
+            
+            movedLocation(to: clLocation, placeAnnotation.title ?? "")
+        }
     }
 }
