@@ -13,7 +13,23 @@ final class SearchTableViewCell: UITableViewCell {
     
     // MARK: - UI Components
     
+    lazy var stackView: UIStackView = {
+        let uiStackView = UIStackView(arrangedSubviews: [placeLabel, addressLabel])
+        uiStackView.axis = .vertical
+        uiStackView.distribution = .fillEqually
+        
+        return uiStackView
+    }()
+    
     let placeLabel: UILabel = {
+        let uiLabel = UILabel()
+        uiLabel.font = .systemFont(ofSize: 14, weight: .semibold)
+        uiLabel.textColor = .darkGray
+        
+        return uiLabel
+    }()
+    
+    let addressLabel: UILabel = {
         let uiLabel = UILabel()
         uiLabel.font = .systemFont(ofSize: 14, weight: .semibold)
         uiLabel.textColor = .lightGray
@@ -40,20 +56,22 @@ final class SearchTableViewCell: UITableViewCell {
     // MARK: - Custom Method
     
     private func configureUI() {
-        addSubview(placeLabel)
+        addSubview(stackView)
         
-        configurePlaceLabelAutoLayout()
+        configureStackViewAutoLayout()
     }
     
-    private func configurePlaceLabelAutoLayout() {
-        placeLabel.snp.makeConstraints {
-            $0.leading.equalTo(contentView.snp.leading).offset(16)
-            $0.top.bottom.equalToSuperview()
+    private func configureStackViewAutoLayout() {
+        stackView.snp.makeConstraints {
+            $0.top.leading.bottom.trailing.equalToSuperview().inset(8)
         }
     }
 
-    func configureUI(_ place: String) {
-        Log.info("place = \(place)", "[\(#file)-\(#function) - \(#line)]")
+    func configureUI(
+        _ place: String,
+        _ address: String
+    ) {
         placeLabel.text = place
+        addressLabel.text = address
     }
 }
