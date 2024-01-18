@@ -174,7 +174,7 @@ final class PlaceSearcherViewController: UIViewController, PlaceSearcherPresenta
         }
         
         cell.selectionStyle = .none
-        cell.configureUI(searchPlaceResults[indexPath.row].title)
+        cell.configureUI(searchPlaceResults[indexPath.row].title, searchPlaceResults[indexPath.row].subtitle)
         
         return cell
     }

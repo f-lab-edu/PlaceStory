@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import MapKit
 
 public class PlaceSearchResult: NSObject {
     public let title: String
