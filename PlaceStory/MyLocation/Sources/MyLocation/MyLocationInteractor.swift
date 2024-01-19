@@ -25,6 +25,7 @@ protocol MyLocationPresentable: Presentable {
     func showFailedLocationAlert(_ error: Error)
     func updateCurrentLocation(with location: CLLocation)
     func movedLocation(to cLLocation: CLLocation, _ locationTitle: String)
+    func addAnotation(_ location: (Double, Double), _ locationTitle: String)
 }
 
 public protocol MyLocationListener: AnyObject {
@@ -124,6 +125,17 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     
     func presentationControllerDidDismiss() {
         router?.detachPlaceSearcher()
+    }
+    
+    func isDuplicateAnnotation(_ exsitingAnnotations: [PlaceAnnotation], _ currentLocation: (latitude: Double, longitude: Double), locationTitle: String) {
+        let isDuplicateAnnotation = exsitingAnnotations.contains { existingAnnotation in
+            existingAnnotation.coordinate.latitude == currentLocation.latitude &&
+            existingAnnotation.coordinate.longitude == currentLocation.longitude
+        }
+        
+        if !isDuplicateAnnotation {
+            presenter.addAnotation(currentLocation, locationTitle)
+        }
     }
     
     // MARK: - MyLocationInteractor
