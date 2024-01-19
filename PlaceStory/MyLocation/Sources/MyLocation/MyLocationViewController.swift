@@ -15,6 +15,7 @@ protocol MyLocationPresentableListener: AnyObject {
     func checkPermissionLocation()
     func didTappedMyLocationButton()
     func didTappedPlaceSearchButton()
+    func isDuplicateAnnotation(_ exsitingAnnotations: [PlaceAnnotation], _ currentLocation: (latitude: Double, longitude: Double), locationTitle: String)
 }
 
 final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable {
@@ -75,31 +76,6 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         listener?.didTappedPlaceSearchButton()
     }
     
-    private func isDuplicateAnnotation(_ annotation: [MKAnnotation], _ currentLocation: CLLocationCoordinate2D) -> Bool {
-        return annotation.contains { existingAnnotation in
-            existingAnnotation.coordinate.latitude == currentLocation.latitude &&
-            existingAnnotation.coordinate.longitude == currentLocation.longitude
-        }
-    }
-    
-    private func addAnotation(_ location: CLLocationCoordinate2D, _ locationTitle: String) {
-        let annotations = myPlaceMapView.mapView.annotations
-        
-        guard !isDuplicateAnnotation(annotations, location) else { return }
-        
-        let placeAnnotation = PlaceAnnotation(
-            title: locationTitle,
-            coordinate: location
-        )
-        placeAnnotation.imageName = "pins"
-        
-        self.myPlaceMapView.mapView.addAnnotation(placeAnnotation)
-    }
-    
-    private func configureAnnotationView(for annotation: PlaceAnnotation, on mapView: MKMapView) -> MKAnnotationView {
-        return mapView.dequeueReusableAnnotationView(withIdentifier: PlaceAnnotationView.identifier, for: annotation)
-    }
-    
     private func animateAnnotationView(_ annotationView: MKAnnotationView) {
         let endFrame = annotationView.frame
         annotationView.frame = endFrame.offsetBy(dx: 0, dy: -500)
@@ -155,7 +131,20 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         
         myPlaceMapView.mapView.setRegion(region, animated: true)
         
-        addAnotation(location, locationTitle)
+        let placeAnnotations = myPlaceMapView.mapView.annotations.map { PlaceAnnotation(title: $0.title! ?? "", coordinate: $0.coordinate)}
+        listener?.isDuplicateAnnotation(placeAnnotations, (location.latitude, location.longitude), locationTitle: locationTitle)
+    }
+    
+    func addAnotation(_ location: (Double, Double), _ locationTitle: String) {
+        let coordinate = CLLocationCoordinate2D(latitude: location.0, longitude: location.1)
+        
+        let placeAnnotation = PlaceAnnotation(
+            title: locationTitle,
+            coordinate: coordinate
+        )
+        placeAnnotation.imageName = "pins"
+        
+        self.myPlaceMapView.mapView.addAnnotation(placeAnnotation)
     }
 }
 
@@ -167,7 +156,7 @@ extension MyLocationViewController: MKMapViewDelegate {
         var annotationView: MKAnnotationView?
         
         if let placeAnnotation = annotation as? PlaceAnnotation {
-            annotationView = configureAnnotationView(for: placeAnnotation, on: mapView)
+            annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: PlaceAnnotationView.identifier, for: placeAnnotation)
         }
         
         return annotationView
