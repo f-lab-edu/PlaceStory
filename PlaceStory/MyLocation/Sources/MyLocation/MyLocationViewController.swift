@@ -6,28 +6,25 @@
 //
 
 import CommonUI
-import MapKit
+import Entities
 import ModernRIBs
 import SnapKit
 import UIKit
 
 protocol MyLocationPresentableListener: AnyObject {
     func checkPermissionLocation()
-    func didTappedMyLocationButton()
-    func didTappedPlaceSearchButton()
-    func isDuplicateAnnotation(_ exsitingAnnotations: [PlaceAnnotation], _ currentLocation: (latitude: Double, longitude: Double), locationTitle: String)
+    func didTapMyLocationButton()
+    func didTapPlaceSearchButton()
 }
 
-final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable {
+final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable, AppleMapViewButtonDelegate {
 
     weak var listener: MyLocationPresentableListener?
     
-    lazy var myPlaceMapView: MapView = {
-        let mapView = MapView()
-        mapView.myLocationButton.addTarget(self, action: #selector(didTappedMyLocationButton), for: .touchUpInside)
-        mapView.placeSearchButton.addTarget(self, action: #selector(didTappedPlaceSearchButton), for: .touchUpInside)
-        
-        mapView.mapView.delegate = self
+    lazy var placeMapView: MapView = {
+        let mapViewFactory = MapViewFactoryImp()
+        let mapView = mapViewFactory.makeMapView(of: .apple)
+        mapView.setDelegate(self)
         
         return mapView
     }()
@@ -48,10 +45,10 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         view.backgroundColor = .systemBackground
         title = "장소 검색"
         
-        view.addSubview(myPlaceMapView)
+        view.addSubview(placeMapView)
         
         configureTabbarItem()
-        configureMyPlaceMapViewConstraint()
+        configurePlaceMapViewConstraint()
     }
     
     private func configureTabbarItem() {
@@ -60,35 +57,10 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         tabBarItem = UITabBarItem(title: "장소 검색", image: defaultImage, selectedImage: selectedImage)
     }
     
-    private func configureMyPlaceMapViewConstraint() {
-        myPlaceMapView.snp.makeConstraints { make in
+    private func configurePlaceMapViewConstraint() {
+        placeMapView.snp.makeConstraints { make in
             make.top.leading.trailing.bottom.equalToSuperview()
         }
-    }
-    
-    @objc
-    private func didTappedMyLocationButton() {
-        listener?.didTappedMyLocationButton()
-    }
-    
-    @objc
-    private func didTappedPlaceSearchButton() {
-        listener?.didTappedPlaceSearchButton()
-    }
-    
-    private func animateAnnotationView(_ annotationView: MKAnnotationView) {
-        let endFrame = annotationView.frame
-        annotationView.frame = endFrame.offsetBy(dx: 0, dy: -500)
-        
-        UIView.animate(
-            withDuration: 1.5,
-            delay: 0.1,
-            usingSpringWithDamping: 0.5,
-            initialSpringVelocity: 1,
-            options: .curveEaseInOut,
-            animations: {
-            annotationView.frame = endFrame
-        }, completion: nil)
     }
     
     // MARK: - MyLocationPresentable
@@ -120,61 +92,21 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         )
     }
     
-    func updateCurrentLocation(with location: CLLocation) {
-        myPlaceMapView.mapView.showsUserLocation = true
-        myPlaceMapView.mapView.setUserTrackingMode(.follow, animated: true)
+    func updateCurrentLocation() {
+        placeMapView.updateCurrentLocation()
     }
     
-    func movedLocation(to cLLocation: CLLocation, _ locationTitle: String) {
-        let location = CLLocationCoordinate2D(latitude: cLLocation.coordinate.latitude, longitude: cLLocation.coordinate.longitude)
-        let region = MKCoordinateRegion(center: location, latitudinalMeters: 500, longitudinalMeters: 500)
-        
-        myPlaceMapView.mapView.setRegion(region, animated: true)
-        
-        let placeAnnotations = myPlaceMapView.mapView.annotations.map { PlaceAnnotation(title: $0.title! ?? "", coordinate: $0.coordinate)}
-        listener?.isDuplicateAnnotation(placeAnnotations, (location.latitude, location.longitude), locationTitle: locationTitle)
+    func updateSelectedLocation(from placeRecord: PlaceRecord) {
+        placeMapView.updateSelectedLocation(from: placeRecord)
     }
     
-    func addAnotation(_ location: (Double, Double), _ locationTitle: String) {
-        let coordinate = CLLocationCoordinate2D(latitude: location.0, longitude: location.1)
-        
-        let placeAnnotation = PlaceAnnotation(
-            title: locationTitle,
-            coordinate: coordinate
-        )
-        placeAnnotation.imageName = "pins"
-        
-        self.myPlaceMapView.mapView.addAnnotation(placeAnnotation)
-    }
-}
-
-extension MyLocationViewController: MKMapViewDelegate {
+    // MARK: - AppleMapViewButtonDelegate
     
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard !annotation.isKind(of: MKUserLocation.self) else { return nil }
-        
-        var annotationView: MKAnnotationView?
-        
-        if let placeAnnotation = annotation as? PlaceAnnotation {
-            annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: PlaceAnnotationView.identifier, for: placeAnnotation)
-        }
-        
-        return annotationView
+    func didTapMyLocation() {
+        listener?.didTapMyLocationButton()
     }
     
-    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        for view in views {
-            guard let annotationView = view as? PlaceAnnotationView else { continue }
-            
-            animateAnnotationView(annotationView)
-        }
-    }
-    
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        if let placeAnnotation = view.annotation as? PlaceAnnotation {
-            let clLocation = CLLocation(latitude: placeAnnotation.coordinate.latitude, longitude: placeAnnotation.coordinate.longitude)
-            
-            movedLocation(to: clLocation, placeAnnotation.title ?? "")
-        }
+    func didTapPlaceSearch() {
+        listener?.didTapPlaceSearchButton()
     }
 }
