@@ -6,25 +6,25 @@
 //
 
 import CommonUI
-import MapKit
+import Entities
 import ModernRIBs
 import SnapKit
 import UIKit
 
 protocol MyLocationPresentableListener: AnyObject {
     func checkPermissionLocation()
-    func didTappedMyLocationButton()
-    func didTappedPlaceSearchButton()
+    func didTapMyLocationButton()
+    func didTapPlaceSearchButton()
 }
 
-final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable {
+final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable, AppleMapViewButtonDelegate {
 
     weak var listener: MyLocationPresentableListener?
     
-    lazy var myPlaceMapView: MapView = {
-        let mapView = MapView()
-        mapView.myLocationButton.addTarget(self, action: #selector(didTappedMyLocationButton), for: .touchUpInside)
-        mapView.placeSearchButton.addTarget(self, action: #selector(didTappedPlaceSearchButton), for: .touchUpInside)
+    lazy var placeMapView: MapView = {
+        let mapViewFactory = MapViewFactoryImp()
+        let mapView = mapViewFactory.makeMapView(of: .apple)
+        mapView.setDelegate(self)
         
         return mapView
     }()
@@ -45,10 +45,10 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         view.backgroundColor = .systemBackground
         title = "장소 검색"
         
-        view.addSubview(myPlaceMapView)
+        view.addSubview(placeMapView)
         
         configureTabbarItem()
-        configureMyPlaceMapViewConstraint()
+        configurePlaceMapViewConstraint()
     }
     
     private func configureTabbarItem() {
@@ -57,20 +57,10 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         tabBarItem = UITabBarItem(title: "장소 검색", image: defaultImage, selectedImage: selectedImage)
     }
     
-    private func configureMyPlaceMapViewConstraint() {
-        myPlaceMapView.snp.makeConstraints { make in
+    private func configurePlaceMapViewConstraint() {
+        placeMapView.snp.makeConstraints { make in
             make.top.leading.trailing.bottom.equalToSuperview()
         }
-    }
-    
-    @objc
-    private func didTappedMyLocationButton() {
-        listener?.didTappedMyLocationButton()
-    }
-    
-    @objc
-    private func didTappedPlaceSearchButton() {
-        listener?.didTappedPlaceSearchButton()
     }
     
     // MARK: - MyLocationPresentable
@@ -102,23 +92,21 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         )
     }
     
-    func updateCurrentLocation(with location: CLLocation) {
-        myPlaceMapView.mapView.showsUserLocation = true
-        myPlaceMapView.mapView.setUserTrackingMode(.follow, animated: true)
+    func updateCurrentLocation() {
+        placeMapView.updateCurrentLocation()
     }
     
-    func movedLocation(to cLLocation: CLLocation, _ locationTitle: String) {
-        let location = CLLocationCoordinate2D(latitude: cLLocation.coordinate.latitude, longitude: cLLocation.coordinate.longitude)
-        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        let region = MKCoordinateRegion(center: location, span: span)
-        
-        myPlaceMapView.mapView.setRegion(region, animated: true)
-        
-        let annotation = MKPointAnnotation()
-        
-        annotation.coordinate = location
-        annotation.title = locationTitle
-        
-        myPlaceMapView.mapView.addAnnotation(annotation)
+    func updateSelectedLocation(from placeRecord: PlaceRecord) {
+        placeMapView.updateSelectedLocation(from: placeRecord)
+    }
+    
+    // MARK: - AppleMapViewButtonDelegate
+    
+    func didTapMyLocation() {
+        listener?.didTapMyLocationButton()
+    }
+    
+    func didTapPlaceSearch() {
+        listener?.didTapPlaceSearchButton()
     }
 }

@@ -5,7 +5,6 @@
 //  Created by 최제환 on 12/18/23.
 //
 
-import CoreLocation
 import Combine
 import CommonUI
 import Entities
@@ -23,8 +22,8 @@ protocol MyLocationPresentable: Presentable {
     
     func showRequestLocationAlert()
     func showFailedLocationAlert(_ error: Error)
-    func updateCurrentLocation(with location: CLLocation)
-    func movedLocation(to cLLocation: CLLocation, _ locationTitle: String)
+    func updateCurrentLocation()
+    func updateSelectedLocation(from placeRecord: PlaceRecord)
 }
 
 public protocol MyLocationListener: AnyObject {
@@ -37,15 +36,18 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     weak var listener: MyLocationListener?
 
     private let locationServiceUseCase: LocationServiceUseCase
+    private let mapServiceUseCase: MapServiceUseCase
     
     private var cancellables: Set<AnyCancellable>
     var modalAdaptivePresentationControllerDelegateProxy: ModalAdaptivePresentationControllerDelegateProxy
     
     init(
         presenter: MyLocationPresentable,
-        locationServiceUseCase: LocationServiceUseCase
+        locationServiceUseCase: LocationServiceUseCase,
+        mapServiceUseCase: MapServiceUseCase
     ) {
         self.locationServiceUseCase = locationServiceUseCase
+        self.mapServiceUseCase = mapServiceUseCase
         self.cancellables = .init()
         self.modalAdaptivePresentationControllerDelegateProxy = ModalAdaptivePresentationControllerDelegateProxy()
         
@@ -98,7 +100,7 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
                 
                 Log.info("[현재 위치] - (\(location.coordinate.latitude), \(location.coordinate.longitude))", "[\(#file)-\(#function) - \(#line)]")
                 
-                self.presenter.updateCurrentLocation(with: location)
+                self.presenter.updateCurrentLocation()
                 self.requestStopLocationUpdates()
             }
             .store(in: &cancellables)
@@ -114,11 +116,11 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
         checkAndHandleLocationPermission()
     }
     
-    func didTappedMyLocationButton() {
+    func didTapMyLocationButton() {
         checkAndHandleLocationPermission()
     }
     
-    func didTappedPlaceSearchButton() {
+    func didTapPlaceSearchButton() {
         router?.attachPlaceSearcher()
     }
     
@@ -132,8 +134,8 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     }
     
     func selectedLocation(_ placeRecord: PlaceRecord) {
-        let cLLocation = CLLocation(latitude: placeRecord.latitude, longitude: placeRecord.longitude)
-        presenter.movedLocation(to: cLLocation, placeRecord.placeName)
+        presenter.updateSelectedLocation(from: placeRecord)
+        
         router?.detachPlaceSearcher()
     }
 }

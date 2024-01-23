@@ -52,7 +52,8 @@ public final class MyLocationBuilder: Builder<MyLocationDependency>, MyLocationB
         let viewController = MyLocationViewController()
         let interactor = MyLocationInteractor(
             presenter: viewController,
-            locationServiceUseCase: component.locationServiceUseCase
+            locationServiceUseCase: component.locationServiceUseCase,
+            mapServiceUseCase: component.mapServiceUseCase
         )
         interactor.listener = listener
         
