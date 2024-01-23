@@ -1,15 +1,16 @@
 //
 //  File.swift
+//  
 //
-//
-//  Created by 최제환 on 1/17/24.
+//  Created by 최제환 on 1/22/24.
 //
 
+import Entities
 import MapKit
 import SnapKit
 import UIKit
 
-final class PlaceAnnotationView: MKAnnotationView {
+public final class PlaceAnnotationView: MKAnnotationView {
     
     lazy var annotationImageView: UIImageView = {
         let uiImageView = UIImageView()
@@ -18,7 +19,7 @@ final class PlaceAnnotationView: MKAnnotationView {
         return uiImageView
     }()
     
-    static let identifier = "PlaceAnnotationView"
+    public static let identifier = "PlaceAnnotationView"
     
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
@@ -30,13 +31,13 @@ final class PlaceAnnotationView: MKAnnotationView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func prepareForReuse() {
+    public override func prepareForReuse() {
         super.prepareForReuse()
         
         annotationImageView.image = nil
     }
     
-    override func prepareForDisplay() {
+    public override func prepareForDisplay() {
         super.prepareForDisplay()
         
         guard let annotation = annotation as? PlaceAnnotation else { return }
@@ -49,7 +50,7 @@ final class PlaceAnnotationView: MKAnnotationView {
         setNeedsLayout()
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         bounds.size = CGSize(width: 32, height: 32)

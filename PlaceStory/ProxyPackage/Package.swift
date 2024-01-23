@@ -37,7 +37,10 @@ let package = Package(
             name: "Utils"
         ),
         .target(
-            name: "CommonUI"
+            name: "CommonUI",
+            dependencies: [
+                .product(name: "SnapKit", package: "SnapKit")
+            ]
         ),
         .testTarget(
             name: "ProxyPackageTests",
