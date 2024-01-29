@@ -92,6 +92,6 @@ iOSInjectionProject/
 .DS_Store
 
 # xcodeproj 안의 불필요파일
-xcuserstate
+*.xcuserstate
 xcschememanagement.plist
 contents.xcworkspacedata
