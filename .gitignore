@@ -90,3 +90,8 @@ fastlane/test_output
 iOSInjectionProject/
 
 .DS_Store
+
+# xcodeproj 안의 불필요파일
+*.xcuserstate
+xcschememanagement.plist
+contents.xcworkspacedata
