@@ -43,11 +43,6 @@ final class LoggedInViewController: UITabBarController, LoggedInPresentable, Log
     
     // MARK: - LoggedInViewControllable
     func setViewControllers(_ viewControllables: [ViewControllable]) {
-        let vc2 = UIViewController()
-        vc2.view.backgroundColor = .white
-        vc2.title = "장소 모음"
-        vc2.tabBarItem = UITabBarItem(title: "장소 모음", image: UIImage(systemName: "list.bullet.rectangle"), selectedImage: UIImage(systemName: "list.bullet.rectangle.fill"))
-        
         let vc3 = UIViewController()
         vc3.view.backgroundColor = .white
         vc3.title = "설정"
@@ -57,9 +52,6 @@ final class LoggedInViewController: UITabBarController, LoggedInPresentable, Log
         viewControllables.forEach {
             viewControllers.append(wrapViewControllerInNavigation($0.uiviewController))
         }
-        
-        let nav2 = wrapViewControllerInNavigation(vc2)
-        viewControllers.append(nav2)
         
         let nav3 = wrapViewControllerInNavigation(vc3)
         viewControllers.append(nav3)

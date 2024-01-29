@@ -29,8 +29,14 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         return mapView
     }()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        
+        configureUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
         
         configureUI()
     }

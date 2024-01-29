@@ -7,8 +7,9 @@
 
 import ModernRIBs
 import MyLocation
+import PlaceList
 
-protocol LoggedInInteractable: Interactable, MyLocationListener {
+protocol LoggedInInteractable: Interactable, MyLocationListener, PlaceListListener {
     var router: LoggedInRouting? { get set }
     var listener: LoggedInListener? { get set }
 }
@@ -22,12 +23,17 @@ final class LoggedInRouter: ViewableRouter<LoggedInInteractable, LoggedInViewCon
     private let myLocationBuilder: MyLocationBuildable
     private var myLocationRouting: MyLocationRouting?
     
+    private let placeListBuilder: PlaceListBuildable
+    private var placeListRouting: PlaceListRouting?
+    
     init(
         interactor: LoggedInInteractable,
         viewController: LoggedInViewControllable,
-        myLocationBuilder: MyLocationBuildable
+        myLocationBuilder: MyLocationBuildable,
+        placeListBuilder: PlaceListBuildable
     ) {
         self.myLocationBuilder = myLocationBuilder
+        self.placeListBuilder = placeListBuilder
         
         super.init(interactor: interactor, viewController: viewController)
         interactor.router = self
@@ -35,11 +41,14 @@ final class LoggedInRouter: ViewableRouter<LoggedInInteractable, LoggedInViewCon
     
     func attachTabs() {
         let myLocationRouter = myLocationBuilder.build(withListener: interactor)
+        let placeRouter = placeListBuilder.build(withListener: interactor)
         
         attachChild(myLocationRouter)
+        attachChild(placeRouter)
         
         let viewControllers = [
-            myLocationRouter.viewControllable
+            myLocationRouter.viewControllable,
+            placeRouter.viewControllable
         ]
         
         viewController.setViewControllers(viewControllers)

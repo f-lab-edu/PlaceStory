@@ -7,12 +7,13 @@
 
 import ModernRIBs
 import MyLocation
+import PlaceList
 
 public protocol LoggedInDependency: Dependency {
     
 }
 
-final class LoggedInComponent: Component<LoggedInDependency>, MyLocationDependency {
+final class LoggedInComponent: Component<LoggedInDependency>, MyLocationDependency, PlaceListDependency {
     
 }
 
@@ -35,11 +36,13 @@ public final class LoggedInBuilder: Builder<LoggedInDependency>, LoggedInBuildab
         interactor.listener = listener
         
         let myLocationBuilder = MyLocationBuilder(dependency: component)
+        let placeListBuilder = PlaceListBuilder(dependency: component)
         
         return LoggedInRouter(
             interactor: interactor,
             viewController: viewController,
-            myLocationBuilder: myLocationBuilder
+            myLocationBuilder: myLocationBuilder,
+            placeListBuilder: placeListBuilder
         )
     }
 }
