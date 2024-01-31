@@ -11,6 +11,7 @@ import MapKit
 protocol AppleMapViewDelegate: AnyObject {
     func animateAnnotationView(_ annotationView: PlaceAnnotationView)
     func movedLocation(to coordinate: CLLocationCoordinate2D)
+    func didSelectAnnotationView()
 }
 
 public final class AppleMapViewDelegateProxy: NSObject, MKMapViewDelegate {
@@ -42,6 +43,8 @@ public final class AppleMapViewDelegateProxy: NSObject, MKMapViewDelegate {
             let coordinate = placeAnnotation.coordinate
             
             delegate?.movedLocation(to: coordinate)
+            delegate?.didSelectAnnotationView()
+            mapView.deselectAnnotation(view.annotation, animated: true)
         }
     }
 }

@@ -15,6 +15,7 @@ protocol MyLocationPresentableListener: AnyObject {
     func checkPermissionLocation()
     func didTapMyLocationButton()
     func didTapPlaceSearchButton()
+    func didSelectAnnotationView()
 }
 
 final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable, AppleMapViewButtonDelegate {
@@ -116,5 +117,9 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
     
     func didTapPlaceSearch() {
         listener?.didTapPlaceSearchButton()
+    }
+    
+    func didSelectAnnotationView() {
+        listener?.didSelectAnnotationView()
     }
 }

@@ -14,6 +14,7 @@ import UIKit
 public protocol AppleMapViewButtonDelegate: AnyObject {
     func didTapPlaceSearch()
     func didTapMyLocation()
+    func didSelectAnnotationView()
 }
 
 final class AppleMapView: UIView, AppleMapViewable {
@@ -191,5 +192,9 @@ extension AppleMapView: AppleMapViewDelegate {
         let region = MKCoordinateRegion(center: location, latitudinalMeters: 500, longitudinalMeters: 500)
         
         mapView.setRegion(region, animated: true)
+    }
+    
+    func didSelectAnnotationView() {
+        delegate?.didSelectAnnotationView()
     }
 }
