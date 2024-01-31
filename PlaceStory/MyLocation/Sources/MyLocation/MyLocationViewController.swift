@@ -21,10 +21,12 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
 
     weak var listener: MyLocationPresentableListener?
     
-    lazy var placeMapView: MapView = {
+    lazy var placeMapView: MapViewable = {
         let mapViewFactory = MapViewFactoryImp()
         let mapView = mapViewFactory.makeMapView(of: .apple)
-        mapView.setDelegate(self)
+        if let appleMapView = mapView as? AppleMapViewable {
+            appleMapView.setDelegate(self)
+        }
         
         return mapView
     }()

@@ -11,24 +11,13 @@ import MapKit
 import SnapKit
 import UIKit
 
-public enum MapViewType {
-    case apple
-}
-
-public protocol MapView where Self: UIView {
-    func configureUI()
-    func setDelegate(_ delegate: AppleMapViewButtonDelegate)
-    func updateCurrentLocation()
-    func updateSelectedLocation(from placeRecord: PlaceRecord)
-}
-
 public protocol AppleMapViewButtonDelegate: AnyObject {
     func didTapPlaceSearch()
     func didTapMyLocation()
 }
 
-final class AppleMapView: UIView, MapView {
-    private let mapView: MKMapView = {
+final class AppleMapView: UIView, AppleMapViewable {
+     let mapView: MKMapView = {
         let mkMapView = MKMapView()
         mkMapView.register(PlaceAnnotationView.self, forAnnotationViewWithReuseIdentifier: PlaceAnnotationView.identifier)
         
@@ -81,16 +70,16 @@ final class AppleMapView: UIView, MapView {
         return uiButton
     }()
     
-    private let placeMapViewDelegateHelper: PlaceMapViewDelegateHelper
+    private let appleMapViewDelegateProxy: AppleMapViewDelegateProxy
     
     weak var delegate: AppleMapViewButtonDelegate?
     
     override init(frame: CGRect) {
-        self.placeMapViewDelegateHelper = PlaceMapViewDelegateHelper()
+        self.appleMapViewDelegateProxy = AppleMapViewDelegateProxy()
         super.init(frame: frame)
         
-        mapView.delegate = placeMapViewDelegateHelper
-        placeMapViewDelegateHelper.placeMapView = mapView
+        appleMapViewDelegateProxy.delegate = self
+        mapView.delegate = appleMapViewDelegateProxy
         
         configureUI()
     }
@@ -113,6 +102,10 @@ final class AppleMapView: UIView, MapView {
         self.delegate = delegate
     }
     
+    func getAnnotations() -> [MKAnnotation] {
+        return mapView.annotations
+    }
+    
     public func updateCurrentLocation() {
         mapView.showsUserLocation = true
         mapView.setUserTrackingMode(.follow, animated: true)
@@ -120,8 +113,8 @@ final class AppleMapView: UIView, MapView {
     
     func updateSelectedLocation(from placeRecord: PlaceRecord) {
         let coordenate = CLLocationCoordinate2D(latitude: placeRecord.latitude, longitude: placeRecord.longitude)
-        placeMapViewDelegateHelper.movedLocation(to: coordenate)
-        placeMapViewDelegateHelper.addAnnotation(as: placeRecord)
+        movedLocation(to: coordenate)
+        addAnnotation(as: placeRecord)
     }
     
     private func configureMapViewAutoLayout() {
@@ -144,6 +137,30 @@ final class AppleMapView: UIView, MapView {
         }
     }
     
+    private func isDuplicateAnnotation(_ exsitingAnnotations: [MKAnnotation], _ currentLocation: CLLocationCoordinate2D) -> Bool {
+        return  exsitingAnnotations.contains { existingAnnotation in
+            existingAnnotation.coordinate.latitude == currentLocation.latitude &&
+            existingAnnotation.coordinate.longitude == currentLocation.longitude
+        }
+    }
+    
+    public func addAnnotation(as placeRecord: PlaceRecord) {
+        let latitude = placeRecord.latitude
+        let longitude = placeRecord.longitude
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        
+        if !isDuplicateAnnotation(mapView.annotations, coordinate) {
+            let placeAnnotation = PlaceAnnotation(
+                coordinate: coordinate,
+                title: placeRecord.placeName,
+                subtitle: "",
+                imageName: "pins"
+            )
+            
+            mapView.addAnnotation(placeAnnotation)
+        }
+    }
+    
     @objc func didTapPlaceSearcher() {
         delegate?.didTapPlaceSearch()
     }
@@ -153,17 +170,26 @@ final class AppleMapView: UIView, MapView {
     }
 }
 
-public protocol MapViewFactory {
-    func makeMapView(of type: MapViewType) -> MapView
-}
-
-public final class MapViewFactoryImp: MapViewFactory {
-    public init() {}
+extension AppleMapView: AppleMapViewDelegate {
+    func animateAnnotationView(_ annotationView: PlaceAnnotationView) {
+        let endFrame = annotationView.frame
+        annotationView.frame = endFrame.offsetBy(dx: 0, dy: -500)
+        
+        UIView.animate(
+            withDuration: 1.5,
+            delay: 0.1,
+            usingSpringWithDamping: 0.5,
+            initialSpringVelocity: 1,
+            options: .curveEaseInOut,
+            animations: {
+            annotationView.frame = endFrame
+        }, completion: nil)
+    }
     
-    public func makeMapView(of type: MapViewType) -> MapView {
-        switch type {
-        case .apple:
-            return AppleMapView()
-        }
+    public func movedLocation(to coordinate: CLLocationCoordinate2D) {
+        let location = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let region = MKCoordinateRegion(center: location, latitudinalMeters: 500, longitudinalMeters: 500)
+        
+        mapView.setRegion(region, animated: true)
     }
 }

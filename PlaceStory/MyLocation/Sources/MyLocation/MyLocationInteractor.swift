@@ -15,6 +15,7 @@ import Utils
 public protocol MyLocationRouting: ViewableRouting {
     func attachPlaceSearcher()
     func detachPlaceSearcher()
+    func detachPresentationController()
 }
 
 protocol MyLocationPresentable: Presentable {
@@ -125,7 +126,7 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     }
     
     func presentationControllerDidDismiss() {
-        router?.detachPlaceSearcher()
+        router?.detachPresentationController()
     }
     
     // MARK: - MyLocationInteractor
