@@ -14,7 +14,8 @@ let package = Package(
     dependencies: [
         .package(path: "../ProxyPackage"),
         .package(path: "../Domain"),
-        .package(path: "../MyLocation")
+        .package(path: "../MyLocation"),
+        .package(path: "../PlaceDiary")
     ],
     targets: [
         .target(
@@ -22,7 +23,8 @@ let package = Package(
             dependencies: [
                 "ProxyPackage",
                 .product(name: "Entities", package: "Domain"),
-                "MyLocation"
+                "MyLocation",
+                .product(name: "PlaceList", package: "PlaceDiary")
             ]
         ),
         .testTarget(
