@@ -15,16 +15,19 @@ protocol MyLocationPresentableListener: AnyObject {
     func checkPermissionLocation()
     func didTapMyLocationButton()
     func didTapPlaceSearchButton()
+    func didSelectAnnotationView()
 }
 
 final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable, AppleMapViewButtonDelegate {
 
     weak var listener: MyLocationPresentableListener?
     
-    lazy var placeMapView: MapView = {
+    lazy var placeMapView: MapViewable = {
         let mapViewFactory = MapViewFactoryImp()
         let mapView = mapViewFactory.makeMapView(of: .apple)
-        mapView.setDelegate(self)
+        if let appleMapView = mapView as? AppleMapViewable {
+            appleMapView.setDelegate(self)
+        }
         
         return mapView
     }()
@@ -114,5 +117,9 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
     
     func didTapPlaceSearch() {
         listener?.didTapPlaceSearchButton()
+    }
+    
+    func didSelectAnnotationView() {
+        listener?.didSelectAnnotationView()
     }
 }
