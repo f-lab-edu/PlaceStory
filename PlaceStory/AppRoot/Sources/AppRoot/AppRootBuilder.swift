@@ -16,8 +16,8 @@ import UseCase
 
 
 public protocol AppRootDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+  var loggedInBuildable: LoggedInBuildable { get }
+  var loggedOutBuildable: LoggedOutBuildable { get }
 }
 
 final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency, LoggedInDependency {
@@ -60,14 +60,14 @@ public final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable 
             appleAuthenticationServiceUseCase: component.appleAuthenticationServiceUseCase
         )
         
-        let loggedOutBuilder = LoggedOutBuilder(dependency: component)
-        let loggedInBuilder = LoggedInBuilder(dependency: component)
+//        let loggedOutBuilder = LoggedOutBuilder(dependency: component)
+//        let loggedInBuilder = LoggedInBuilder(dependency: component)
         
         let router = AppRootRouter(
             interactor: interactor,
             viewController: viewController,
-            loggedOutBuilder: loggedOutBuilder,
-            loggedInBuilder: loggedInBuilder
+            loggedOutBuilder: component.loggedOutBuilder,
+            loggedInBuilder: component.loggedInBuilder
         )
         
         return router

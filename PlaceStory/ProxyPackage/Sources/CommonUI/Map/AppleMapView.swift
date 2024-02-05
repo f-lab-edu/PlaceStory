@@ -12,12 +12,12 @@ import SnapKit
 import UIKit
 
 public protocol AppleMapViewButtonDelegate: AnyObject {
-    func didTapPlaceSearch()
-    func didTapMyLocation()
+    func didTapPlaceSearch() // 부모로 이동
+    func didTapMyLocation() // 부모로 이동
     func didSelectAnnotationView()
 }
 
-final class AppleMapView: UIView, AppleMapViewable {
+final class AppleMapView: UIView, MapViewable {
      let mapView: MKMapView = {
         let mkMapView = MKMapView()
         mkMapView.register(PlaceAnnotationView.self, forAnnotationViewWithReuseIdentifier: PlaceAnnotationView.identifier)
@@ -73,7 +73,7 @@ final class AppleMapView: UIView, AppleMapViewable {
     
     private let appleMapViewDelegateProxy: AppleMapViewDelegateProxy
     
-    weak var delegate: AppleMapViewButtonDelegate?
+    weak var delegate: MapViewDelegate?
     
     override init(frame: CGRect) {
         self.appleMapViewDelegateProxy = AppleMapViewDelegateProxy()
@@ -99,7 +99,7 @@ final class AppleMapView: UIView, AppleMapViewable {
         configureMyLocationButtonAutoLayout()
     }
     
-    public func setDelegate(_ delegate: AppleMapViewButtonDelegate) {
+    public func setDelegate(_ delegate: MapViewDelegate) {
         self.delegate = delegate
     }
     
@@ -163,11 +163,11 @@ final class AppleMapView: UIView, AppleMapViewable {
     }
     
     @objc func didTapPlaceSearcher() {
-        delegate?.didTapPlaceSearch()
+//        delegate?.didTapPlaceSearch()
     }
     
     @objc func didTapMyLocation() {
-        delegate?.didTapMyLocation()
+//        delegate?.didTapMyLocation()
     }
 }
 

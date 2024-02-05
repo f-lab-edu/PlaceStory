@@ -7,21 +7,14 @@
 
 import Entities
 import Foundation
-import MapKit
-
-public enum MapViewType {
-    case apple
-}
+import UIKit
 
 public protocol MapViewable where Self: UIView {
-    func configureUI()
     func updateCurrentLocation()
     func updateSelectedLocation(from placeRecord: PlaceRecord)
+    func setDelegate(_ delegate: MapViewDelegate)
 }
 
-public protocol AppleMapViewable: MapViewable {
-    var mapView: MKMapView { get }
-    
-    func setDelegate(_ delegate: AppleMapViewButtonDelegate)
-    func getAnnotations() -> [MKAnnotation]
+public protocol MapViewDelegate: AnyObject {
+    func didSelectAnnotationView()
 }

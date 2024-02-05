@@ -8,16 +8,13 @@
 import Foundation
 
 public protocol MapViewFactory {
-    func makeMapView(of type: MapViewType) -> MapViewable
+    func makeMapView() -> MapViewable
 }
 
 public final class MapViewFactoryImp: MapViewFactory {
     public init() {}
     
-    public func makeMapView(of type: MapViewType) -> MapViewable {
-        switch type {
-        case .apple:
-            return AppleMapView()
-        }
+    public func makeMapView() -> MapViewable {
+      return AppleMapView()
     }
 }

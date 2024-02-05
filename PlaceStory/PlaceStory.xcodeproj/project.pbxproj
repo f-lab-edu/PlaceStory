@@ -533,7 +533,7 @@
 				CODE_SIGN_ENTITLEMENTS = PlaceStory/PlaceStory.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = FF4F6NQNDX;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlaceStory/Resources/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "앱이 사용자의 현재 위치를 정확하게 파악하여 지도에 표시하고, 사용자가 기록한 장소에 마커를 표시하기 위해 위치 권한이 필요합니다";
@@ -563,7 +563,7 @@
 				CODE_SIGN_ENTITLEMENTS = PlaceStory/PlaceStory.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = FF4F6NQNDX;
+				DEVELOPMENT_TEAM = 42S8NWXH6X;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlaceStory/Resources/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "앱이 사용자의 현재 위치를 정확하게 파악하여 지도에 표시하고, 사용자가 기록한 장소에 마커를 표시하기 위해 위치 권한이 필요합니다";

@@ -10,10 +10,12 @@ import ModernRIBs
 import PlaceList
 import PlaceSearcher
 import UseCase
+import CommonUI
 
 public protocol MyLocationDependency: Dependency {
     // TODO: Declare the set of dependencies required by this RIB, but cannot be
     // created by this RIB.
+  var mapViewFactory: MapViewFactory { get }
 }
 
 final class MyLocationComponent: Component<MyLocationDependency>, PlaceSearcherDependency, PlaceListDependency {
@@ -21,6 +23,8 @@ final class MyLocationComponent: Component<MyLocationDependency>, PlaceSearcherD
     let locationServiceUseCase: LocationServiceUseCase
     
     var mapServiceUseCase: MapServiceUseCase
+  
+    var mapViewFactory: MapViewFactory { self.dependency.mapViewFactory }
     
     override init(
         dependency: MyLocationDependency
@@ -50,7 +54,7 @@ public final class MyLocationBuilder: Builder<MyLocationDependency>, MyLocationB
 
     public func build(withListener listener: MyLocationListener) -> MyLocationRouting {
         let component = MyLocationComponent(dependency: dependency)
-        let viewController = MyLocationViewController()
+        let viewController = MyLocationViewController(mapViewFactory:   component.mapViewFactory)
         let interactor = MyLocationInteractor(
             presenter: viewController,
             locationServiceUseCase: component.locationServiceUseCase,

@@ -14,10 +14,10 @@ import Utils
 
 public final class MapServiceRepositoryImp: NSObject {
     
-    private var searchCompleter: MKLocalSearchCompleter
-    private var searchResultsSubject = CurrentValueSubject<[PlaceSearchResult], Never>([])
+    private let searchCompleter: MKLocalSearchCompleter
+    private let searchResultsSubject = CurrentValueSubject<[PlaceSearchResult], Never>([])
     private var searchResults = [MKLocalSearchCompletion]()
-    private var localSearchSubject = PassthroughSubject<PlaceRecord, Never>()
+    private let localSearchSubject = PassthroughSubject<PlaceRecord, Never>()
     
     public override init() {
         self.searchCompleter = MKLocalSearchCompleter()

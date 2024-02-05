@@ -22,8 +22,9 @@ public protocol MyLocationRouting: ViewableRouting {
 protocol MyLocationPresentable: Presentable {
     var listener: MyLocationPresentableListener? { get set }
     
-    func showRequestLocationAlert()
-    func showFailedLocationAlert(_ error: Error)
+  func showAlert(title: String, actions: [String], handler: () -> Void)
+//    func showRequestLocationAlert()
+//    func showFailedLocationAlert(_ error: Error)
     func updateCurrentLocation()
     func updateSelectedLocation(from placeRecord: PlaceRecord)
 }
@@ -47,7 +48,7 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
         presenter: MyLocationPresentable,
         locationServiceUseCase: LocationServiceUseCase,
         mapServiceUseCase: MapServiceUseCase
-    ) {
+    ) 
         self.locationServiceUseCase = locationServiceUseCase
         self.mapServiceUseCase = mapServiceUseCase
         self.cancellables = .init()
