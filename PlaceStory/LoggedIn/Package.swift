@@ -24,7 +24,8 @@ let package = Package(
                 "ProxyPackage",
                 .product(name: "Entities", package: "Domain"),
                 "MyLocation",
-                .product(name: "PlaceList", package: "PlaceDiary")
+                .product(name: "PlaceList", package: "PlaceDiary"),
+                .product(name: "CommonUI", package: "ProxyPackage")
             ]
         ),
         .testTarget(

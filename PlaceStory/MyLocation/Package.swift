@@ -28,7 +28,8 @@ let package = Package(
                 .product(name: "RepositoryImps", package: "Platform"),
                 .product(name: "CommonUI", package: "ProxyPackage"),
                 .product(name: "Utils", package: "ProxyPackage"),
-                "PlaceSearcher"
+                "PlaceSearcher",
+                .product(name: "AppleMapView", package: "Platform")
             ]
         ),
         .target(

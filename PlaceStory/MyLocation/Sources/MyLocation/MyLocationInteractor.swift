@@ -21,10 +21,7 @@ public protocol MyLocationRouting: ViewableRouting {
 
 protocol MyLocationPresentable: Presentable {
     var listener: MyLocationPresentableListener? { get set }
-    
-  func showAlert(title: String, actions: [String], handler: () -> Void)
-//    func showRequestLocationAlert()
-//    func showFailedLocationAlert(_ error: Error)
+    func showAlertWithOneAction(_ title: String,_ message: String,_ handler: (() -> Void)?)
     func updateCurrentLocation()
     func updateSelectedLocation(from placeRecord: PlaceRecord)
 }
@@ -35,36 +32,37 @@ public protocol MyLocationListener: AnyObject {
 
 final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, MyLocationInteractable, MyLocationPresentableListener, ModalAdaptivePresentationControllerDelegate {
 
-    weak var router: MyLocationRouting?
-    weak var listener: MyLocationListener?
-
     private let locationServiceUseCase: LocationServiceUseCase
     private let mapServiceUseCase: MapServiceUseCase
     
+    let modalAdaptivePresentationControllerDelegateProxy: ModalAdaptivePresentationControllerDelegateProxy
+    
+    weak var router: MyLocationRouting?
+    weak var listener: MyLocationListener?
+    
     private var cancellables: Set<AnyCancellable>
-    var modalAdaptivePresentationControllerDelegateProxy: ModalAdaptivePresentationControllerDelegateProxy
     
     init(
         presenter: MyLocationPresentable,
         locationServiceUseCase: LocationServiceUseCase,
         mapServiceUseCase: MapServiceUseCase
-    ) 
+    ) {
         self.locationServiceUseCase = locationServiceUseCase
         self.mapServiceUseCase = mapServiceUseCase
         self.cancellables = .init()
         self.modalAdaptivePresentationControllerDelegateProxy = ModalAdaptivePresentationControllerDelegateProxy()
-        
         super.init(presenter: presenter)
+        
         presenter.listener = self
         modalAdaptivePresentationControllerDelegateProxy.delegate = self
     }
-
+    
     override func didBecomeActive() {
         super.didBecomeActive()
         
         checkAndHandleLocationPermission()
     }
-
+    
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
@@ -78,7 +76,11 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
                 if isLocationPermissionGranted {
                     updateCurrentUserLocation()
                 } else {
-                    self.presenter.showRequestLocationAlert()
+                    self.presenter.showAlertWithOneAction(
+                        "위치 권한 허용",
+                        "\'PlaceStory\'에서 현재 위치를 파악하고, 기록한 장소를 지도에 표시하기 위해 위치 권한이 필요합니다.\n'설정'으로 이동하여 위치 권한을 허용해주시기 바랍니다.",
+                        locationServiceUseCase.openAppSettings
+                    )
                 }
             }
             .store(in: &cancellables)
@@ -93,7 +95,10 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
                 case .failure(let error):
                     Log.error("error is \(error)", "[\(#file)-\(#function) - \(#line)]")
                     
-                    self.presenter.showFailedLocationAlert(error)
+                    self.presenter.showAlertWithOneAction(
+                        "위치 불러오기",
+                        error.localizedDescription, nil
+                    )
                     
                 case .finished:
                     break

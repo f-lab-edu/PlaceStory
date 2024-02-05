@@ -21,6 +21,10 @@ let package = Package(
         .library(
             name: "SecurityServices",
             targets: ["SecurityServices"]
+        ),
+        .library(
+            name: "AppleMapView",
+            targets: ["AppleMapView"]
         )
     ],
     dependencies: [
@@ -56,6 +60,9 @@ let package = Package(
         ),
         .target(
             name: "SecurityServices"
+        ),
+        .target(
+            name: "AppleMapView"
         )
     ]
 )

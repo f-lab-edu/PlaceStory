@@ -5,16 +5,28 @@
 //  Created by 최제환 on 12/17/23.
 //
 
+import AppleMapView
 import ModernRIBs
 import MyLocation
 import PlaceList
+import PlaceSearcher
+import UseCase
 
 public protocol LoggedInDependency: Dependency {
-    
+    var myLocationBuilder: MyLocationBuildable { get }
+    var mapViewFactory: MapViewFactory { get }
+    var locationServiceUseCase: LocationServiceUseCase { get }
+    var mapServiceUseCase: MapServiceUseCase { get }
+    var placeSearchBuilder: PlaceSearcherBuildable { get }
+    var placeListBuilder: PlaceListBuildable { get }
 }
 
 final class LoggedInComponent: Component<LoggedInDependency>, MyLocationDependency, PlaceListDependency {
-    
+    var mapViewFactory: MapViewFactory { dependency.mapViewFactory }
+    var locationServiceUseCase: LocationServiceUseCase { dependency.locationServiceUseCase }
+    var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
+    var placeSearchBuilder: PlaceSearcherBuildable { dependency.placeSearchBuilder }
+    var placeListBuilder: PlaceListBuildable { dependency.placeListBuilder }
 }
 
 // MARK: - Builder
@@ -35,14 +47,11 @@ public final class LoggedInBuilder: Builder<LoggedInDependency>, LoggedInBuildab
         let interactor = LoggedInInteractor(presenter: viewController)
         interactor.listener = listener
         
-        let myLocationBuilder = MyLocationBuilder(dependency: component)
-        let placeListBuilder = PlaceListBuilder(dependency: component)
-        
         return LoggedInRouter(
             interactor: interactor,
             viewController: viewController,
-            myLocationBuilder: myLocationBuilder,
-            placeListBuilder: placeListBuilder
+            myLocationBuilder: dependency.myLocationBuilder,
+            placeListBuilder: dependency.placeListBuilder
         )
     }
 }

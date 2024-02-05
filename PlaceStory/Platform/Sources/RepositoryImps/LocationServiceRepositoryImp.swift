@@ -9,6 +9,7 @@ import CoreLocation
 import Combine
 import Foundation
 import Repositories
+import UIKit
 
 public final class LocationServiceRepositoryImp: NSObject {
     private let locationManager: CLLocationManager
@@ -49,6 +50,14 @@ extension LocationServiceRepositoryImp: LocationServiceRepository {
         checkCurrentLocationAuthorization(authorizationStatus)
         
         return authorizationStatusSubject.eraseToAnyPublisher()
+    }
+    
+    public func movedToSettingFromApp() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        }
     }
     
     public func publishCurrentLocation() -> AnyPublisher<CLLocation, Error> {

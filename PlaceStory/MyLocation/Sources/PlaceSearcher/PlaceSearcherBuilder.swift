@@ -13,7 +13,6 @@ public protocol PlaceSearcherDependency: Dependency {
 }
 
 final class PlaceSearcherComponent: Component<PlaceSearcherDependency> {
-
     var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
 }
 
@@ -37,6 +36,10 @@ public final class PlaceSearcherBuilder: Builder<PlaceSearcherDependency>, Place
             mapServiceUseCase: dependency.mapServiceUseCase
         )
         interactor.listener = listener
-        return PlaceSearcherRouter(interactor: interactor, viewController: viewController)
+        
+        return PlaceSearcherRouter(
+            interactor: interactor,
+            viewController: viewController
+        )
     }
 }

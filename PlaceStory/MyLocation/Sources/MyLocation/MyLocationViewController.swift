@@ -5,6 +5,7 @@
 //  Created by 최제환 on 12/18/23.
 //
 
+import AppleMapView
 import CommonUI
 import Entities
 import ModernRIBs
@@ -12,110 +13,154 @@ import SnapKit
 import UIKit
 
 protocol MyLocationPresentableListener: AnyObject {
-  func checkPermissionLocation()
-  func didTapMyLocationButton()
-  func didTapPlaceSearchButton()
-  func didSelectAnnotationView()
+    func checkPermissionLocation()
+    func didTapMyLocationButton()
+    func didTapPlaceSearchButton()
+    func didSelectAnnotationView()
 }
 
 final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable, MapViewDelegate {
-  
-  weak var listener: MyLocationPresentableListener?
-  
-  private var placeMapView: MapViewable?
-  
-  //  let mapViewFactory = MapViewFactoryImp()
-  //  let mapView = mapViewFactory.makeMapView()
-  //  mapView.setDelegate(self)
-  //
-  //  return mapView
-  
-  private let mapViewFactory: MapViewFactory
-  
-  init(mapViewFactory: MapViewFactory) {
-    self.mapViewFactory = mapViewFactory
-    super.init(nibName: nil, bundle: nil)
     
-    configureUI()
-  }
-  
-  required init?(coder: NSCoder) {
-    fatalError()
-  }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
+    private lazy var placeSearchButton: UIButton = {
+        let uiButton = UIButton()
+        
+        uiButton.setImage(
+            UIImage(
+                systemName: "magnifyingglass",
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: 14,
+                    weight: .medium
+                )
+            ),
+            for: .normal
+        )
+        uiButton.backgroundColor = .white
+        uiButton.layer.borderWidth = 1.0
+        uiButton.layer.borderColor = UIColor.black.cgColor
+        uiButton.layer.cornerRadius = 10.0
+        uiButton.tintColor = .black
+        uiButton.addTarget(self, action: #selector(didTapPlaceSearcher), for: .touchUpInside)
+        
+        return uiButton
+    }()
     
-    listener?.checkPermissionLocation()
-  }
-  
-  private func configureUI() {
-    view.backgroundColor = .systemBackground
-    title = "장소 검색"
+    private lazy var myLocationButton: UIButton = {
+        let uiButton = UIButton()
+        
+        uiButton.setImage(
+            UIImage(
+                systemName: "location.fill",
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: 14,
+                    weight: .medium
+                )
+            ),
+            for: .normal
+        )
+        uiButton.backgroundColor = .white
+        uiButton.layer.borderWidth = 1.0
+        uiButton.layer.borderColor = UIColor.black.cgColor
+        uiButton.layer.cornerRadius = 10.0
+        uiButton.tintColor = .black
+        uiButton.addTarget(self, action: #selector(didTapMyLocation), for: .touchUpInside)
+        
+        return uiButton
+    }()
     
-    let mapView = self.mapViewFactory.makeMapView()
-    self.placeMapView = mapView
-    mapView.setDelegate(self)
-    view.addSubview(mapView)
+    private let mapViewFactory: MapViewFactory
     
-    configureTabbarItem()
-    configurePlaceMapViewConstraint()
-  }
-  
-  private func configureTabbarItem() {
-    let defaultImage = UIImage(systemName: "map")
-    let selectedImage = UIImage(systemName: "map.fill")
-    tabBarItem = UITabBarItem(title: "장소 검색", image: defaultImage, selectedImage: selectedImage)
-  }
-  
-  private func configurePlaceMapViewConstraint() {
-    placeMapView?.snp.makeConstraints { make in
-      make.top.leading.trailing.bottom.equalToSuperview()
+    weak var listener: MyLocationPresentableListener?
+    private var placeMapView: MapViewable?
+    
+    init(mapViewFactory: MapViewFactory) {
+        self.mapViewFactory = mapViewFactory
+        super.init(nibName: nil, bundle: nil)
+        
+        configureUI()
     }
-  }
-  
-  // MARK: - MyLocationPresentable
-  
-  func showRequestLocationAlert(confirmHandler: @escaping (UIAlertAction) -> Void) {
-    PlaceStoryAlert.showAlertWithTwoAction(
-      self,
-      "위치 권한 허용",
-      "이 앱은 사용자의 현재 위치를 파악하여 지도에 표시하고, 사용자가 기록한 장소에 마커를 표시하는 기능을 제공합니다.\n이 기능을 사용하려면 위치 정보 접근 권한이 필요합니다.\n\'설정\'으로 이동하여 위치 권한을 허용해주시기 바랍니다.",
-      "설정으로 이동",
-      confirmHandler,
-      "나중에 하기",
-      nil
-    )
-  }
-  
-  func showFailedLocationAlert(_ error: Error) {
-    PlaceStoryAlert.showAlertWithOneAction(
-      self,
-      "위치 불러오기",
-      error.localizedDescription,
-      nil
-    )
-  }
-  
-  func updateCurrentLocation() {
-    placeMapView?.updateCurrentLocation()
-  }
-  
-  func updateSelectedLocation(from placeRecord: PlaceRecord) {
-    placeMapView?.updateSelectedLocation(from: placeRecord)
-  }
-  
-  // MARK: - AppleMapViewButtonDelegate
-  
-  func didTapMyLocation() {
-    listener?.didTapMyLocationButton()
-  }
-  
-  func didTapPlaceSearch() {
-    listener?.didTapPlaceSearchButton()
-  }
-  
-  func didSelectAnnotationView() {
-    listener?.didSelectAnnotationView()
-  }
+    
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        listener?.checkPermissionLocation()
+    }
+    
+    private func configureUI() {
+        view.backgroundColor = .systemBackground
+        title = "장소 검색"
+        
+        let mapView = self.mapViewFactory.makeMapView()
+        self.placeMapView = mapView
+        mapView.setDelegate(self)
+        view.addSubview(mapView)
+        view.addSubview(placeSearchButton)
+        view.addSubview(myLocationButton)
+        
+        configureTabbarItem()
+        configurePlaceMapViewConstraint()
+        configurePlaceSearchButtonAutoLayout()
+        configureMyLocationButtonAutoLayout()
+    }
+    
+    private func configureTabbarItem() {
+        let defaultImage = UIImage(systemName: "map")
+        let selectedImage = UIImage(systemName: "map.fill")
+        tabBarItem = UITabBarItem(title: "장소 검색", image: defaultImage, selectedImage: selectedImage)
+    }
+    
+    private func configurePlaceMapViewConstraint() {
+        placeMapView?.snp.makeConstraints { make in
+            make.top.leading.trailing.bottom.equalToSuperview()
+        }
+    }
+    
+    private func configurePlaceSearchButtonAutoLayout() {
+        placeSearchButton.snp.makeConstraints { make in
+            make.top.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(20)
+            make.width.height.equalTo(44)
+        }
+    }
+    
+    private func configureMyLocationButtonAutoLayout() {
+        myLocationButton.snp.makeConstraints { make in
+            make.bottom.trailing.equalTo(self.view.safeAreaLayoutGuide).inset(20)
+            make.width.height.equalTo(44)
+        }
+    }
+    
+    @objc func didTapPlaceSearcher() {
+        listener?.didTapPlaceSearchButton()
+    }
+    
+    @objc func didTapMyLocation() {
+        listener?.didTapMyLocationButton()
+    }
+    
+    // MARK: - MyLocationPresentable
+    
+    func showAlertWithOneAction(_ title: String, _ message: String, _ handler: (() -> Void)?) {
+        PlaceStoryAlert.showAlertWithOneAction(self, title, message, handler)
+    }
+    
+    func showAlertWithTwoAction(_ title: String, _ message: String, _ okButtonTitle: String, _ okHandler: (() -> Void)?, _ cancelButtonTitle: String, _ cancelHandler: (() -> Void)?) {
+        PlaceStoryAlert.showAlertWithTwoAction(self, title, message, okButtonTitle, okHandler, cancelButtonTitle, cancelHandler)
+    }
+    
+    func updateCurrentLocation() {
+        placeMapView?.updateCurrentLocation()
+    }
+    
+    func updateSelectedLocation(from placeRecord: PlaceRecord) {
+        placeMapView?.updateSelectedLocation(from: placeRecord)
+    }
+    
+    // MARK: - AppleMapViewButtonDelegate
+    
+    func didSelectAnnotationView() {
+        listener?.didSelectAnnotationView()
+    }
 }

@@ -18,7 +18,7 @@ public protocol LoggedOutRouting: ViewableRouting {
 protocol LoggedOutPresentable: Presentable {
     var listener: LoggedOutPresentableListener? { get set }
     
-    func showAppleLoginErrorAlert(_ error: Error)
+    func showAlertWithOneAction(_ title: String,_ message: String,_ handler: (() -> Void)?)
 }
 
 public protocol LoggedOutListener: AnyObject {
@@ -64,8 +64,9 @@ final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, Lo
                 case .finished:
                     Log.debug("Finished.", "[\(#file)-\(#function) - \(#line)]")
                 case let .failure(error):
-                    self.presenter.showAppleLoginErrorAlert(error)
                     Log.error("\(error.localizedDescription)", "[\(#file)-\(#function) - \(#line)]")
+                    
+                    self.presenter.showAlertWithOneAction("로그인", error.localizedDescription, nil)
                 }
             } receiveValue: { [weak self] appleUser in
                 guard let self else { return }
