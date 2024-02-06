@@ -112,7 +112,7 @@ final class AppleMapView: UIView, AppleMapViewable {
         mapView.setUserTrackingMode(.follow, animated: true)
     }
     
-    func updateSelectedLocation(from placeRecord: PlaceRecord) {
+    func updateSelectedLocation(from placeRecord: PlaceMark) {
         let coordenate = CLLocationCoordinate2D(latitude: placeRecord.latitude, longitude: placeRecord.longitude)
         movedLocation(to: coordenate)
         addAnnotation(as: placeRecord)
@@ -145,7 +145,7 @@ final class AppleMapView: UIView, AppleMapViewable {
         }
     }
     
-    public func addAnnotation(as placeRecord: PlaceRecord) {
+    public func addAnnotation(as placeRecord: PlaceMark) {
         let latitude = placeRecord.latitude
         let longitude = placeRecord.longitude
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)

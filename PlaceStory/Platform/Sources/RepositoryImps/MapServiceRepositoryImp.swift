@@ -17,7 +17,7 @@ public final class MapServiceRepositoryImp: NSObject {
     private var searchCompleter: MKLocalSearchCompleter
     private var searchResultsSubject = CurrentValueSubject<[PlaceSearchResult], Never>([])
     private var searchResults = [MKLocalSearchCompletion]()
-    private var localSearchSubject = PassthroughSubject<PlaceRecord, Never>()
+    private var localSearchSubject = PassthroughSubject<PlaceMark, Never>()
     
     public override init() {
         self.searchCompleter = MKLocalSearchCompleter()
@@ -47,7 +47,7 @@ public final class MapServiceRepositoryImp: NSObject {
         searchResults = searchCompletions
     }
     
-    private func performLocalSearch(with completion: MKLocalSearchCompletion) -> AnyPublisher<PlaceRecord, Never> {
+    private func performLocalSearch(with completion: MKLocalSearchCompletion) -> AnyPublisher<PlaceMark, Never> {
         let searchReqeust = MKLocalSearch.Request(completion: completion)
         let search = MKLocalSearch(request: searchReqeust)
         
@@ -65,7 +65,7 @@ public final class MapServiceRepositoryImp: NSObject {
             let longitude = placeMark.coordinate.longitude
             let locationTitle = completion.title
             
-            let placeRecord = PlaceRecord(latitude: latitude, longitude: longitude, placeName: locationTitle, placeDescription: "", placeImages: [])
+            let placeRecord = PlaceMark(latitude: latitude, longitude: longitude, placeName: locationTitle, placeDescription: placeMark.debugDescription)
             
             localSearchSubject.send(placeRecord)
         }
@@ -82,7 +82,7 @@ extension MapServiceRepositoryImp: MapServiceRepository {
         return searchResultsSubject.eraseToAnyPublisher()
     }
     
-    public func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<PlaceRecord, Never> {
+    public func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<PlaceMark, Never> {
         let result = searchResults[index]
         
         return performLocalSearch(with: result)

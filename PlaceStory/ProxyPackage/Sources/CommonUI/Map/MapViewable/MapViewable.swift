@@ -16,7 +16,7 @@ public enum MapViewType {
 public protocol MapViewable where Self: UIView {
     func configureUI()
     func updateCurrentLocation()
-    func updateSelectedLocation(from placeRecord: PlaceRecord)
+    func updateSelectedLocation(from placeRecord: PlaceMark)
 }
 
 public protocol AppleMapViewable: MapViewable {

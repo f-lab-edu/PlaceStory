@@ -62,7 +62,7 @@ final class MyLocationInteractableMock: MyLocationInteractable {
     var placeSearcherDidTapCloseHandler: (() -> ())?
     var placeSearcherDidTapCloseCallCount = 0
     
-    var selectedLocationHandler: ((_ placeRecord: PlaceRecord) -> ())?
+    var selectedLocationHandler: ((_ placeRecord: PlaceAnnotation) -> ())?
     var selectedLocationCallCount = 0
     
     init() {}
@@ -88,7 +88,7 @@ final class MyLocationInteractableMock: MyLocationInteractable {
         }
     }
     
-    func selectedLocation(_ placeRecord: PlaceRecord) {
+    func selectedLocation(_ placeRecord: PlaceAnnotation) {
         selectedLocationCallCount += 1
         if let selectedLocationHandler {
             return selectedLocationHandler(placeRecord)

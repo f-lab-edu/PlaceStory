@@ -11,5 +11,5 @@ import Foundation
 
 public protocol MapServiceRepository {
     func searchPlace(from text: String) -> AnyPublisher<[PlaceSearchResult], Never>
-    func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<PlaceRecord, Never>
+    func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<PlaceMark, Never>
 }
