@@ -9,6 +9,7 @@ import Foundation
 
 public struct PlaceRecord: Identifiable {
     public let id: String
+    public let userId: String
     public let placeName: String
     public let recordTitle: String
     public let recordDescription: String
@@ -19,6 +20,7 @@ public struct PlaceRecord: Identifiable {
     
     public init(
         id: String,
+        userId: String,
         placeName: String,
         recordTitle: String,
         recordDescription: String,
@@ -28,6 +30,7 @@ public struct PlaceRecord: Identifiable {
         recordImages: [Data]?
     ) {
         self.id = id
+        self.userId = userId
         self.placeName = placeName
         self.recordTitle = recordTitle
         self.recordDescription = recordDescription

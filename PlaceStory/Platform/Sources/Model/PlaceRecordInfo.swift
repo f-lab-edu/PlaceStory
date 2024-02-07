@@ -11,6 +11,7 @@ import RealmSwift
 
 public final class PlaceRecordInfo: Object {
     @Persisted(primaryKey: true) public var id: ObjectId
+    @Persisted public var userId: String
     @Persisted public var placeName: String
     @Persisted public var recordTitle: String
     @Persisted public var recordDescription: String
@@ -24,6 +25,7 @@ extension PlaceRecordInfo {
     public func toDomain() -> PlaceRecord {
         return PlaceRecord(
             id: id.stringValue,
+            userId: userId,
             placeName: placeName,
             recordTitle: recordTitle,
             recordDescription: recordDescription,

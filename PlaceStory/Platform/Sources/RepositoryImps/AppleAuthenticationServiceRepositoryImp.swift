@@ -62,9 +62,13 @@ public final class AppleAuthenticationServiceRepositoryImp: NSObject {
     }
     
     private func checkForDuplicate(of userInfo: UserInfo) -> UserInfo? {
-        if let userInfo = database.read(UserInfo.self, forKey: userInfo.id) {
+        let result = database.read(UserInfo.self, forKey: userInfo.id)
+        
+        switch result {
+        case .success(let userInfo):
             return userInfo
-        } else {
+            
+        case .failure:
             return nil
         }
     }
@@ -151,12 +155,15 @@ extension AppleAuthenticationServiceRepositoryImp: AppleAuthenticationServiceRep
         
         if let readValue = readResult.readValue {
             let objectId = try! ObjectId(string: readValue)
+            let result = database.read(UserInfo.self, forKey: objectId)
             
-            guard let userInfo = database.read(UserInfo.self, forKey: objectId) else {
+            switch result {
+            case .success(let userInfo):
+                return userInfo?.toDomain()
+                
+            case .failure:
                 return nil
             }
-            
-            return userInfo.toDomain()
         }
         
         return nil
@@ -181,19 +188,25 @@ extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDele
         if let userInfo = checkForDuplicate(of: userInfo) {
             signInSubject.send(userInfo.toDomain())
         } else {
-            database.create(userInfo)
+            let result = database.create(userInfo)
             
-            let createForUserIdentifierResult = keychain.create("userIdentifier", userInfo.userIdentifier)
-            let createForObjectIdResult = keychain.create("objectId", userInfo.id.stringValue)
-            
-            if createForUserIdentifierResult.isSucceed &&
-                createForObjectIdResult.isSucceed {
-                Log.debug("Success - \(createForUserIdentifierResult.resultMessage), \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
-            } else {
-                Log.error("Failed - \(createForUserIdentifierResult.resultMessage), , \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+            switch result {
+            case .success(let success):
+                let createForUserIdentifierResult = keychain.create("userIdentifier", userInfo.userIdentifier)
+                let createForObjectIdResult = keychain.create("objectId", userInfo.id.stringValue)
+                
+                if createForUserIdentifierResult.isSucceed &&
+                    createForObjectIdResult.isSucceed {
+                    Log.debug("Success - \(createForUserIdentifierResult.resultMessage), \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+                } else {
+                    Log.error("Failed - \(createForUserIdentifierResult.resultMessage), , \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
+                }
+                
+                signInSubject.send(userInfo.toDomain())
+                
+            case .failure(let failure):
+                signInSubject.send(completion: .failure(failure))
             }
-            
-            signInSubject.send(userInfo.toDomain())
         }
     }
 }
