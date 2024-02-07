@@ -17,6 +17,7 @@ public protocol LoggedInDependency: Dependency {
     var mapViewFactory: MapViewFactory { get }
     var locationServiceUseCase: LocationServiceUseCase { get }
     var mapServiceUseCase: MapServiceUseCase { get }
+    var appSettingsServiceUseCase: AppSettingsServiceUseCase { get }
     var placeSearchBuilder: PlaceSearcherBuildable { get }
     var placeListBuilder: PlaceListBuildable { get }
 }
@@ -25,6 +26,7 @@ final class LoggedInComponent: Component<LoggedInDependency>, MyLocationDependen
     var mapViewFactory: MapViewFactory { dependency.mapViewFactory }
     var locationServiceUseCase: LocationServiceUseCase { dependency.locationServiceUseCase }
     var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
+    var appSettingsServiceUseCase: AppSettingsServiceUseCase { dependency.appSettingsServiceUseCase }
     var placeSearchBuilder: PlaceSearcherBuildable { dependency.placeSearchBuilder }
     var placeListBuilder: PlaceListBuildable { dependency.placeListBuilder }
 }

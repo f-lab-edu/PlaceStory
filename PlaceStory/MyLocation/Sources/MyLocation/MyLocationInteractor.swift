@@ -34,6 +34,7 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
 
     private let locationServiceUseCase: LocationServiceUseCase
     private let mapServiceUseCase: MapServiceUseCase
+    private let appSettingsServiceUseCase: AppSettingsServiceUseCase
     
     let modalAdaptivePresentationControllerDelegateProxy: ModalAdaptivePresentationControllerDelegateProxy
     
@@ -45,10 +46,12 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     init(
         presenter: MyLocationPresentable,
         locationServiceUseCase: LocationServiceUseCase,
-        mapServiceUseCase: MapServiceUseCase
+        mapServiceUseCase: MapServiceUseCase,
+        appSettingsServiceUseCase: AppSettingsServiceUseCase
     ) {
         self.locationServiceUseCase = locationServiceUseCase
         self.mapServiceUseCase = mapServiceUseCase
+        self.appSettingsServiceUseCase = appSettingsServiceUseCase
         self.cancellables = .init()
         self.modalAdaptivePresentationControllerDelegateProxy = ModalAdaptivePresentationControllerDelegateProxy()
         super.init(presenter: presenter)
@@ -78,9 +81,11 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
                 } else {
                     self.presenter.showAlertWithOneAction(
                         "위치 권한 허용",
-                        "\'PlaceStory\'에서 현재 위치를 파악하고, 기록한 장소를 지도에 표시하기 위해 위치 권한이 필요합니다.\n'설정'으로 이동하여 위치 권한을 허용해주시기 바랍니다.",
-                        locationServiceUseCase.openAppSettings
-                    )
+                        "\'PlaceStory\'에서 현재 위치를 파악하고, 기록한 장소를 지도에 표시하기 위해 위치 권한이 필요합니다.\n'설정'으로 이동하여 위치 권한을 허용해주시기 바랍니다.") { [weak self] in
+                            guard let self else { return }
+                            
+                            self.appSettingsServiceUseCase.goToAllowLocationPermission()
+                        }
                 }
             }
             .store(in: &cancellables)

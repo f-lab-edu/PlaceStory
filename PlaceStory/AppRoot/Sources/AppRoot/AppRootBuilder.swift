@@ -28,6 +28,7 @@ public protocol AppRootDependency: Dependency {
     var mapViewFactory: MapViewFactory { get }
     var locationServiceUseCase: LocationServiceUseCase { get }
     var mapServiceUseCase: MapServiceUseCase { get }
+    var appSettingsServiceUseCase: AppSettingsServiceUseCase { get }
     var placeSearchBuilder: PlaceSearcherBuildable { get }
 }
 
@@ -37,6 +38,7 @@ final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency,
     var mapViewFactory: MapViewFactory { dependency.mapViewFactory }
     var locationServiceUseCase: LocationServiceUseCase { dependency.locationServiceUseCase }
     var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
+    var appSettingsServiceUseCase: AppSettingsServiceUseCase { dependency.appSettingsServiceUseCase }
     var placeSearchBuilder: PlaceSearcherBuildable { dependency.placeSearchBuilder }
     var placeListBuilder: PlaceListBuildable { dependency.placeListBuilder }
         

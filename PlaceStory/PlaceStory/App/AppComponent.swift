@@ -24,6 +24,7 @@ final class AppComponent: Component<EmptyDependency>, AppRootDependency, LoggedO
     let mapViewFactory: MapViewFactory
     let locationServiceUseCase: LocationServiceUseCase
     let mapServiceUseCase: MapServiceUseCase
+    let appSettingsServiceUseCase: AppSettingsServiceUseCase
     
     lazy var loggedOutBuilder: LoggedOutBuildable = LoggedOutBuilder(dependency: self)
     lazy var loggedInBuilder: LoggedInBuildable = LoggedInBuilder(dependency: self)
@@ -47,6 +48,9 @@ final class AppComponent: Component<EmptyDependency>, AppRootDependency, LoggedO
         let mapServiceRepositoryImp = MapServiceRepositoryImp()
         let mapServiceUsecaseImp = MapServiceUseCaseImp(mapServiceRepository: mapServiceRepositoryImp)
         self.mapServiceUseCase = mapServiceUsecaseImp
+        
+        let appSettingsServiceRepositoryImp = AppSettingsServiceRepositoryImp()
+        self.appSettingsServiceUseCase = AppSettingsServiceUseCaseImp(appSettingsServiceRepository: appSettingsServiceRepositoryImp)
         
         super.init(dependency: EmptyComponent())
     }

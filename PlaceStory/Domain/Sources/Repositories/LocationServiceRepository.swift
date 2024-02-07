@@ -11,7 +11,6 @@ import Foundation
 
 public protocol LocationServiceRepository {
     func isLocationPermissionGranted() -> AnyPublisher<Bool, Never>
-    func movedToSettingFromApp()
     func publishCurrentLocation() -> AnyPublisher<CLLocation, Error>
     func stopLocationUpdates()
 }

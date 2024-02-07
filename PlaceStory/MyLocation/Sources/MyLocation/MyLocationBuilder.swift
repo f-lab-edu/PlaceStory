@@ -15,6 +15,7 @@ import UseCase
 public protocol MyLocationDependency: Dependency {
     var locationServiceUseCase: LocationServiceUseCase { get }
     var mapServiceUseCase: MapServiceUseCase { get }
+    var appSettingsServiceUseCase: AppSettingsServiceUseCase { get }
     var mapViewFactory: MapViewFactory { get }
     var placeSearchBuilder: PlaceSearcherBuildable { get }
     var placeListBuilder: PlaceListBuildable { get }
@@ -44,7 +45,8 @@ public final class MyLocationBuilder: Builder<MyLocationDependency>, MyLocationB
         let interactor = MyLocationInteractor(
             presenter: viewController,
             locationServiceUseCase: component.locationServiceUseCase,
-            mapServiceUseCase: component.mapServiceUseCase
+            mapServiceUseCase: component.mapServiceUseCase,
+            appSettingsServiceUseCase: dependency.appSettingsServiceUseCase
         )
         interactor.listener = listener
         

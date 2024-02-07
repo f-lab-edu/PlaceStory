@@ -12,7 +12,6 @@ import Repositories
 
 public protocol LocationServiceUseCase {
     func verifyLocationPermission() -> AnyPublisher<Bool, Never>
-    func openAppSettings()
     func movedToUserLocation() -> AnyPublisher<CLLocation, Error>
     func stopLocationTracking()
 }
@@ -28,10 +27,6 @@ public final class LocationServiceUseCaseImp: LocationServiceUseCase {
     
     public func verifyLocationPermission() -> AnyPublisher<Bool, Never> {
         locationServiceRepository.isLocationPermissionGranted()
-    }
-    
-    public func openAppSettings() {
-        locationServiceRepository.movedToSettingFromApp()
     }
     
     public func movedToUserLocation() -> AnyPublisher<CLLocation, Error> {

@@ -52,14 +52,6 @@ extension LocationServiceRepositoryImp: LocationServiceRepository {
         return authorizationStatusSubject.eraseToAnyPublisher()
     }
     
-    public func movedToSettingFromApp() {
-        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-        
-        if UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
-        }
-    }
-    
     public func publishCurrentLocation() -> AnyPublisher<CLLocation, Error> {
         return updateLocationSubject.eraseToAnyPublisher()
     }
