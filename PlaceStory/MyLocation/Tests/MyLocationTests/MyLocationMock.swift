@@ -62,7 +62,7 @@ final class MyLocationInteractableMock: MyLocationInteractable {
     var placeSearcherDidTapCloseHandler: (() -> ())?
     var placeSearcherDidTapCloseCallCount = 0
     
-    var selectedLocationHandler: ((_ placeRecord: PlaceAnnotation) -> ())?
+    var selectedLocationHandler: ((_ placeMark: PlaceMark) -> ())?
     var selectedLocationCallCount = 0
     
     init() {}
@@ -88,10 +88,10 @@ final class MyLocationInteractableMock: MyLocationInteractable {
         }
     }
     
-    func selectedLocation(_ placeRecord: PlaceAnnotation) {
+    func selectedLocation(_ placeMark: PlaceMark) {
         selectedLocationCallCount += 1
         if let selectedLocationHandler {
-            return selectedLocationHandler(placeRecord)
+            return selectedLocationHandler(placeMark)
         }
     }
 }
@@ -127,6 +127,12 @@ final class MyLocationRoutingMock: MyLocationRouting {
     var detachPlaceSearcherHandler: (() -> ())?
     var detachPlaceSearcherCallCount = 0
     
+    var attachPlaceListHandler: (() -> ())?
+    var attachPlaceListCallCount = 0
+    
+    var detachPresentationControllerHandler: (() -> ())?
+    var detachPresentationControllerCallCount = 0
+    
     init(
         interactable: Interactable,
         viewControllable: ViewControllable
@@ -159,6 +165,16 @@ final class MyLocationRoutingMock: MyLocationRouting {
         detachPlaceSearcherCallCount += 1
         detachPlaceSearcherHandler?()
     }
+    
+    func attachPlaceList() {
+        attachPlaceListCallCount += 1
+        attachPlaceListHandler?()
+    }
+    
+    func detachPresentationController() {
+        detachPresentationControllerCallCount += 1
+        detachPresentationControllerHandler?()
+    }
 }
 
 // MARK: - MyLocationViewControllable Mock
@@ -173,11 +189,14 @@ final class MyLocationViewControllableMock: MyLocationViewControllable, MyLocati
     var showFailedLocationAlertHandler: ((_ error: Error) -> Void)?
     var showFailedLocationAlertCallCount = 0
     
-    var updateCurrentLocationHandler: ((_ location: CLLocation) -> Void)?
+    var updateCurrentLocationHandler: (() -> Void)?
     var updateCurrentLocationCallCount = 0
     
     var movedLocationHandler: ((_ cLLocation: CLLocation, _ locationTitle: String) -> Void)?
     var movedLocationCallCount = 0
+    
+    var updateSelectedLocationHandler: ((_ placeMark: PlaceMark) -> Void)?
+    var updateSelectedLocationCallCount = 0
     
     var listener: MyLocationPresentableListener?
     
@@ -193,14 +212,19 @@ final class MyLocationViewControllableMock: MyLocationViewControllable, MyLocati
         showFailedLocationAlertHandler?(error)
     }
     
-    func updateCurrentLocation(with location: CLLocation) {
+    func updateCurrentLocation() {
         updateCurrentLocationCallCount += 1
-        updateCurrentLocationHandler?(location)
+        updateCurrentLocationHandler?()
     }
     
     func movedLocation(to cLLocation: CLLocation, _ locationTitle: String) {
         movedLocationCallCount += 1
         movedLocationHandler?(cLLocation, locationTitle)
+    }
+    
+    func updateSelectedLocation(from placeMark: PlaceMark) {
+        updateSelectedLocationCallCount += 1
+        updateSelectedLocationHandler?(placeMark)
     }
 }
 
