@@ -25,7 +25,7 @@ protocol MyLocationPresentable: Presentable {
     func showRequestLocationAlert()
     func showFailedLocationAlert(_ error: Error)
     func updateCurrentLocation()
-    func updateSelectedLocation(from placeRecord: PlaceMark)
+    func updateSelectedLocation(from placeMark: PlaceMark)
 }
 
 public protocol MyLocationListener: AnyObject {
@@ -139,8 +139,8 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
         router?.detachPlaceSearcher()
     }
     
-    func selectedLocation(_ placeRecord: PlaceMark) {
-        presenter.updateSelectedLocation(from: placeRecord)
+    func selectedLocation(_ placeMark: PlaceMark) {
+        presenter.updateSelectedLocation(from: placeMark)
         
         router?.detachPlaceSearcher()
     }

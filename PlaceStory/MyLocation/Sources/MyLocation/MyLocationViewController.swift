@@ -105,8 +105,8 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
         placeMapView.updateCurrentLocation()
     }
     
-    func updateSelectedLocation(from placeRecord: PlaceMark) {
-        placeMapView.updateSelectedLocation(from: placeRecord)
+    func updateSelectedLocation(from placeMark: PlaceMark) {
+        placeMapView.updateSelectedLocation(from: placeMark)
     }
     
     // MARK: - AppleMapViewButtonDelegate
