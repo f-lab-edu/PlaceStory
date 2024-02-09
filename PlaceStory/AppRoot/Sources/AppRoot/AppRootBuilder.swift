@@ -5,9 +5,13 @@
 //  Created by 최제환 on 12/2/23.
 //
 
+import AppleMapView
+import PlaceList
+import PlaceSearcher
 import Repositories
 import RepositoryImps
 import ModernRIBs
+import MyLocation
 import LocalStorage
 import LoggedOut
 import SecurityServices
@@ -16,28 +20,28 @@ import UseCase
 
 
 public protocol AppRootDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var loggedOutBuilder: LoggedOutBuildable { get }
+    var loggedInBuilder: LoggedInBuildable { get }
+    var appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase { get }
+    var myLocationBuilder: MyLocationBuildable { get }
+    var placeListBuilder: PlaceListBuildable { get }
+    var mapViewFactory: MapViewFactory { get }
+    var locationServiceUseCase: LocationServiceUseCase { get }
+    var mapServiceUseCase: MapServiceUseCase { get }
+    var appSettingsServiceUseCase: AppSettingsServiceUseCase { get }
+    var placeSearchBuilder: PlaceSearcherBuildable { get }
 }
 
 final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency, LoggedInDependency {
-    let appleAuthenticationServiceUseCase: UseCase.AppleAuthenticationServiceUseCase
-    
-    override init(
-        dependency: AppRootDependency
-    ) {
-        let realmDatabase = RealmDatabaseImp()
-        let keychainService = KeychainServiceImp()
-        let appleAuthenticationServiceRepository = AppleAuthenticationServiceRepositoryImp(
-            database: realmDatabase,
-            keychain: keychainService
-        )
-        self.appleAuthenticationServiceUseCase = AppleAuthenticationServiceUseCaseImp(
-            appleAuthenticationServiceRepository: appleAuthenticationServiceRepository
-        )
+    var appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase { dependency.appleAuthenticationServiceUseCase }
+    var myLocationBuilder: MyLocationBuildable { dependency.myLocationBuilder }
+    var mapViewFactory: MapViewFactory { dependency.mapViewFactory }
+    var locationServiceUseCase: LocationServiceUseCase { dependency.locationServiceUseCase }
+    var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
+    var appSettingsServiceUseCase: AppSettingsServiceUseCase { dependency.appSettingsServiceUseCase }
+    var placeSearchBuilder: PlaceSearcherBuildable { dependency.placeSearchBuilder }
+    var placeListBuilder: PlaceListBuildable { dependency.placeListBuilder }
         
-        super.init(dependency: dependency)
-    }
 }
 
 // MARK: - Builder
@@ -57,19 +61,14 @@ public final class AppRootBuilder: Builder<AppRootDependency>, AppRootBuildable 
         let viewController = AppRootViewController()
         let interactor = AppRootInteractor(
             presenter: viewController,
-            appleAuthenticationServiceUseCase: component.appleAuthenticationServiceUseCase
+            appleAuthenticationServiceUseCase: dependency.appleAuthenticationServiceUseCase
         )
         
-        let loggedOutBuilder = LoggedOutBuilder(dependency: component)
-        let loggedInBuilder = LoggedInBuilder(dependency: component)
-        
-        let router = AppRootRouter(
+        return AppRootRouter(
             interactor: interactor,
             viewController: viewController,
-            loggedOutBuilder: loggedOutBuilder,
-            loggedInBuilder: loggedInBuilder
+            loggedOutBuilder: dependency.loggedOutBuilder,
+            loggedInBuilder: dependency.loggedInBuilder
         )
-        
-        return router
     }
 }

@@ -13,7 +13,7 @@ public final class PlaceStoryAlert {
         _ viewController: UIViewController,
         _ title: String,
         _ message: String,
-        _ handler: ((UIAlertAction) -> ())?
+        _ handler: (() -> Void)?
     ) {
         let alertController = UIAlertController(
             title: title,
@@ -24,7 +24,9 @@ public final class PlaceStoryAlert {
         let action = UIAlertAction(
             title: "확인"
             , style: .cancel,
-            handler: handler
+            handler: { _ in
+                handler?()
+            }
         )
         
         alertController.addAction(action)
@@ -40,9 +42,9 @@ public final class PlaceStoryAlert {
         _ title: String,
         _ message: String,
         _ okButtonTitle: String,
-        _ okHandler: ((UIAlertAction) -> ())?,
+        _ okHandler: (() -> Void)?,
         _ cancelButtonTitle: String,
-        _ cancelHandler: ((UIAlertAction) -> ())?
+        _ cancelHandler: (() -> Void)?
     ) {
         let alertController = UIAlertController(
             title: title,
@@ -53,13 +55,17 @@ public final class PlaceStoryAlert {
         let okAction = UIAlertAction(
             title: okButtonTitle,
             style: .default,
-            handler: okHandler
+            handler: { _ in
+                okHandler?()
+            }
         )
         
         let cancelAction = UIAlertAction(
             title: cancelButtonTitle,
             style: .cancel,
-            handler: cancelHandler
+            handler: { _ in
+                cancelHandler?()
+            }
         )
         
         alertController.addAction(cancelAction)

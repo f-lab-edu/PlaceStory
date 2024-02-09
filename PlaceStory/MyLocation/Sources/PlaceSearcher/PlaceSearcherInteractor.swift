@@ -77,7 +77,6 @@ final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresenta
         mapServiceUseCase.selectedLocation(at: index)
             .sink { [weak self] placeRecord in
                 guard let self else { return }
-                
                 self.listener?.selectedLocation(placeRecord)
             }
             .store(in: &cancellables)

@@ -15,7 +15,8 @@ let package = Package(
         .package(path: "../ProxyPackage"),
         .package(path: "../Domain"),
         .package(path: "../MyLocation"),
-        .package(path: "../PlaceDiary")
+        .package(path: "../PlaceDiary"),
+        .package(path: "../Platform")
     ],
     targets: [
         .target(
@@ -24,7 +25,9 @@ let package = Package(
                 "ProxyPackage",
                 .product(name: "Entities", package: "Domain"),
                 "MyLocation",
-                .product(name: "PlaceList", package: "PlaceDiary")
+                .product(name: "PlaceList", package: "PlaceDiary"),
+                .product(name: "CommonUI", package: "ProxyPackage"),
+                .product(name: "AppleMapView", package: "Platform")
             ]
         ),
         .testTarget(

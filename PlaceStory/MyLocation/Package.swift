@@ -17,7 +17,8 @@ let package = Package(
     dependencies: [
         .package(path: "../ProxyPackage"),
         .package(path: "../Domain"),
-        .package(path: "../Platform")
+        .package(path: "../Platform"),
+        .package(path: "../PlaceList")
     ],
     targets: [
         .target(
@@ -28,7 +29,9 @@ let package = Package(
                 .product(name: "RepositoryImps", package: "Platform"),
                 .product(name: "CommonUI", package: "ProxyPackage"),
                 .product(name: "Utils", package: "ProxyPackage"),
-                "PlaceSearcher"
+                "PlaceSearcher",
+                .product(name: "AppleMapView", package: "Platform"),
+                .product(name: "PlaceList", package: "PlaceList")
             ]
         ),
         .target(

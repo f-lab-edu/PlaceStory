@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3300E9E12B70C8C800317DD3 /* AppleMapView in Frameworks */ = {isa = PBXBuildFile; productRef = 3300E9E02B70C8C800317DD3 /* AppleMapView */; };
 		333F697A2B2A9A0800BF9C83 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333F69792B2A9A0800BF9C83 /* Security.framework */; };
 		334F10EB2B2AD45900FFEE0A /* SecurityServices in Frameworks */ = {isa = PBXBuildFile; productRef = 334F10EA2B2AD45900FFEE0A /* SecurityServices */; };
 		337214BC2B19D1BD007622F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214BB2B19D1BD007622F7 /* AppDelegate.swift */; };
@@ -88,6 +89,7 @@
 				9882F32B2B2EE972009FC18A /* LoggedIn in Frameworks */,
 				33A72A222B202DBA00E41887 /* Repositories in Frameworks */,
 				98EAA3E62B1F723F00937B0E /* UseCase in Frameworks */,
+				3300E9E12B70C8C800317DD3 /* AppleMapView in Frameworks */,
 				988C791E2B1B1D55007E5440 /* AppRoot in Frameworks */,
 				333F697A2B2A9A0800BF9C83 /* Security.framework in Frameworks */,
 				33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */,
@@ -239,6 +241,7 @@
 				9845E1DD2B308D46009E13E2 /* MyLocation */,
 				98143F472B3B17760007839C /* PlaceSearcher */,
 				988022A52B67F62300AA21D8 /* PlaceList */,
+				3300E9E02B70C8C800317DD3 /* AppleMapView */,
 			);
 			productName = PlaceStory;
 			productReference = 337214B82B19D1BD007622F7 /* PlaceStory.app */;
@@ -699,6 +702,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3300E9E02B70C8C800317DD3 /* AppleMapView */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppleMapView;
+		};
 		334F10EA2B2AD45900FFEE0A /* SecurityServices */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SecurityServices;

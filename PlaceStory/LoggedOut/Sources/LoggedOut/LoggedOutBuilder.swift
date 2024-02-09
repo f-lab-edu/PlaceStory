@@ -38,6 +38,9 @@ public final class LoggedOutBuilder: Builder<LoggedOutDependency>, LoggedOutBuil
         )
         interactor.listener = listener
         
-        return LoggedOutRouter(interactor: interactor, viewController: viewController)
+        return LoggedOutRouter(
+            interactor: interactor,
+            viewController: viewController
+        )
     }
 }

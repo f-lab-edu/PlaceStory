@@ -12,12 +12,10 @@ import SnapKit
 import UIKit
 
 public protocol AppleMapViewButtonDelegate: AnyObject {
-    func didTapPlaceSearch()
-    func didTapMyLocation()
     func didSelectAnnotationView()
 }
 
-final class AppleMapView: UIView, AppleMapViewable {
+final class AppleMapView: UIView, MapViewable {
      let mapView: MKMapView = {
         let mkMapView = MKMapView()
         mkMapView.register(PlaceAnnotationView.self, forAnnotationViewWithReuseIdentifier: PlaceAnnotationView.identifier)
@@ -25,55 +23,9 @@ final class AppleMapView: UIView, AppleMapViewable {
         return mkMapView
     }()
     
-    private lazy var placeSearchButton: UIButton = {
-        let uiButton = UIButton()
-        
-        uiButton.setImage(
-            UIImage(
-                systemName: "magnifyingglass",
-                withConfiguration: UIImage.SymbolConfiguration(
-                    pointSize: 14,
-                    weight: .medium
-                )
-            ),
-            for: .normal
-        )
-        uiButton.backgroundColor = .white
-        uiButton.layer.borderWidth = 1.0
-        uiButton.layer.borderColor = UIColor.black.cgColor
-        uiButton.layer.cornerRadius = 10.0
-        uiButton.tintColor = .black
-        uiButton.addTarget(self, action: #selector(didTapPlaceSearcher), for: .touchUpInside)
-        
-        return uiButton
-    }()
-    
-    private lazy var myLocationButton: UIButton = {
-        let uiButton = UIButton()
-        
-        uiButton.setImage(
-            UIImage(
-                systemName: "location.fill",
-                withConfiguration: UIImage.SymbolConfiguration(
-                    pointSize: 14,
-                    weight: .medium
-                )
-            ),
-            for: .normal
-        )
-        uiButton.backgroundColor = .white
-        uiButton.layer.borderWidth = 1.0
-        uiButton.layer.borderColor = UIColor.black.cgColor
-        uiButton.layer.cornerRadius = 10.0
-        uiButton.tintColor = .black
-        uiButton.addTarget(self, action: #selector(didTapMyLocation), for: .touchUpInside)
-        
-        return uiButton
-    }()
-    
     private let appleMapViewDelegateProxy: AppleMapViewDelegateProxy
     
-    weak var delegate: AppleMapViewButtonDelegate?
+    weak var delegate: MapViewDelegate?
     
     override init(frame: CGRect) {
         self.appleMapViewDelegateProxy = AppleMapViewDelegateProxy()
@@ -91,15 +43,11 @@ final class AppleMapView: UIView, AppleMapViewable {
     
     func configureUI() {
         addSubview(mapView)
-        addSubview(placeSearchButton)
-        addSubview(myLocationButton)
         
         configureMapViewAutoLayout()
-        configurePlaceSearchButtonAutoLayout()
-        configureMyLocationButtonAutoLayout()
     }
     
-    public func setDelegate(_ delegate: AppleMapViewButtonDelegate) {
+    public func setDelegate(_ delegate: MapViewDelegate) {
         self.delegate = delegate
     }
     
@@ -121,20 +69,6 @@ final class AppleMapView: UIView, AppleMapViewable {
     private func configureMapViewAutoLayout() {
         mapView.snp.makeConstraints { make in
             make.top.leading.trailing.bottom.equalToSuperview()
-        }
-    }
-    
-    private func configurePlaceSearchButtonAutoLayout() {
-        placeSearchButton.snp.makeConstraints { make in
-            make.top.trailing.equalTo(self.safeAreaLayoutGuide).inset(20)
-            make.width.height.equalTo(44)
-        }
-    }
-    
-    private func configureMyLocationButtonAutoLayout() {
-        myLocationButton.snp.makeConstraints { make in
-            make.bottom.trailing.equalTo(self.safeAreaLayoutGuide).inset(20)
-            make.width.height.equalTo(44)
         }
     }
     
@@ -161,15 +95,9 @@ final class AppleMapView: UIView, AppleMapViewable {
             mapView.addAnnotation(placeAnnotation)
         }
     }
-    
-    @objc func didTapPlaceSearcher() {
-        delegate?.didTapPlaceSearch()
-    }
-    
-    @objc func didTapMyLocation() {
-        delegate?.didTapMyLocation()
-    }
 }
+
+// MARK: - AppleMapViewDelegate
 
 extension AppleMapView: AppleMapViewDelegate {
     func animateAnnotationView(_ annotationView: PlaceAnnotationView) {

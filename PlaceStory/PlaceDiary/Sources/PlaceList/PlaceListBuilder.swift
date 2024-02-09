@@ -34,6 +34,10 @@ public final class PlaceListBuilder: Builder<PlaceListDependency>, PlaceListBuil
         let viewController = PlaceListViewController()
         let interactor = PlaceListInteractor(presenter: viewController)
         interactor.listener = listener
-        return PlaceListRouter(interactor: interactor, viewController: viewController)
+        
+        return PlaceListRouter(
+            interactor: interactor,
+            viewController: viewController
+        )
     }
 }

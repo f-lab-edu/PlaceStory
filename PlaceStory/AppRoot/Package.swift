@@ -16,7 +16,9 @@ let package = Package(
         .package(path: "../LoggedOut"),
         .package(path: "../Domain"),
         .package(path: "../Platform"),
-        .package(path: "../LoggedIn")
+        .package(path: "../LoggedIn"),
+        .package(path: "../MyLocation"),
+        .package(path: "../PlaceDiary")
     ],
     targets: [
         .target(
@@ -26,7 +28,14 @@ let package = Package(
                 "LoggedOut",
                 .product(name: "UseCase", package: "Domain"),
                 .product(name: "RepositoryImps", package: "Platform"),
+                .product(name: "Repositories", package: "Domain"),
                 "LoggedIn",
+                .product(name: "MyLocation", package: "MyLocation"),
+                .product(name: "AppleMapView", package: "Platform"),
+                .product(name: "PlaceList", package: "PlaceDiary"),
+                .product(name: "PlaceSearcher", package: "MyLocation"),
+                .product(name: "LocalStorage", package: "Platform"),
+                .product(name: "SecurityServices", package: "Platform")
             ]
         )
     ]

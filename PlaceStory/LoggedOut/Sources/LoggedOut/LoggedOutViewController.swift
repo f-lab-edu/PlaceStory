@@ -87,12 +87,8 @@ final class LoggedOutViewController: UIViewController, LoggedOutPresentable, Log
     }
     
     // MARK: - LoggedOutPresentable
-    func showAppleLoginErrorAlert(_ error: Error) {
-        PlaceStoryAlert.showAlertWithOneAction(
-            self,
-            "로그인",
-            error.localizedDescription,
-            nil
-        )
+    
+    func showAlertWithOneAction(_ title: String, _ message: String, _ handler: (() -> Void)?) {
+        PlaceStoryAlert.showAlertWithOneAction(self, title, message, handler)
     }
 }
