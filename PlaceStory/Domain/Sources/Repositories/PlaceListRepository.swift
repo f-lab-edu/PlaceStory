@@ -8,10 +8,9 @@
 import Combine
 import Entities
 import Foundation
-import LocalStorage
 
 public protocol PlaceListRepository {
-    func fetchPlaceRecordFrom(userId: String, placeName: String) -> AnyPublisher<[PlaceRecord], RealmDatabaseError>
+    func fetchPlaceRecordFrom(userId: String, placeName: String) -> AnyPublisher<[PlaceRecord], Error>
     func insert(placeRecord: PlaceRecord) -> Bool
     func update(placeRecord: PlaceRecord) -> Bool
     func delete(placeRecord: PlaceRecord) -> Bool

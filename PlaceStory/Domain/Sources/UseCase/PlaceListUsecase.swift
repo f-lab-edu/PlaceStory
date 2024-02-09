@@ -8,11 +8,10 @@
 import Combine
 import Entities
 import Foundation
-import LocalStorage
 import Repositories
 
 public protocol PlaceListUsecase {
-    func searchPlaceRecordFrom(userId: String, placeName: String) -> AnyPublisher<[PlaceRecord], RealmDatabaseError>
+    func searchPlaceRecordFrom(userId: String, placeName: String) -> AnyPublisher<[PlaceRecord], Error>
     func add(placeRecord: PlaceRecord) -> Bool
     func modify(placeRecord: PlaceRecord) -> Bool
     func remove(placeRecord: PlaceRecord) -> Bool
@@ -28,7 +27,7 @@ public final class PlaceListUsecaseImp: PlaceListUsecase {
         self.placeListRepository = placeListRepository
     }
     
-    public func searchPlaceRecordFrom(userId: String, placeName: String) -> AnyPublisher<[PlaceRecord], RealmDatabaseError> {
+    public func searchPlaceRecordFrom(userId: String, placeName: String) -> AnyPublisher<[PlaceRecord], Error> {
         placeListRepository.fetchPlaceRecordFrom(userId: userId, placeName: placeName)
     }
     

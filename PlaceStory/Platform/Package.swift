@@ -34,7 +34,7 @@ let package = Package(
         .target(
             name: "LocalStorage",
             dependencies: [
-                "ProxyPackage",
+                .product(name: "ProxyPackage", package: "ProxyPackage"),
                 .product(name: "Utils", package: "ProxyPackage"),
                 "Model"
             ]
