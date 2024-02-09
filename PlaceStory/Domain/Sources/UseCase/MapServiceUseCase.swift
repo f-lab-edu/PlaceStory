@@ -12,7 +12,7 @@ import Repositories
 
 public protocol MapServiceUseCase {
     func updateSearchText(_ text: String) -> AnyPublisher<[PlaceSearchResult], Never>
-    func selectedLocation(at index: Int) -> AnyPublisher<PlaceRecord, Never>
+    func selectedLocation(at index: Int) -> AnyPublisher<PlaceMark, Never>
 }
 
 public final class MapServiceUseCaseImp: MapServiceUseCase {
@@ -29,7 +29,7 @@ public final class MapServiceUseCaseImp: MapServiceUseCase {
         mapServiceRepository.searchPlace(from: text)
     }
     
-    public func selectedLocation(at index: Int) -> AnyPublisher<PlaceRecord, Never> {
+    public func selectedLocation(at index: Int) -> AnyPublisher<PlaceMark, Never> {
         mapServiceRepository.startSearchWithLocalSearchCompletion(at: index)
     }
 }

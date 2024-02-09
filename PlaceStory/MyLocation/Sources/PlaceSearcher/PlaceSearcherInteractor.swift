@@ -23,7 +23,7 @@ protocol PlaceSearcherPresentable: Presentable {
 
 public protocol PlaceSearcherListener: AnyObject {
     func placeSearcherDidTapClose()
-    func selectedLocation(_ placeRecord: PlaceRecord)
+    func selectedLocation(_ placeMark: PlaceMark)
 }
 
 final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresentable>, PlaceSearcherInteractable, PlaceSearcherPresentableListener {

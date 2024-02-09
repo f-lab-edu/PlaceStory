@@ -19,7 +19,7 @@ let package = Package(
             targets: ["Repositories"])
     ],
     dependencies: [
-        .package(path: "ProxyPackage")
+        .package(path: "../ProxyPackage")
     ],
     targets: [
         .target(

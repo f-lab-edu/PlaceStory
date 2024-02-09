@@ -28,14 +28,13 @@ let package = Package(
         )
     ],
     dependencies: [
-      .package(path: "../Domain"),
       .package(path: "../ProxyPackage")
     ],
     targets: [
         .target(
             name: "LocalStorage",
             dependencies: [
-                "ProxyPackage",
+                .product(name: "ProxyPackage", package: "ProxyPackage"),
                 .product(name: "Utils", package: "ProxyPackage"),
                 "Model"
             ]
@@ -43,19 +42,16 @@ let package = Package(
         .target(
             name: "Model",
             dependencies: [
-                "ProxyPackage",
-                .product(name: "Entities", package: "Domain")
+                "ProxyPackage"
             ]
         ),
         .target(
             name: "RepositoryImps",
             dependencies: [
-                .product(name: "Repositories", package: "Domain"),
                 "LocalStorage",
                 .product(name: "Utils", package: "ProxyPackage"),
                 "Model",
-                "SecurityServices",
-                .product(name: "Entities", package: "Domain")
+                "SecurityServices"
             ]
         ),
         .target(

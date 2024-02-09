@@ -60,10 +60,10 @@ final class AppleMapView: UIView, MapViewable {
         mapView.setUserTrackingMode(.follow, animated: true)
     }
     
-    func updateSelectedLocation(from placeRecord: PlaceRecord) {
-        let coordenate = CLLocationCoordinate2D(latitude: placeRecord.latitude, longitude: placeRecord.longitude)
+    func updateSelectedLocation(from placeMark: PlaceMark) {
+        let coordenate = CLLocationCoordinate2D(latitude: placeMark.latitude, longitude: placeMark.longitude)
         movedLocation(to: coordenate)
-        addAnnotation(as: placeRecord)
+        addAnnotation(as: placeMark)
     }
     
     private func configureMapViewAutoLayout() {
@@ -79,15 +79,15 @@ final class AppleMapView: UIView, MapViewable {
         }
     }
     
-    public func addAnnotation(as placeRecord: PlaceRecord) {
-        let latitude = placeRecord.latitude
-        let longitude = placeRecord.longitude
+    public func addAnnotation(as placeMark: PlaceMark) {
+        let latitude = placeMark.latitude
+        let longitude = placeMark.longitude
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         
         if !isDuplicateAnnotation(mapView.annotations, coordinate) {
             let placeAnnotation = PlaceAnnotation(
                 coordinate: coordinate,
-                title: placeRecord.placeName,
+                title: placeMark.placeName,
                 subtitle: "",
                 imageName: "pins"
             )

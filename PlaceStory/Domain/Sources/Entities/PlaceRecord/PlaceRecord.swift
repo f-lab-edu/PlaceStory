@@ -2,29 +2,41 @@
 //  File.swift
 //  
 //
-//  Created by 최제환 on 1/10/24.
+//  Created by 최제환 on 2/6/24.
 //
 
 import Foundation
 
-public struct PlaceRecord {
-    public let latitude: Double
-    public let longitude: Double
+public struct PlaceRecord: Identifiable {
+    public let id: String
+    public let userId: String
     public let placeName: String
-    public let placeDescription: String
-    public let placeImages: [Data]
+    public let recordTitle: String
+    public let recordDescription: String
+    public let placeCategory: String
+    public let registerDate: Date
+    public let updateDate: Date
+    public let recordImages: [Data]?
     
     public init(
-        latitude: Double,
-        longitude: Double,
+        id: String,
+        userId: String,
         placeName: String,
-        placeDescription: String,
-        placeImages: [Data]
+        recordTitle: String,
+        recordDescription: String,
+        placeCategory: String,
+        registerDate: Date,
+        updateDate: Date,
+        recordImages: [Data]?
     ) {
-        self.latitude = latitude
-        self.longitude = longitude
+        self.id = id
+        self.userId = userId
         self.placeName = placeName
-        self.placeDescription = placeDescription
-        self.placeImages = placeImages
+        self.recordTitle = recordTitle
+        self.recordDescription = recordDescription
+        self.placeCategory = placeCategory
+        self.registerDate = registerDate
+        self.updateDate = updateDate
+        self.recordImages = recordImages
     }
 }

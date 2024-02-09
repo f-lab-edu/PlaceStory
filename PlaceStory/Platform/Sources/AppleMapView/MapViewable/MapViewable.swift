@@ -11,7 +11,7 @@ import UIKit
 
 public protocol MapViewable where Self: UIView {
     func updateCurrentLocation()
-    func updateSelectedLocation(from placeRecord: PlaceRecord)
+    func updateSelectedLocation(from placeMark: PlaceMark)
     func setDelegate(_ delegate: MapViewDelegate)
 }
 
