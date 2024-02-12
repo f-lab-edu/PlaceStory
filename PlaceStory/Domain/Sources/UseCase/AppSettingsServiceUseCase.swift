@@ -26,3 +26,11 @@ public final class AppSettingsServiceUseCaseImp: AppSettingsServiceUseCase {
         appSettingsServiceRepository.updateLocationPermissionInSettings()
     }
 }
+
+public struct AppServiceUsecase {
+  public let openSetting: () -> Void
+  
+  public init(openSetting: @escaping () -> Void) {
+    self.openSetting = openSetting
+  }
+}

@@ -20,9 +20,10 @@ public protocol LoggedInDependency: Dependency {
     var appSettingsServiceUseCase: AppSettingsServiceUseCase { get }
     var placeSearchBuilder: PlaceSearcherBuildable { get }
     var placeListBuilder: PlaceListBuildable { get }
+  var appService: AppServiceUsecase { get }
 }
 
-final class LoggedInComponent: Component<LoggedInDependency>, MyLocationDependency, PlaceListDependency {
+final class LoggedInComponent: Component<LoggedInDependency> {
     var mapViewFactory: MapViewFactory { dependency.mapViewFactory }
     var locationServiceUseCase: LocationServiceUseCase { dependency.locationServiceUseCase }
     var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
