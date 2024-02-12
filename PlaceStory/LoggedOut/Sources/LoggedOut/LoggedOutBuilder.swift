@@ -12,9 +12,8 @@ public protocol LoggedOutDependency: Dependency {
     var appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase { get }
 }
 
-final class LoggedOutComponent: Component<LoggedOutDependency> {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+final class LoggedOutComponent: Component<LoggedOutDependency>, LoggedOutInteractorDependency {
+    var appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase { dependency.appleAuthenticationServiceUseCase }
 }
 
 // MARK: - Builder
@@ -34,7 +33,7 @@ public final class LoggedOutBuilder: Builder<LoggedOutDependency>, LoggedOutBuil
         let viewController = LoggedOutViewController()
         let interactor = LoggedOutInteractor(
             presenter: viewController,
-            appleAuthenticationServiceUseCase: dependency.appleAuthenticationServiceUseCase
+            dependency: component
         )
         interactor.listener = listener
         
