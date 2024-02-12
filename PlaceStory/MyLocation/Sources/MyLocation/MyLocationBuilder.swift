@@ -16,15 +16,17 @@ public protocol MyLocationDependency: Dependency {
     var locationServiceUseCase: LocationServiceUseCase { get }
     var mapServiceUseCase: MapServiceUseCase { get }
     var appSettingsServiceUseCase: AppSettingsServiceUseCase { get }
+  var appService: AppServiceUsecase { get }
     var mapViewFactory: MapViewFactory { get }
     var placeSearchBuilder: PlaceSearcherBuildable { get }
     var placeListBuilder: PlaceListBuildable { get }
 }
 
-final class MyLocationComponent: Component<MyLocationDependency>, PlaceSearcherDependency, PlaceListDependency {
+final class MyLocationComponent: Component<MyLocationDependency>, PlaceSearcherDependency, PlaceListDependency, MyLocationInteractorDependency {
     var locationServiceUseCase: LocationServiceUseCase { dependency.locationServiceUseCase }
     var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
     var mapViewFactory: MapViewFactory { self.dependency.mapViewFactory }
+  var appService: AppServiceUsecase { self.dependency.appService }
 }
 
 // MARK: - Builder

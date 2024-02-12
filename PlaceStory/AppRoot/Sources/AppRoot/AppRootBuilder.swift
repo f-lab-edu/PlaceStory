@@ -32,7 +32,7 @@ public protocol AppRootDependency: Dependency {
     var placeSearchBuilder: PlaceSearcherBuildable { get }
 }
 
-final class AppRootComponent: Component<AppRootDependency>, LoggedOutDependency, LoggedInDependency {
+final class AppRootComponent: Component<AppRootDependency> {
     var appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase { dependency.appleAuthenticationServiceUseCase }
     var myLocationBuilder: MyLocationBuildable { dependency.myLocationBuilder }
     var mapViewFactory: MapViewFactory { dependency.mapViewFactory }
