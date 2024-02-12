@@ -26,20 +26,24 @@ public protocol PlaceSearcherListener: AnyObject {
     func selectedLocation(_ placeMark: PlaceMark)
 }
 
+protocol PlaceSearcherInteractorDependency {
+    var mapServiceUseCase: MapServiceUseCase { get }
+}
+
 final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresentable>, PlaceSearcherInteractable, PlaceSearcherPresentableListener {
 
     weak var router: PlaceSearcherRouting?
     weak var listener: PlaceSearcherListener?
 
-    private let mapServiceUseCase: MapServiceUseCase
+    private let dependency: PlaceSearcherInteractorDependency
     
     private var cancellables: Set<AnyCancellable>
     
     init(
         presenter: PlaceSearcherPresentable,
-        mapServiceUseCase: MapServiceUseCase
+        dependency: PlaceSearcherInteractorDependency
     ) {
-        self.mapServiceUseCase = mapServiceUseCase
+        self.dependency = dependency
         self.cancellables = .init()
         
         super.init(presenter: presenter)
@@ -63,7 +67,7 @@ final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresenta
     }
     
     func didChangeSearchText(_ text: String) {
-        mapServiceUseCase.updateSearchText(text)
+        dependency.mapServiceUseCase.updateSearchText(text)
             .filter { $0.count > 0 }
             .sink(receiveValue: { [weak self] placeSearchResults in
                 guard let self else { return }
@@ -74,7 +78,7 @@ final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresenta
     }
     
     func didSelect(at index: Int) {
-        mapServiceUseCase.selectedLocation(at: index)
+        dependency.mapServiceUseCase.selectedLocation(at: index)
             .sink { [weak self] placeRecord in
                 guard let self else { return }
                 self.listener?.selectedLocation(placeRecord)

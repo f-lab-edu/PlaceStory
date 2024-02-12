@@ -16,17 +16,15 @@ public protocol MyLocationDependency: Dependency {
     var locationServiceUseCase: LocationServiceUseCase { get }
     var mapServiceUseCase: MapServiceUseCase { get }
     var appSettingsServiceUseCase: AppSettingsServiceUseCase { get }
-  var appService: AppServiceUsecase { get }
     var mapViewFactory: MapViewFactory { get }
     var placeSearchBuilder: PlaceSearcherBuildable { get }
     var placeListBuilder: PlaceListBuildable { get }
 }
 
-final class MyLocationComponent: Component<MyLocationDependency>, PlaceSearcherDependency, PlaceListDependency, MyLocationInteractorDependency {
+final class MyLocationComponent: Component<MyLocationDependency>, MyLocationInteractorDependency {
     var locationServiceUseCase: LocationServiceUseCase { dependency.locationServiceUseCase }
     var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
-    var mapViewFactory: MapViewFactory { self.dependency.mapViewFactory }
-  var appService: AppServiceUsecase { self.dependency.appService }
+    var appSettingsServiceUseCase: AppSettingsServiceUseCase { dependency.appSettingsServiceUseCase }
 }
 
 // MARK: - Builder
@@ -43,13 +41,12 @@ public final class MyLocationBuilder: Builder<MyLocationDependency>, MyLocationB
     
     public func build(withListener listener: MyLocationListener) -> MyLocationRouting {
         let component = MyLocationComponent(dependency: dependency)
-        let viewController = MyLocationViewController(mapViewFactory: component.mapViewFactory)
+        let viewController = MyLocationViewController(mapViewFactory: dependency.mapViewFactory)
         let interactor = MyLocationInteractor(
             presenter: viewController,
-            locationServiceUseCase: component.locationServiceUseCase,
-            mapServiceUseCase: component.mapServiceUseCase,
-            appSettingsServiceUseCase: dependency.appSettingsServiceUseCase
+            dependency: component
         )
+        
         interactor.listener = listener
         
         return MyLocationRouter(

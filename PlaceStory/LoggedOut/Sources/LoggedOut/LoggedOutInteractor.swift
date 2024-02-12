@@ -25,20 +25,24 @@ public protocol LoggedOutListener: AnyObject {
     func detachLoggedOut()
 }
 
+protocol LoggedOutInteractorDependency {
+    var appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase { get }
+}
+
 final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, LoggedOutInteractable, LoggedOutPresentableListener {
 
     weak var router: LoggedOutRouting?
     weak var listener: LoggedOutListener?
 
-    private let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+    private let dependency: LoggedOutInteractorDependency
     
     private var cancellables: Set<AnyCancellable>
     
     init(
         presenter: LoggedOutPresentable,
-        appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+        dependency: LoggedOutInteractorDependency
     ) {
-        self.appleAuthenticationServiceUseCase = appleAuthenticationServiceUseCase
+        self.dependency = dependency
         self.cancellables = .init()
         
         super.init(presenter: presenter)
@@ -56,7 +60,7 @@ final class LoggedOutInteractor: PresentableInteractor<LoggedOutPresentable>, Lo
     }
     
     func handleSignInWithApple() {
-        appleAuthenticationServiceUseCase.signInWithApple()
+        dependency.appleAuthenticationServiceUseCase.signInWithApple()
             .sink { [weak self] completion in
                 guard let self else { return }
                 

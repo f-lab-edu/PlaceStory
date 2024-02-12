@@ -25,20 +25,24 @@ public protocol AppRootListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
+protocol AppRootInteractorDependency {
+    var appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase { get }
+}
+
 final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRootInteractable, AppRootPresentableListener {
     
     weak var router: AppRootRouting?
     weak var listener: AppRootListener?
     
-    private let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+    private let dependency: AppRootInteractorDependency
     
     private var cancellables: Set<AnyCancellable>
     
     init(
         presenter: AppRootPresentable,
-        appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
+        dependency: AppRootInteractorDependency
     ) {
-        self.appleAuthenticationServiceUseCase = appleAuthenticationServiceUseCase
+        self.dependency = dependency
         self.cancellables = .init()
         
         super.init(presenter: presenter)
@@ -48,7 +52,7 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
     override func didBecomeActive() {
         super.didBecomeActive()
         
-        appleAuthenticationServiceUseCase.checkPreviousSignInWithApple()
+        dependency.appleAuthenticationServiceUseCase.checkPreviousSignInWithApple()
             .sink { [weak self] completion in
                 guard let self else { return }
                 
@@ -64,7 +68,7 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
                 guard let self else { return }
                 
                 if hasPrevious {
-                    if let userInfo = self.appleAuthenticationServiceUseCase.fetchUserInfo() {
+                    if let userInfo = dependency.appleAuthenticationServiceUseCase.fetchUserInfo() {
                         Log.info("UserInfo is \(userInfo)", "[\(#file)-\(#function) - \(#line)]")
                         
                         DispatchQueue.main.async {
