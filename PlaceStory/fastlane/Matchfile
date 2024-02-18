@@ -1,0 +1,13 @@
+git_url("https://github.com/randychoi95/fastlane-match-PlaceStory.git")
+git_branch("master")
+storage_mode("git")
+type("appstore") # The default type, can be: appstore, adhoc, enterprise or development
+
+app_identifier(["randychoi.PlaceStory"])
+username("chlwpghks95@daum.net") # Your Apple Developer Portal username
+team_id("FF4F6NQNDX")
+
+# For all available options run `fastlane match --help`
+# Remove the # in the beginning of the line to enable the other options
+
+# The docs are available on https://docs.fastlane.tools/actions/match
