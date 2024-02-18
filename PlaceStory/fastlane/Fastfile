@@ -1,0 +1,97 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  def updateVersion(options)
+    if options[:version]
+      version = options[:version]
+    else
+      version = prompt(text: "Enter the version type or specific version\n(major, minor, patch or 1.0.0): ")
+    end
+
+    re = /\d+.\d+.\d+/
+    versionNum = version[re, 0]
+
+    if (versionNum)
+      increment_version_number(
+        version_number: versionNum
+      )
+    elsif (version == 'major' || version == 'minor' || version == 'patch')
+      increment_version_number(
+        bump_type: version
+      )
+    else
+      UI.user_error!("[ERROR] Wrong version!!!!!!")
+    end
+  end
+
+  desc "Push a new beta build to TestFlight"
+  lane :upload_testflight do |options|
+    match(type: "appstore")    
+
+    updateVersion(options)
+
+    increment_build_number(xcodeproj: "PlaceStory.xcodeproj")
+
+    project_path = File.join(__dir__, 'PlaceStory.xcodeproj')
+
+    build_app(
+      project: project_path, 
+      scheme: "PlaceStory",
+      output_directory: "./fastlane/distribute",
+      clean: true
+    )
+
+    upload_to_testflight(
+      api_key_path: "fastlane/HG7ACM28H2.json",
+      distribute_external: true
+    )
+  end
+
+  desc "Push a new release build to the App Store"
+  lane :upload_appstore do |options|
+    match(type: "appstore")
+
+    updateVersion(options)
+
+    increment_build_number(xcodeproj: "PlaceStory.xcodeproj")
+
+    project_path = File.join(__dir__, 'PlaceStory/PlaceStory.xcodeproj')
+
+    build_app(
+      project: project_path, 
+      scheme: "PlaceStory",
+      output_directory: "./fastlane/distribute",
+      clean: true
+    )
+
+    capture_screenshots
+    upload_to_app_store
+  end
+
+  lane :register_new_device do |options|
+    device_name = prompt(text: "Enter the device name: ")
+    device_udid = prompt(text: "Enter the device UDID: ")
+    device_hash = {}
+    device_hash[device_name] = device_udid
+    register_devices(
+      devices: device_hash
+    )
+    match(type: "appstore", force_for_new_devices: true)
+    match(type: "development", force_for_new_devices: true)
+  end
+end

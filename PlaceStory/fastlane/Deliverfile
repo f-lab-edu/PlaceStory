@@ -1,0 +1,25 @@
+app_identifier "randychoi.PlaceStory" # appfile에 3가지의 bundle id가 존재하므로 release용 bundle id를 따로 입력해야 가능
+
+price_tier(0)
+
+# skip_metadata: false # 메타 데이터를 업로드 하지 않는가에 대한 옵션 (스크린샷은 메타데이터와 별도로 업로드 됨)
+
+# metadata_path: "./fastlane/metadata"
+
+# 심사 시 IDFA(애플 광고 식별자)에 대한 정보
+submission_information({
+    export_compliance_encryption_updated: false,
+    export_compliance_uses_encryption: false,
+    content_rights_contains_third_party_content: false, # 3party콘텐츠가 포함 여부
+    add_id_info_uses_idfa: false # 내 앱에서 IDFA를 사용 여부
+})
+
+app_rating_config_path("./fastlane/metadata/app_store_rating_config.json")
+
+ipa("./fastlane/distribute/PlaceStory.ipa")
+
+submit_for_review(true)  # 앱스토어 커넥트에 리뷰요청을 할 것인지 (단순히 파일 업로드면 false로 지정할 것)
+
+automatic_release(true)  # 승인되면 자동으로 앱스토어에 제출 여부
+
+force(true) # 터미널에서 물어보는 것 생략: Does the Preview on path './fastlane/Preview.html' look okay for you? (y/n)
