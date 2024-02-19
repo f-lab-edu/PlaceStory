@@ -16,7 +16,7 @@ import SecurityServices
 import Utils
 
 public final class PlaceListRepositoryImp {
-    
+    private let selectedPlaceName = CurrentValueSubject<String, Never>("")
     private let placeRecordSubject = CurrentValueSubject<[PlaceRecord], Error>([])
     private let database: RealmDatabaseImp
     private let keychain: KeychainServiceImp
@@ -63,7 +63,17 @@ public final class PlaceListRepositoryImp {
 // MARK: - PlaceListRepository
 
 extension PlaceListRepositoryImp: PlaceListRepository {
-    public func fetchPlaceRecordFrom(userId: String, placeName: String) -> AnyPublisher<[PlaceRecord], Error> {
+    public func saveSelected(placeName: String) {
+        selectedPlaceName.send(placeName)
+    }
+    
+    public func fetchPlaceName() -> String {
+        return selectedPlaceName.value
+    }
+    
+    public func fetchPlaceRecordFrom() -> AnyPublisher<[PlaceRecord], Error> {
+        let placeName = selectedPlaceName.value
+        let userId = keychain.read("userIdentifier").readValue ?? ""
         let result = database.read(PlaceRecordInfo.self, userId: userId, placeName: placeName)
         
         switch result {

@@ -6,15 +6,14 @@
 //
 
 import ModernRIBs
+import UseCase
 
 public protocol PlaceListDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var placeListUsecase: PlaceListUsecase { get }
 }
 
-final class PlaceListComponent: Component<PlaceListDependency> {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+final class PlaceListComponent: Component<PlaceListDependency>, PlaceListInteractorDependency {
+    var placeListUsecase: PlaceListUsecase { dependency.placeListUsecase }
 }
 
 // MARK: - Builder
@@ -32,7 +31,10 @@ public final class PlaceListBuilder: Builder<PlaceListDependency>, PlaceListBuil
     public func build(withListener listener: PlaceListListener) -> PlaceListRouting {
         let component = PlaceListComponent(dependency: dependency)
         let viewController = PlaceListViewController()
-        let interactor = PlaceListInteractor(presenter: viewController)
+        let interactor = PlaceListInteractor(
+            presenter: viewController,
+            dependency: component
+        )
         interactor.listener = listener
         
         return PlaceListRouter(

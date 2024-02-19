@@ -13,7 +13,8 @@ let package = Package(
             targets: ["PlaceList"]),
     ],
     dependencies: [
-        .package(path: "../ProxyPackage")
+        .package(path: "../ProxyPackage"),
+        .package(path: "../Domain")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -21,7 +22,10 @@ let package = Package(
         .target(
             name: "PlaceList",
             dependencies: [
-                "ProxyPackage"
+                "ProxyPackage",
+                .product(name: "UseCase", package: "Domain"),
+                .product(name: "Utils", package: "ProxyPackage"),
+                .product(name: "Entities", package: "Domain"),
             ]
         ),
         .testTarget(

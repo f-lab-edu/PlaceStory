@@ -25,6 +25,7 @@ final class AppComponent: Component<EmptyDependency>, AppRootDependency, LoggedO
     let locationServiceUseCase: LocationServiceUseCase
     let mapServiceUseCase: MapServiceUseCase
     let appSettingsServiceUseCase: AppSettingsServiceUseCase
+    let placeListUsecase: PlaceListUsecase
     
     lazy var loggedOutBuilder: LoggedOutBuildable = LoggedOutBuilder(dependency: self)
     lazy var loggedInBuilder: LoggedInBuildable = LoggedInBuilder(dependency: self)
@@ -50,6 +51,9 @@ final class AppComponent: Component<EmptyDependency>, AppRootDependency, LoggedO
         self.mapServiceUseCase = mapServiceUsecaseImp
         
         self.appSettingsServiceUseCase = .live
+        
+        let placeListRepository = PlaceListRepositoryImp(database: realmDatabaseImp, keychain: keychainService)
+        self.placeListUsecase = PlaceListUsecaseImp(placeListRepository: placeListRepository)
         
         super.init(dependency: EmptyComponent())
     }
