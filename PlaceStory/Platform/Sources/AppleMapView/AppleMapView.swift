@@ -122,7 +122,7 @@ extension AppleMapView: AppleMapViewDelegate {
         mapView.setRegion(region, animated: true)
     }
     
-    func didSelectAnnotationView() {
-        delegate?.didSelectAnnotationView()
+    func didSelectAnnotationView(_ placeName: String) {
+        delegate?.didSelectAnnotationView(placeName)
     }
 }

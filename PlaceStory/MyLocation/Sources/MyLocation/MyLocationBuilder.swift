@@ -19,12 +19,14 @@ public protocol MyLocationDependency: Dependency {
     var mapViewFactory: MapViewFactory { get }
     var placeSearchBuilder: PlaceSearcherBuildable { get }
     var placeListBuilder: PlaceListBuildable { get }
+    var placeListUsecase: PlaceListUsecase { get }
 }
 
 final class MyLocationComponent: Component<MyLocationDependency>, MyLocationInteractorDependency {
     var locationServiceUseCase: LocationServiceUseCase { dependency.locationServiceUseCase }
     var mapServiceUseCase: MapServiceUseCase { dependency.mapServiceUseCase }
     var appSettingsServiceUseCase: AppSettingsServiceUseCase { dependency.appSettingsServiceUseCase }
+    var placeListUsecase: PlaceListUsecase { dependency.placeListUsecase }
 }
 
 // MARK: - Builder

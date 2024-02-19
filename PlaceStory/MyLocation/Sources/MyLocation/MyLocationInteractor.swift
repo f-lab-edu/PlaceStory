@@ -34,6 +34,7 @@ protocol MyLocationInteractorDependency {
     var locationServiceUseCase: LocationServiceUseCase { get }
     var mapServiceUseCase: MapServiceUseCase { get }
     var appSettingsServiceUseCase: AppSettingsServiceUseCase { get }
+    var placeListUsecase: PlaceListUsecase { get }
 }
 
 final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, MyLocationInteractable, MyLocationPresentableListener, ModalAdaptivePresentationControllerDelegate {
@@ -141,7 +142,8 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
         router?.detachPresentationController()
     }
     
-    func didSelectAnnotationView() {
+    func didSelectAnnotationView(_ placeName: String) {
+        dependency.placeListUsecase.configureSelected(placeName: placeName)
         router?.attachPlaceList()
     }
     

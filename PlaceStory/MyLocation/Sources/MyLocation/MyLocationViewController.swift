@@ -16,7 +16,7 @@ protocol MyLocationPresentableListener: AnyObject {
     func checkPermissionLocation()
     func didTapMyLocationButton()
     func didTapPlaceSearchButton()
-    func didSelectAnnotationView()
+    func didSelectAnnotationView(_ placeName: String)
 }
 
 final class MyLocationViewController: UIViewController, MyLocationPresentable, MyLocationViewControllable, MapViewDelegate {
@@ -159,8 +159,7 @@ final class MyLocationViewController: UIViewController, MyLocationPresentable, M
     }
     
     // MARK: - AppleMapViewButtonDelegate
-    
-    func didSelectAnnotationView() {
-        listener?.didSelectAnnotationView()
+    func didSelectAnnotationView(_ placeName: String) {
+        listener?.didSelectAnnotationView(placeName)
     }
 }
