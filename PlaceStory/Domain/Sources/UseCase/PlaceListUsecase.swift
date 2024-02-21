@@ -11,9 +11,7 @@ import Foundation
 import Repositories
 
 public protocol PlaceListUsecase {
-    func configureSelected(placeName: String)
-    func searchPlaceName() -> String
-    func searchPlaceRecordFrom() -> AnyPublisher<[PlaceRecord], Error>
+    func searchPlaceRecordFrom(placeName: String) -> AnyPublisher<[PlaceRecord], Error>
     func add(placeRecord: PlaceRecord) -> Bool
     func modify(placeRecord: PlaceRecord) -> Bool
     func remove(placeRecord: PlaceRecord) -> Bool
@@ -29,16 +27,8 @@ public final class PlaceListUsecaseImp: PlaceListUsecase {
         self.placeListRepository = placeListRepository
     }
     
-    public func configureSelected(placeName: String) {
-        placeListRepository.saveSelected(placeName: placeName)
-    }
-    
-    public func searchPlaceName() -> String {
-        return placeListRepository.fetchPlaceName()
-    }
-    
-    public func searchPlaceRecordFrom() -> AnyPublisher<[PlaceRecord], Error> {
-        placeListRepository.fetchPlaceRecordFrom()
+    public func searchPlaceRecordFrom(placeName: String) -> AnyPublisher<[PlaceRecord], Error> {
+        placeListRepository.fetchPlaceRecordFrom(placeName: placeName)
     }
     
     public func add(placeRecord: PlaceRecord) -> Bool {

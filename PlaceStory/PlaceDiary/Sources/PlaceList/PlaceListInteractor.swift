@@ -28,6 +28,7 @@ public protocol PlaceListListener: AnyObject {
 
 protocol PlaceListInteractorDependency {
     var placeListUsecase: PlaceListUsecase { get }
+    var placeNamePublisher: CurrentPublisher<String> { get }
 }
 
 final class PlaceListInteractor: PresentableInteractor<PlaceListPresentable>, PlaceListInteractable, PlaceListPresentableListener {
@@ -53,10 +54,9 @@ final class PlaceListInteractor: PresentableInteractor<PlaceListPresentable>, Pl
     override func didBecomeActive() {
         super.didBecomeActive()
         
-        let placeName = dependency.placeListUsecase.searchPlaceName()
-        presenter.configureTitle(from: placeName)
+        presenter.configureTitle(from: dependency.placeNamePublisher.currentValue)
         
-        dependency.placeListUsecase.searchPlaceRecordFrom()
+        dependency.placeListUsecase.searchPlaceRecordFrom(placeName: dependency.placeNamePublisher.currentValue)
             .sink { error in
                 Log.error("error is \(error)", "[\(#file)-\(#function) - \(#line)]")
             } receiveValue: { [weak self] placeRecord in

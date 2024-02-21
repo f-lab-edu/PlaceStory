@@ -63,16 +63,7 @@ public final class PlaceListRepositoryImp {
 // MARK: - PlaceListRepository
 
 extension PlaceListRepositoryImp: PlaceListRepository {
-    public func saveSelected(placeName: String) {
-        selectedPlaceName.send(placeName)
-    }
-    
-    public func fetchPlaceName() -> String {
-        return selectedPlaceName.value
-    }
-    
-    public func fetchPlaceRecordFrom() -> AnyPublisher<[PlaceRecord], Error> {
-        let placeName = selectedPlaceName.value
+    public func fetchPlaceRecordFrom(placeName: String) -> AnyPublisher<[PlaceRecord], Error> {
         let userId = keychain.read("userIdentifier").readValue ?? ""
         let result = database.read(PlaceRecordInfo.self, userId: userId, placeName: placeName)
         

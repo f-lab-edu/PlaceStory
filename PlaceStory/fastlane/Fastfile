@@ -39,6 +39,14 @@ platform :ios do
     end
   end
 
+  desc "Sync Certificates"
+  lane :sync_certificates do
+    match(type: "development", force: true)
+    match(type: "adhoc", force: true)
+    match(type: "appstore", force: true)
+  end
+
+
   desc "Push a new beta build to TestFlight"
   lane :upload_testflight do |options|
     match(type: "appstore")    

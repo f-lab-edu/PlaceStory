@@ -15,7 +15,7 @@ import Utils
 public protocol MyLocationRouting: ViewableRouting {
     func attachPlaceSearcher()
     func detachPlaceSearcher()
-    func attachPlaceList()
+    func attachPlaceList(_ placeNamePublisher: CurrentPublisher<String>)
     func detachPresentationController()
 }
 
@@ -143,8 +143,8 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     }
     
     func didSelectAnnotationView(_ placeName: String) {
-        dependency.placeListUsecase.configureSelected(placeName: placeName)
-        router?.attachPlaceList()
+        let placeNamePublisher = CurrentPublisher(placeName)
+        router?.attachPlaceList(placeNamePublisher)
     }
     
     // MARK: - MyLocationInteractor
