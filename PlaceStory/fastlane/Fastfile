@@ -39,6 +39,15 @@ platform :ios do
     end
   end
 
+  lane: install_match
+    match(type: "appstore",
+          app_identifier:["randychoi.PlaceStory"],
+          readonly: true)
+    match(type: "development",
+          app_identifier:["randychoi.PlaceStory"],
+          readonly: true)
+  end
+
   desc "Push a new beta build to TestFlight"
   lane :upload_testflight do |options|
     match(type: "appstore")    
