@@ -18,14 +18,14 @@ protocol PlaceListPresentableListener: AnyObject {
 
 final class PlaceListViewController: UIViewController, PlaceListPresentable, PlaceListViewControllable {
     
-    let headerView: UIView = {
+    private let headerView: UIView = {
         let uiView = UIView()
         uiView.backgroundColor = .systemBackground
         
         return uiView
     }()
     
-    let editButton: UIButton = {
+    private let editButton: UIButton = {
         let uiButton = UIButton()
         uiButton.setTitle("편집", for: .normal)
         uiButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
@@ -34,7 +34,7 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
         return uiButton
     }()
     
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let uiLabel = UILabel()
         uiLabel.font = .systemFont(ofSize: 20, weight: .bold)
         uiLabel.textAlignment = .center
@@ -42,7 +42,7 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
         return uiLabel
     }()
     
-    let addButton: UIButton = {
+    private let addButton: UIButton = {
         let uiButton = UIButton()
         uiButton.setImage(
             UIImage(
@@ -58,23 +58,17 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
         return uiButton
     }()
     
-    let placeRecordTableView: UITableView = {
+    private let placeRecordTableView: UITableView = {
         let uiTableView = UITableView()
         uiTableView.separatorStyle = .none
         uiTableView.backgroundColor = .systemBackground
         
         return uiTableView
     }()
-    
-    private let sampleDatas: [PlaceRecord] = [
-        PlaceRecord(id: "111", userId: "111", placeName: "서울역", recordTitle: "부산 여행", recordDescription: "부산 여행을 위해 서울역에 갔다. 서울역에서 점심을 먹은 후 출발했다.", placeCategory: "역", registerDate: Date(), updateDate: Date(), recordImages: nil),
-        PlaceRecord(id: "112", userId: "111", placeName: "서울역", recordTitle: "픽업", recordDescription: "친구가 지방에서 KTX를 타고 올라왔다. 마중하기 위해 픽업라러 갔다.", placeCategory: "테마파크", registerDate: Date(timeIntervalSinceNow: -86400), updateDate: Date(), recordImages: nil),
-        PlaceRecord(id: "113", userId: "111", placeName: "서울역", recordTitle: "점심 시간", recordDescription: "서울역 안에 있는 김밥 천국집에 갔다. 김밥 한 줄이 너무 비싸지만 빠르게 먹기 위해 김밥 천국에서 김밥 2줄을 사서 왔다. 여기 김밥은 다른 곳보다 맛있는 것 같다.", placeCategory: "음식점", registerDate: Date(timeIntervalSinceNow: -86400 * 2), updateDate: Date(), recordImages: nil)
-    ]
 
     weak var listener: PlaceListPresentableListener?
     
-    private var placeRecords: [PlaceRecord] = []
+    private var placeListViewModels: [PlaceListViewModel] = []
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -166,20 +160,22 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
         }
         
         cell.selectionStyle = .none
-        cell.configureUI(placeRecords[indexPath.row])
+        cell.configureUI(placeListViewModels[indexPath.row])
         
         return cell
     }
     
     // MARK: - PlaceListPresentable
     
-    func configureTitle(from placeName: String) {
-        titleLabel.text = placeName
-    }
-    
-    func updatePlaceRecord(_ placeRecords: [PlaceRecord]) {
-        self.placeRecords = sampleDatas
+    func update(from viewModels: [PlaceListViewModel]) {
+//        self.placeListViewModels = viewModels
         
+        // Test Data
+        self.placeListViewModels = [
+            PlaceListViewModel(PlaceRecord(id: "111", userId: "111", placeName: "서울역", recordTitle: "부산 여행", recordDescription: "부산 여행을 위해 서울역에 갔다. 서울역에서 점심을 먹은 후 출발했다.", placeCategory: "역", registerDate: Date(), updateDate: Date(), recordImages: nil)),
+            PlaceListViewModel(PlaceRecord(id: "112", userId: "111", placeName: "서울역", recordTitle: "픽업", recordDescription: "친구가 지방에서 KTX를 타고 올라왔다. 마중하기 위해 픽업라러 갔다.", placeCategory: "테마파크", registerDate: Date(timeIntervalSinceNow: -86400), updateDate: Date(), recordImages: nil)),
+            PlaceListViewModel(PlaceRecord(id: "113", userId: "111", placeName: "서울역", recordTitle: "점심 시간", recordDescription: "서울역 안에 있는 김밥 천국집에 갔다. 김밥 한 줄이 너무 비싸지만 빠르게 먹기 위해 김밥 천국에서 김밥 2줄을 사서 왔다. 여기 김밥은 다른 곳보다 맛있는 것 같다.", placeCategory: "음식점", registerDate: Date(timeIntervalSinceNow: -86400 * 2), updateDate: Date(), recordImages: nil))
+        ]
         placeRecordTableView.reloadData()
     }
 }
@@ -188,7 +184,7 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
 
 extension PlaceListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return placeRecords.count
+        return placeListViewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

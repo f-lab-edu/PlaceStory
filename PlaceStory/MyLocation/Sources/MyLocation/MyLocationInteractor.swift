@@ -15,7 +15,7 @@ import Utils
 public protocol MyLocationRouting: ViewableRouting {
     func attachPlaceSearcher()
     func detachPlaceSearcher()
-    func attachPlaceList(_ placeNamePublisher: CurrentPublisher<String>)
+    func attachPlaceList(_ placeName: String)
     func detachPresentationController()
 }
 
@@ -34,7 +34,6 @@ protocol MyLocationInteractorDependency {
     var locationServiceUseCase: LocationServiceUseCase { get }
     var mapServiceUseCase: MapServiceUseCase { get }
     var appSettingsServiceUseCase: AppSettingsServiceUseCase { get }
-    var placeListUsecase: PlaceListUsecase { get }
 }
 
 final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, MyLocationInteractable, MyLocationPresentableListener, ModalAdaptivePresentationControllerDelegate {
@@ -143,8 +142,7 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
     }
     
     func didSelectAnnotationView(_ placeName: String) {
-        let placeNamePublisher = CurrentPublisher(placeName)
-        router?.attachPlaceList(placeNamePublisher)
+        router?.attachPlaceList(placeName)
     }
     
     // MARK: - MyLocationInteractor

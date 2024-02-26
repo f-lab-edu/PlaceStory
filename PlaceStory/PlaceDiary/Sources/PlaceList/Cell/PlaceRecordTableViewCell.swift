@@ -8,37 +8,36 @@
 import SnapKit
 import Utils
 import UIKit
-import Entities
 
 final class PlaceRecordTableViewCell: UITableViewCell {
     
     // MARK: - UI Components
-    let cellContentView: UIView = {
+    private let cellContentView: UIView = {
         let uiView = UIView()
         
         return uiView
     }()
     
-    let thumbnailImageView: UIImageView = {
+    private let thumbnailImageView: UIImageView = {
         let uiImageView = UIImageView()
         
         return uiImageView
     }()
     
-    let placeRecordBackgroundView: UIView = {
+    private let placeRecordBackgroundView: UIView = {
         let uiView = UIView()
         
         return uiView
     }()
     
-    let placeRecordTitleLabel: UILabel = {
+    private let placeRecordTitleLabel: UILabel = {
         let uiLabel = UILabel()
         uiLabel.font = .systemFont(ofSize: 17, weight: .bold)
         
         return uiLabel
     }()
     
-    lazy var stackView: UIStackView = {
+    private lazy var stackView: UIStackView = {
         let uiStackView = UIStackView(arrangedSubviews: [placeRecordContentLabel, placeRecordDateLabel])
         uiStackView.axis = .horizontal
         uiStackView.distribution = .fillEqually
@@ -46,7 +45,7 @@ final class PlaceRecordTableViewCell: UITableViewCell {
         return uiStackView
     }()
     
-    let placeRecordContentLabel: UILabel = {
+    private let placeRecordContentLabel: UILabel = {
         let uiLabel = UILabel()
         uiLabel.font = .systemFont(ofSize: 15, weight: .medium)
         uiLabel.textColor = .darkGray
@@ -54,7 +53,7 @@ final class PlaceRecordTableViewCell: UITableViewCell {
         return uiLabel
     }()
     
-    let placeRecordDateLabel: UILabel = {
+    private let placeRecordDateLabel: UILabel = {
         let uiLabel = UILabel()
         uiLabel.font = .systemFont(ofSize: 15, weight: .medium)
         uiLabel.textColor = .darkGray
@@ -134,35 +133,11 @@ final class PlaceRecordTableViewCell: UITableViewCell {
     }
 
     func configureUI(
-        _ placeRecord: PlaceRecord
+        _ viewModel: PlaceListViewModel
     ) {
-        if let recordImages = placeRecord.recordImages {
-            let thumbnailImageData = recordImages[0]
-            let uiImage = UIImage(data: thumbnailImageData)
-            thumbnailImageView.image = uiImage
-        }
-        
-        placeRecordTitleLabel.text = placeRecord.recordTitle
-        
-        placeRecordContentLabel.text = placeRecord.recordDescription
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-
-        let compareDateResult = placeRecord.registerDate.compare(placeRecord.updateDate)
-        var dateDescription = ""
-        
-        switch compareDateResult {
-        case .orderedAscending:
-            dateDescription = "\(dateFormatter.string(from: placeRecord.updateDate)) (수정)"
-            
-        case .orderedDescending:
-            break
-            
-        case .orderedSame:
-            dateDescription = dateFormatter.string(from: placeRecord.registerDate)
-        }
-        
-        placeRecordDateLabel.text = dateDescription
+        placeRecordTitleLabel.text = viewModel.placeRecordTitle
+        placeRecordContentLabel.text = viewModel.placeRecordContent
+        placeRecordDateLabel.text = viewModel.placeRecordDate
+        thumbnailImageView.image = viewModel.thumbnail
     }
 }

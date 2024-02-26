@@ -14,14 +14,15 @@ public protocol PlaceListDependency: Dependency {
 }
 
 final class PlaceListComponent: Component<PlaceListDependency>, PlaceListInteractorDependency {
+    let placeName: String
+    
     var placeListUsecase: PlaceListUsecase { dependency.placeListUsecase }
-    var placeNamePublisher: CurrentPublisher<String>
     
     init(
         dependency: PlaceListDependency,
-        placeNamePublisher: CurrentPublisher<String>
+        placeName: String
     ) {
-        self.placeNamePublisher = placeNamePublisher
+        self.placeName = placeName
         
         super.init(dependency: dependency)
     }
@@ -30,7 +31,7 @@ final class PlaceListComponent: Component<PlaceListDependency>, PlaceListInterac
 // MARK: - Builder
 
 public protocol PlaceListBuildable: Buildable {
-    func build(withListener listener: PlaceListListener, placeNamePublisher: CurrentPublisher<String>) -> PlaceListRouting
+    func build(withListener listener: PlaceListListener, placeName: String) -> PlaceListRouting
 }
 
 public final class PlaceListBuilder: Builder<PlaceListDependency>, PlaceListBuildable {
@@ -39,8 +40,8 @@ public final class PlaceListBuilder: Builder<PlaceListDependency>, PlaceListBuil
         super.init(dependency: dependency)
     }
     
-    public func build(withListener listener: PlaceListListener, placeNamePublisher: CurrentPublisher<String>) -> PlaceListRouting {
-        let component = PlaceListComponent(dependency: dependency, placeNamePublisher: placeNamePublisher)
+    public func build(withListener listener: PlaceListListener, placeName: String) -> PlaceListRouting {
+        let component = PlaceListComponent(dependency: dependency, placeName: placeName)
         let viewController = PlaceListViewController()
         let interactor = PlaceListInteractor(
             presenter: viewController,

@@ -70,7 +70,6 @@
 		33A056772B21A7F3005DE8B2 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
 		9845E1DB2B308CEE009E13E2 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
 		9857A7302B1B27E4008A9827 /* LoggedOut */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoggedOut; sourceTree = "<group>"; };
-		987180752B769F5F002A605B /* PlaceList */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PlaceList; path = PlaceDiary/Sources/PlaceList; sourceTree = "<group>"; };
 		9872E5C72B24A33900168842 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
 		9872E5C82B24A3D100168842 /* Platform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Platform; sourceTree = "<group>"; };
 		9872E5C92B24A46100168842 /* ProxyPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProxyPackage; sourceTree = "<group>"; };
@@ -206,7 +205,6 @@
 		988C78D92B1B067D007E5440 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				987180752B769F5F002A605B /* PlaceList */,
 				333F69792B2A9A0800BF9C83 /* Security.framework */,
 				33A056772B21A7F3005DE8B2 /* OSLog.framework */,
 			);

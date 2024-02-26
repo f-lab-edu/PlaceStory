@@ -6,7 +6,6 @@
 //
 
 import Combine
-import Entities
 import ModernRIBs
 import UseCase
 import Utils
@@ -18,8 +17,7 @@ public protocol PlaceListRouting: ViewableRouting {
 protocol PlaceListPresentable: Presentable {
     var listener: PlaceListPresentableListener? { get set }
     
-    func configureTitle(from placeName: String)
-    func updatePlaceRecord(_ placeRecords: [PlaceRecord])
+    func update(from viewModels: [PlaceListViewModel])
 }
 
 public protocol PlaceListListener: AnyObject {
@@ -28,7 +26,7 @@ public protocol PlaceListListener: AnyObject {
 
 protocol PlaceListInteractorDependency {
     var placeListUsecase: PlaceListUsecase { get }
-    var placeNamePublisher: CurrentPublisher<String> { get }
+    var placeName: String { get }
 }
 
 final class PlaceListInteractor: PresentableInteractor<PlaceListPresentable>, PlaceListInteractable, PlaceListPresentableListener {
@@ -54,16 +52,17 @@ final class PlaceListInteractor: PresentableInteractor<PlaceListPresentable>, Pl
     override func didBecomeActive() {
         super.didBecomeActive()
         
-        presenter.configureTitle(from: dependency.placeNamePublisher.currentValue)
-        
-        dependency.placeListUsecase.searchPlaceRecordFrom(placeName: dependency.placeNamePublisher.currentValue)
+        dependency.placeListUsecase.searchPlaceRecordFrom(placeName: dependency.placeName)
             .sink { error in
                 Log.error("error is \(error)", "[\(#file)-\(#function) - \(#line)]")
             } receiveValue: { [weak self] placeRecord in
                 guard let self else { return }
                 
                 Log.info("placeRecord = \(placeRecord)", "[\(#file)-\(#function) - \(#line)]")
-                presenter.updatePlaceRecord(placeRecord)
+                
+                let placeListViewModel: [PlaceListViewModel] = placeRecord.map(PlaceListViewModel.init)
+                
+                self.presenter.update(from: placeListViewModel)
             }
             .store(in: &cancellables)
     }

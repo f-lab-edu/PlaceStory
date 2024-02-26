@@ -64,10 +64,10 @@ final class MyLocationRouter: ViewableRouter<MyLocationInteractable, MyLocationV
         placeSearcherRouter = nil
     }
     
-    func attachPlaceList(_ placeNamePublisher: CurrentPublisher<String>) {
+    func attachPlaceList(_ placeName: String) {
         guard placeListRouter == nil else { return }
         
-        let router = placeListBuilder.build(withListener: interactor, placeNamePublisher: placeNamePublisher)
+        let router = placeListBuilder.build(withListener: interactor, placeName: placeName)
         
         placeListRouter = router
         attachChild(router)
