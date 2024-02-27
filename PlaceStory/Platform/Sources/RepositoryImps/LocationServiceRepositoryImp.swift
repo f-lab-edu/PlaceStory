@@ -33,7 +33,6 @@ public final class LocationServiceRepositoryImp: NSObject {
             
         case .authorizedAlways, .authorizedWhenInUse: // 앱을 사용중일 때, 위치 서비스를 이용할 수 있는 상태
             authorizationStatusSubject.send(true)
-            locationManager.startUpdatingLocation()
             
         @unknown default:
             authorizationStatusSubject.send(false)
@@ -52,6 +51,7 @@ extension LocationServiceRepositoryImp: LocationServiceRepository {
     }
     
     public func publishCurrentLocation() -> AnyPublisher<CLLocation, Error> {
+        locationManager.startUpdatingLocation()
         return updateLocationSubject.eraseToAnyPublisher()
     }
     
