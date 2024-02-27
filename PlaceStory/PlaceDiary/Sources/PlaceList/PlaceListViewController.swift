@@ -11,9 +11,7 @@ import SnapKit
 import UIKit
 
 protocol PlaceListPresentableListener: AnyObject {
-    // TODO: Declare properties and methods that the view controller can invoke to perform
-    // business logic, such as signIn(). This protocol is implemented by the corresponding
-    // interactor class.
+    func didTapAddButton()
 }
 
 final class PlaceListViewController: UIViewController, PlaceListPresentable, PlaceListViewControllable {
@@ -42,7 +40,7 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
         return uiLabel
     }()
     
-    private let addButton: UIButton = {
+    private lazy var addButton: UIButton = {
         let uiButton = UIButton()
         uiButton.setImage(
             UIImage(
@@ -54,6 +52,7 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
             )
             , for: .normal
         )
+        uiButton.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         
         return uiButton
     }()
@@ -92,18 +91,11 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
         headerView.addSubview(titleLabel)
         headerView.addSubview(addButton)
         
-        configureTabbarItem()
         configureHeaderViewAutoLayout()
         configureEditButtonAutoLayout()
         configureTitleLabelAutoLayout()
         configureAddButtonAutoLayout()
         configurePlaceRecordTableViewAutoLayout()
-    }
-    
-    private func configureTabbarItem() {
-        let defaultImage = UIImage(systemName: "calendar.circle")
-        let selectedImage = UIImage(systemName: "calendar.circle.fill")
-        tabBarItem = UITabBarItem(title: "장소 모음", image: defaultImage, selectedImage: selectedImage)
     }
     
     private func configureHeaderViewAutoLayout() {
@@ -163,6 +155,11 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
         cell.configureUI(placeListViewModels[indexPath.row])
         
         return cell
+    }
+    
+    @objc
+    private func didTapAddButton() {
+        listener?.didTapAddButton()
     }
     
     // MARK: - PlaceListPresentable

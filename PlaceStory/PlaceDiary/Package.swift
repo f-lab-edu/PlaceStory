@@ -11,6 +11,9 @@ let package = Package(
         .library(
             name: "PlaceList",
             targets: ["PlaceList"]),
+        .library(
+            name: "PlaceRecordEditor",
+            targets: ["PlaceRecordEditor"])
     ],
     dependencies: [
         .package(path: "../ProxyPackage"),
@@ -26,6 +29,13 @@ let package = Package(
                 .product(name: "UseCase", package: "Domain"),
                 .product(name: "Utils", package: "ProxyPackage"),
                 .product(name: "Entities", package: "Domain"),
+                "PlaceRecordEditor"
+            ]
+        ),
+        .target(
+            name: "PlaceRecordEditor",
+            dependencies: [
+                "ProxyPackage"
             ]
         ),
         .testTarget(

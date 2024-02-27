@@ -5,12 +5,15 @@
 //  Created by 최제환 on 1/30/24.
 //
 
+import CommonUI
 import ModernRIBs
+import PlaceRecordEditor
 import UseCase
 import Utils
 
 public protocol PlaceListDependency: Dependency {
     var placeListUsecase: PlaceListUsecase { get }
+    var placeRecordEditorBuilder: PlaceRecordEditorBuildable { get }
 }
 
 final class PlaceListComponent: Component<PlaceListDependency>, PlaceListInteractorDependency {
@@ -51,7 +54,8 @@ public final class PlaceListBuilder: Builder<PlaceListDependency>, PlaceListBuil
         
         return PlaceListRouter(
             interactor: interactor,
-            viewController: viewController
+            viewController: viewController,
+            placeRecordEditorBuilder: dependency.placeRecordEditorBuilder
         )
     }
 }

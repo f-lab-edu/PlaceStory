@@ -20,6 +20,7 @@
 		33A056782B21A7F3005DE8B2 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A056772B21A7F3005DE8B2 /* OSLog.framework */; };
 		33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */ = {isa = PBXBuildFile; productRef = 33A0567D2B21B096005DE8B2 /* RepositoryImps */; };
 		33A72A222B202DBA00E41887 /* Repositories in Frameworks */ = {isa = PBXBuildFile; productRef = 33A72A212B202DBA00E41887 /* Repositories */; };
+		33B6A9542B8DAADA00C7DF45 /* PlaceRecordEditor in Frameworks */ = {isa = PBXBuildFile; productRef = 33B6A9532B8DAADA00C7DF45 /* PlaceRecordEditor */; };
 		98143F482B3B17760007839C /* PlaceSearcher in Frameworks */ = {isa = PBXBuildFile; productRef = 98143F472B3B17760007839C /* PlaceSearcher */; };
 		9817CD7A2B769A04001CBCB6 /* PlaceList in Frameworks */ = {isa = PBXBuildFile; productRef = 9817CD792B769A04001CBCB6 /* PlaceList */; };
 		9845E1DC2B308CEE009E13E2 /* AppComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9845E1DB2B308CEE009E13E2 /* AppComponent.swift */; };
@@ -86,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33B6A9542B8DAADA00C7DF45 /* PlaceRecordEditor in Frameworks */,
 				9877075A2B2477D000D93897 /* Model in Frameworks */,
 				9872E5CB2B24A4C000168842 /* CommonUI in Frameworks */,
 				9817CD7A2B769A04001CBCB6 /* PlaceList in Frameworks */,
@@ -245,6 +247,7 @@
 				98143F472B3B17760007839C /* PlaceSearcher */,
 				3300E9E02B70C8C800317DD3 /* AppleMapView */,
 				9817CD792B769A04001CBCB6 /* PlaceList */,
+				33B6A9532B8DAADA00C7DF45 /* PlaceRecordEditor */,
 			);
 			productName = PlaceStory;
 			productReference = 337214B82B19D1BD007622F7 /* PlaceStory.app */;
@@ -727,6 +730,10 @@
 		33A72A212B202DBA00E41887 /* Repositories */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Repositories;
+		};
+		33B6A9532B8DAADA00C7DF45 /* PlaceRecordEditor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PlaceRecordEditor;
 		};
 		98143F472B3B17760007839C /* PlaceSearcher */ = {
 			isa = XCSwiftPackageProductDependency;
