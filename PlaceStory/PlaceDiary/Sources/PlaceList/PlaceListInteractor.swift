@@ -6,12 +6,14 @@
 //
 
 import Combine
+import CommonUI
 import ModernRIBs
 import UseCase
 import Utils
 
 public protocol PlaceListRouting: ViewableRouting {
-    // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
+    func attachPlaceRecordEditor()
+    func detachPlaceRecordEditor()
 }
 
 protocol PlaceListPresentable: Presentable {
@@ -29,10 +31,12 @@ protocol PlaceListInteractorDependency {
     var placeName: String { get }
 }
 
-final class PlaceListInteractor: PresentableInteractor<PlaceListPresentable>, PlaceListInteractable, PlaceListPresentableListener {
+final class PlaceListInteractor: PresentableInteractor<PlaceListPresentable>, PlaceListInteractable, PlaceListPresentableListener, ModalAdaptivePresentationControllerDelegate {
     
     private let dependency: PlaceListInteractorDependency
 
+    let modalAdaptivePresentationControllerDelegateProxy: ModalAdaptivePresentationControllerDelegateProxy
+    
     weak var router: PlaceListRouting?
     weak var listener: PlaceListListener?
     
@@ -44,9 +48,12 @@ final class PlaceListInteractor: PresentableInteractor<PlaceListPresentable>, Pl
     ) {
         self.dependency = dependency
         self.cancellables = .init()
+        self.modalAdaptivePresentationControllerDelegateProxy = ModalAdaptivePresentationControllerDelegateProxy()
         
         super.init(presenter: presenter)
         presenter.listener = self
+        
+        modalAdaptivePresentationControllerDelegateProxy.delegate = self
     }
 
     override func didBecomeActive() {
@@ -70,5 +77,27 @@ final class PlaceListInteractor: PresentableInteractor<PlaceListPresentable>, Pl
     override func willResignActive() {
         super.willResignActive()
         // TODO: Pause any business logic.
+    }
+    
+    // MARK: - PlaceListPresentableListener
+    
+    func didTapAddButton() {
+        router?.attachPlaceRecordEditor()
+    }
+    
+    // MARK: - ModalAdaptivePresentationControllerDelegate
+    
+    func presentationControllerDidDismiss() {
+        router?.detachPlaceRecordEditor()
+    }
+    
+    // MARK: - PlaceListInteractable
+    
+    func placeRecordEditorDidTapCancel() {
+        router?.detachPlaceRecordEditor()
+    }
+    
+    func placeRecordEditorDidTapDone() {
+        router?.detachPlaceRecordEditor()
     }
 }

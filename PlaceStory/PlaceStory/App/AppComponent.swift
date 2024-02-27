@@ -14,12 +14,13 @@ import MyLocation
 import ModernRIBs
 import PlaceSearcher
 import PlaceList
+import PlaceRecordEditor
 import Repositories
 import RepositoryImps
 import SecurityServices
 import UseCase
 
-final class AppComponent: Component<EmptyDependency>, AppRootDependency, LoggedOutDependency, LoggedInDependency, MyLocationDependency, PlaceSearcherDependency, PlaceListDependency {
+final class AppComponent: Component<EmptyDependency>, AppRootDependency, LoggedOutDependency, LoggedInDependency, MyLocationDependency, PlaceSearcherDependency, PlaceListDependency, PlaceRecordEditorDependency {
     let appleAuthenticationServiceUseCase: AppleAuthenticationServiceUseCase
     let mapViewFactory: MapViewFactory
     let locationServiceUseCase: LocationServiceUseCase
@@ -32,6 +33,7 @@ final class AppComponent: Component<EmptyDependency>, AppRootDependency, LoggedO
     lazy var myLocationBuilder: MyLocationBuildable = MyLocationBuilder(dependency: self)
     lazy var placeListBuilder: PlaceListBuildable = PlaceListBuilder(dependency: self)
     lazy var placeSearchBuilder: PlaceSearcherBuildable = PlaceSearcherBuilder(dependency: self)
+    lazy var placeRecordEditorBuilder: PlaceRecordEditorBuildable = PlaceRecordEditorBuilder(dependency: self)
     
     init() {
         let realmDatabaseImp = RealmDatabaseImp()
