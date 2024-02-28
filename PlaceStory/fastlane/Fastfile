@@ -39,7 +39,7 @@ platform :ios do
     end
   end
 
-  lane: install_match
+  lane :install_match do
     match(type: "appstore",
           app_identifier:["randychoi.PlaceStory"],
           readonly: true)
