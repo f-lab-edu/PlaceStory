@@ -15,7 +15,7 @@ import Utils
 public protocol MyLocationRouting: ViewableRouting {
     func attachPlaceSearcher()
     func detachPlaceSearcher()
-    func attachPlaceList()
+    func attachPlaceList(_ placeName: String)
     func detachPresentationController()
 }
 
@@ -141,8 +141,8 @@ final class MyLocationInteractor: PresentableInteractor<MyLocationPresentable>, 
         router?.detachPresentationController()
     }
     
-    func didSelectAnnotationView() {
-        router?.attachPlaceList()
+    func didSelectAnnotationView(_ placeName: String) {
+        router?.attachPlaceList(placeName)
     }
     
     // MARK: - MyLocationInteractor

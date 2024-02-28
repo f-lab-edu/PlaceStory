@@ -5,39 +5,57 @@
 //  Created by 최제환 on 1/30/24.
 //
 
+import CommonUI
 import ModernRIBs
+import PlaceRecordEditor
+import UseCase
+import Utils
 
 public protocol PlaceListDependency: Dependency {
-    // TODO: Declare the set of dependencies required by this RIB, but cannot be
-    // created by this RIB.
+    var placeListUsecase: PlaceListUsecase { get }
+    var placeRecordEditorBuilder: PlaceRecordEditorBuildable { get }
 }
 
-final class PlaceListComponent: Component<PlaceListDependency> {
-
-    // TODO: Declare 'fileprivate' dependencies that are only used by this RIB.
+final class PlaceListComponent: Component<PlaceListDependency>, PlaceListInteractorDependency {
+    let placeName: String
+    
+    var placeListUsecase: PlaceListUsecase { dependency.placeListUsecase }
+    
+    init(
+        dependency: PlaceListDependency,
+        placeName: String
+    ) {
+        self.placeName = placeName
+        
+        super.init(dependency: dependency)
+    }
 }
 
 // MARK: - Builder
 
 public protocol PlaceListBuildable: Buildable {
-    func build(withListener listener: PlaceListListener) -> PlaceListRouting
+    func build(withListener listener: PlaceListListener, placeName: String) -> PlaceListRouting
 }
 
 public final class PlaceListBuilder: Builder<PlaceListDependency>, PlaceListBuildable {
-
+    
     public override init(dependency: PlaceListDependency) {
         super.init(dependency: dependency)
     }
-
-    public func build(withListener listener: PlaceListListener) -> PlaceListRouting {
-        let component = PlaceListComponent(dependency: dependency)
+    
+    public func build(withListener listener: PlaceListListener, placeName: String) -> PlaceListRouting {
+        let component = PlaceListComponent(dependency: dependency, placeName: placeName)
         let viewController = PlaceListViewController()
-        let interactor = PlaceListInteractor(presenter: viewController)
+        let interactor = PlaceListInteractor(
+            presenter: viewController,
+            dependency: component
+        )
         interactor.listener = listener
         
         return PlaceListRouter(
             interactor: interactor,
-            viewController: viewController
+            viewController: viewController,
+            placeRecordEditorBuilder: dependency.placeRecordEditorBuilder
         )
     }
 }

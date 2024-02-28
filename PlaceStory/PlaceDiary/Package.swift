@@ -11,15 +11,29 @@ let package = Package(
         .library(
             name: "PlaceList",
             targets: ["PlaceList"]),
+        .library(
+            name: "PlaceRecordEditor",
+            targets: ["PlaceRecordEditor"])
     ],
     dependencies: [
-        .package(path: "../ProxyPackage")
+        .package(path: "../ProxyPackage"),
+        .package(path: "../Domain")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "PlaceList",
+            dependencies: [
+                "ProxyPackage",
+                .product(name: "UseCase", package: "Domain"),
+                .product(name: "Utils", package: "ProxyPackage"),
+                .product(name: "Entities", package: "Domain"),
+                "PlaceRecordEditor"
+            ]
+        ),
+        .target(
+            name: "PlaceRecordEditor",
             dependencies: [
                 "ProxyPackage"
             ]

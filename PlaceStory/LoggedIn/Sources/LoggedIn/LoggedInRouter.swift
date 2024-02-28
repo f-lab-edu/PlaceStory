@@ -41,14 +41,11 @@ final class LoggedInRouter: ViewableRouter<LoggedInInteractable, LoggedInViewCon
     
     func attachTabs() {
         let myLocationRouter = myLocationBuilder.build(withListener: interactor)
-        let placeRouter = placeListBuilder.build(withListener: interactor)
         
         attachChild(myLocationRouter)
-        attachChild(placeRouter)
         
         let viewControllers = [
-            myLocationRouter.viewControllable,
-            placeRouter.viewControllable
+            myLocationRouter.viewControllable
         ]
         
         viewController.setViewControllers(viewControllers)

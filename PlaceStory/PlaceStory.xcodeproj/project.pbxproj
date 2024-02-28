@@ -20,6 +20,7 @@
 		33A056782B21A7F3005DE8B2 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33A056772B21A7F3005DE8B2 /* OSLog.framework */; };
 		33A0567E2B21B096005DE8B2 /* RepositoryImps in Frameworks */ = {isa = PBXBuildFile; productRef = 33A0567D2B21B096005DE8B2 /* RepositoryImps */; };
 		33A72A222B202DBA00E41887 /* Repositories in Frameworks */ = {isa = PBXBuildFile; productRef = 33A72A212B202DBA00E41887 /* Repositories */; };
+		33B6A9542B8DAADA00C7DF45 /* PlaceRecordEditor in Frameworks */ = {isa = PBXBuildFile; productRef = 33B6A9532B8DAADA00C7DF45 /* PlaceRecordEditor */; };
 		98143F482B3B17760007839C /* PlaceSearcher in Frameworks */ = {isa = PBXBuildFile; productRef = 98143F472B3B17760007839C /* PlaceSearcher */; };
 		9817CD7A2B769A04001CBCB6 /* PlaceList in Frameworks */ = {isa = PBXBuildFile; productRef = 9817CD792B769A04001CBCB6 /* PlaceList */; };
 		9845E1DC2B308CEE009E13E2 /* AppComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9845E1DB2B308CEE009E13E2 /* AppComponent.swift */; };
@@ -70,7 +71,6 @@
 		33A056772B21A7F3005DE8B2 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
 		9845E1DB2B308CEE009E13E2 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
 		9857A7302B1B27E4008A9827 /* LoggedOut */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoggedOut; sourceTree = "<group>"; };
-		987180752B769F5F002A605B /* PlaceList */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PlaceList; path = PlaceDiary/Sources/PlaceList; sourceTree = "<group>"; };
 		9872E5C72B24A33900168842 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
 		9872E5C82B24A3D100168842 /* Platform */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Platform; sourceTree = "<group>"; };
 		9872E5C92B24A46100168842 /* ProxyPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProxyPackage; sourceTree = "<group>"; };
@@ -87,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33B6A9542B8DAADA00C7DF45 /* PlaceRecordEditor in Frameworks */,
 				9877075A2B2477D000D93897 /* Model in Frameworks */,
 				9872E5CB2B24A4C000168842 /* CommonUI in Frameworks */,
 				9817CD7A2B769A04001CBCB6 /* PlaceList in Frameworks */,
@@ -206,7 +207,6 @@
 		988C78D92B1B067D007E5440 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				987180752B769F5F002A605B /* PlaceList */,
 				333F69792B2A9A0800BF9C83 /* Security.framework */,
 				33A056772B21A7F3005DE8B2 /* OSLog.framework */,
 			);
@@ -247,6 +247,7 @@
 				98143F472B3B17760007839C /* PlaceSearcher */,
 				3300E9E02B70C8C800317DD3 /* AppleMapView */,
 				9817CD792B769A04001CBCB6 /* PlaceList */,
+				33B6A9532B8DAADA00C7DF45 /* PlaceRecordEditor */,
 			);
 			productName = PlaceStory;
 			productReference = 337214B82B19D1BD007622F7 /* PlaceStory.app */;
@@ -540,6 +541,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PlaceStory/PlaceStory.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = FF4F6NQNDX;
@@ -558,6 +560,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = randychoi.PlaceStory;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -570,9 +573,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PlaceStory/PlaceStory.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = FF4F6NQNDX;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = FF4F6NQNDX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlaceStory/Resources/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "앱이 사용자의 현재 위치를 정확하게 파악하여 지도에 표시하고, 사용자가 기록한 장소에 마커를 표시하기 위해 위치 권한이 필요합니다";
@@ -588,6 +593,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = randychoi.PlaceStory;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match AdHoc randychoi.PlaceStory";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -723,6 +730,10 @@
 		33A72A212B202DBA00E41887 /* Repositories */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Repositories;
+		};
+		33B6A9532B8DAADA00C7DF45 /* PlaceRecordEditor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PlaceRecordEditor;
 		};
 		98143F472B3B17760007839C /* PlaceSearcher */ = {
 			isa = XCSwiftPackageProductDependency;

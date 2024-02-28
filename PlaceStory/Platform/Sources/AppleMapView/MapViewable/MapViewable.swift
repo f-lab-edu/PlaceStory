@@ -16,5 +16,5 @@ public protocol MapViewable where Self: UIView {
 }
 
 public protocol MapViewDelegate: AnyObject {
-    func didSelectAnnotationView()
+    func didSelectAnnotationView(_ placeName: String)
 }

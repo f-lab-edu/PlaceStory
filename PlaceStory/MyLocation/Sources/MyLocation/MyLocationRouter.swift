@@ -9,6 +9,7 @@ import CommonUI
 import ModernRIBs
 import PlaceList
 import PlaceSearcher
+import Utils
 
 protocol MyLocationInteractable: Interactable, PlaceSearcherListener, PlaceListListener {
     var router: MyLocationRouting? { get set }
@@ -63,10 +64,10 @@ final class MyLocationRouter: ViewableRouter<MyLocationInteractable, MyLocationV
         placeSearcherRouter = nil
     }
     
-    func attachPlaceList() {
+    func attachPlaceList(_ placeName: String) {
         guard placeListRouter == nil else { return }
         
-        let router = placeListBuilder.build(withListener: interactor)
+        let router = placeListBuilder.build(withListener: interactor, placeName: placeName)
         
         placeListRouter = router
         attachChild(router)
