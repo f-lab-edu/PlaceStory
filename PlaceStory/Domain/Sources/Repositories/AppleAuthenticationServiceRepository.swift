@@ -8,7 +8,6 @@
 import Combine
 import Entities
 import Foundation
-import RealmSwift
 
 public protocol AppleAuthenticationServiceRepository {
     func signIn() -> AnyPublisher<AppleUser, Error>
