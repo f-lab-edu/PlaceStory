@@ -28,7 +28,8 @@ let package = Package(
         )
     ],
     dependencies: [
-      .package(path: "../ProxyPackage")
+      .package(path: "../ProxyPackage"),
+      .package(path: "../Domain")
     ],
     targets: [
         .target(
@@ -42,7 +43,8 @@ let package = Package(
         .target(
             name: "Model",
             dependencies: [
-                "ProxyPackage"
+                "ProxyPackage",
+                .product(name: "Entities", package: "Domain")
             ]
         ),
         .target(
@@ -51,7 +53,8 @@ let package = Package(
                 "LocalStorage",
                 .product(name: "Utils", package: "ProxyPackage"),
                 "Model",
-                "SecurityServices"
+                "SecurityServices",
+                .product(name: "Repositories", package: "Domain")
             ]
         ),
         .target(
@@ -60,7 +63,8 @@ let package = Package(
         .target(
             name: "AppleMapView",
             dependencies: [
-                "ProxyPackage"
+                "ProxyPackage",
+                .product(name: "Entities", package: "Domain")
             ]
         )
     ]

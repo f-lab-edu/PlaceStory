@@ -29,7 +29,8 @@ let package = Package(
                 .product(name: "UseCase", package: "Domain"),
                 .product(name: "Utils", package: "ProxyPackage"),
                 .product(name: "Entities", package: "Domain"),
-                "PlaceRecordEditor"
+                "PlaceRecordEditor",
+                .product(name: "CommonUI", package: "ProxyPackage")
             ]
         ),
         .target(
