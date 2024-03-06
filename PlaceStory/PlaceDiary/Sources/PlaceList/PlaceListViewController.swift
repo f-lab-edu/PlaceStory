@@ -23,11 +23,14 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
         return uiView
     }()
     
-    private let editButton: UIButton = {
+    private lazy var editButton: UIButton = {
         let uiButton = UIButton()
         uiButton.setTitle("편집", for: .normal)
+        uiButton.setTitle("완료", for: .selected)
         uiButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
         uiButton.setTitleColor(uiButton.tintColor, for: .normal)
+        uiButton.setTitleColor(.red, for: .selected)
+        uiButton.addTarget(self, action: #selector(didTapEditButton), for: .touchUpInside)
         
         return uiButton
     }()
@@ -162,6 +165,13 @@ final class PlaceListViewController: UIViewController, PlaceListPresentable, Pla
         listener?.didTapAddButton()
     }
     
+    @objc
+    private func didTapEditButton() {
+        let shouldBeEdited = !placeRecordTableView.isEditing
+        placeRecordTableView.setEditing(shouldBeEdited, animated: true)
+        editButton.isSelected = shouldBeEdited
+    }
+    
     // MARK: - PlaceListPresentable
     
     func update(from viewModels: [PlaceListViewModel]) {
@@ -196,5 +206,10 @@ extension PlaceListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension PlaceListViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            placeListViewModels.remove(at: indexPath.row)
+            placeRecordTableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
 }
