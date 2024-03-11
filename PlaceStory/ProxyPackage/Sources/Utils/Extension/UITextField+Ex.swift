@@ -2,27 +2,30 @@
 //  File.swift
 //  
 //
-//  Created by 최제환 on 1/8/24.
+//  Created by 최제환 on 3/12/24.
 //
 
 import UIKit
 
-extension UISearchTextField {
-    public func addDoneButtonOnToolbar() {
-        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-        doneToolbar.barStyle = .default
+extension UITextField {
+    public func addDoneToolbar() {
         
-        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let done: UIBarButtonItem = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(self.doneButtonAction))
+        let toolbar: UIToolbar = UIToolbar()
+        toolbar.barStyle = .default
         
-        let items = [flexSpace, done]
-        doneToolbar.items = items
-        doneToolbar.sizeToFit()
+        let flexibleSpaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(doneAction))
         
-        self.inputAccessoryView = doneToolbar
+        toolbar.items = [
+            flexibleSpaceButton,
+            doneButton
+        ]
+        toolbar.sizeToFit()
+        
+        self.inputAccessoryView = toolbar
     }
     
-    @objc private func doneButtonAction() {
+    @objc private func doneAction() {
         self.resignFirstResponder()
     }
 }

@@ -8,6 +8,7 @@
 import ModernRIBs
 import SnapKit
 import UIKit
+import Utils
 
 protocol PlaceRecordEditorPresentableListener: AnyObject {
     func didTapCancelButton()
@@ -51,6 +52,62 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
         
         return uiButton
     }()
+    
+    private let recordTitleView: UIView = {
+        let uiView = UIView()
+        uiView.backgroundColor = .systemBackground
+        
+        return uiView
+    }()
+    
+    private let recordTitleLabel: UILabel = {
+        let uiLabel = UILabel()
+        uiLabel.text = "제목"
+        uiLabel.font = .boldSystemFont(ofSize: 17)
+        
+        return uiLabel
+    }()
+    
+    private let recordTitleTextField: UITextField = {
+        let uiTextField = UITextField()
+        uiTextField.placeholder = "제목을 입력하세요"
+        uiTextField.borderStyle = .roundedRect
+        uiTextField.addDoneToolbar()
+        
+        return uiTextField
+    }()
+    
+    private let recordContentView: UIView = {
+        let uiView = UIView()
+        uiView.backgroundColor = .systemBackground
+        
+        return uiView
+    }()
+    
+    private let recordContentLabel: UILabel = {
+        let uiLabel = UILabel()
+        uiLabel.text = "내용"
+        uiLabel.font = .boldSystemFont(ofSize: 17)
+        
+        return uiLabel
+    }()
+    
+    private lazy var recordContentTextView: UITextView = {
+        let uiTextView = UITextView()
+        uiTextView.layer.borderWidth = 1.0
+        uiTextView.layer.borderColor = UIColor.systemGray6.cgColor
+        uiTextView.layer.cornerRadius = 10
+        uiTextView.textContainerInset = UIEdgeInsets(top: 8.0, left: 8.0, bottom: 8.0, right: 8.0)
+        uiTextView.font = .systemFont(ofSize: 17)
+        uiTextView.text = textViewPlaceHolder
+        uiTextView.textColor = .systemGray3
+        uiTextView.addDoneButtonOnToolbar()
+        
+        return uiTextView
+    }()
+    
+    let textViewPlaceHolder = "내용을 입력하세요"
+    
     weak var listener: PlaceRecordEditorPresentableListener?
     
     init() {
@@ -67,15 +124,29 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
         view.backgroundColor = .systemBackground
         
         view.addSubview(headerView)
+        view.addSubview(recordTitleView)
+        view.addSubview(recordContentView)
         
         headerView.addSubview(cancelButton)
         headerView.addSubview(titleLabel)
         headerView.addSubview(doneButton)
         
+        recordTitleView.addSubview(recordTitleLabel)
+        recordTitleView.addSubview(recordTitleTextField)
+        
+        recordContentView.addSubview(recordContentLabel)
+        recordContentView.addSubview(recordContentTextView)
+        
         configureHeaderViewAutoLayout()
         configureCancelButtonAutoLayout()
         configureTitleLabelAutoLayout()
         configureDoneButtonAutoLayout()
+        configureRecordTitleView()
+        configureRecordTitleLabel()
+        configureRecordTitleTextField()
+        configureRecordContentView()
+        configureRecordContentLabel()
+        configureRecordContentTextView()
     }
     
     private func configureHeaderViewAutoLayout() {
@@ -109,6 +180,51 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
             make.trailing.equalToSuperview().offset(-8)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(44)
+        }
+    }
+    
+    private func configureRecordTitleView() {
+        recordTitleView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(80)
+        }
+    }
+    
+    private func configureRecordTitleLabel() {
+        recordTitleLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(recordTitleView.snp.centerY)
+            make.leading.equalToSuperview()
+        }
+    }
+    
+    private func configureRecordTitleTextField() {
+        recordTitleTextField.snp.makeConstraints { make in
+            make.centerY.equalTo(recordTitleView.snp.centerY)
+            make.leading.equalTo(recordTitleLabel.snp.trailing).offset(16)
+            make.trailing.equalToSuperview()
+        }
+    }
+    
+    private func configureRecordContentView() {
+        recordContentView.snp.makeConstraints { make in
+            make.top.equalTo(recordTitleView.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(150)
+        }
+    }
+    
+    private func configureRecordContentLabel() {
+        recordContentLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(recordContentView.snp.centerY)
+            make.leading.equalToSuperview()
+        }
+    }
+    
+    private func configureRecordContentTextView() {
+        recordContentTextView.snp.makeConstraints { make in
+            make.leading.equalTo(recordContentLabel.snp.trailing).offset(16)
+            make.top.trailing.bottom.equalToSuperview()
         }
     }
     
