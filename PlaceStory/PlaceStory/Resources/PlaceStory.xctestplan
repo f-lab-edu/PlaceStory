@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "C303A4DD-153E-482A-B944-82793B497175",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:PlaceStory.xcodeproj",
+      "identifier" : "337214B72B19D1BD007622F7",
+      "name" : "PlaceStory"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:MyLocation",
+        "identifier" : "MyLocationTests",
+        "name" : "MyLocationTests"
+      }
+    }
+  ],
+  "version" : 1
+}
