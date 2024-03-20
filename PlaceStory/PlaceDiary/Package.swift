@@ -37,7 +37,9 @@ let package = Package(
             name: "PlaceRecordEditor",
             dependencies: [
                 "ProxyPackage",
-                .product(name: "Utils", package: "ProxyPackage")
+                .product(name: "Utils", package: "ProxyPackage"),
+                .product(name: "Entities", package: "Domain"),
+                .product(name: "CommonUI", package: "ProxyPackage")
             ]
         ),
         .testTarget(
