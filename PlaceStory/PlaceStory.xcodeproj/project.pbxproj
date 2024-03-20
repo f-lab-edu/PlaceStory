@@ -69,6 +69,7 @@
 		337214DC2B19D1BE007622F7 /* PlaceStoryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceStoryUITests.swift; sourceTree = "<group>"; };
 		337214DE2B19D1BE007622F7 /* PlaceStoryUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceStoryUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		33A056772B21A7F3005DE8B2 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
+		33CC364E2BAAD5C900A8403A /* PlaceStory.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = PlaceStory.xctestplan; path = PlaceStory/Resources/PlaceStory.xctestplan; sourceTree = "<group>"; };
 		9845E1DB2B308CEE009E13E2 /* AppComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponent.swift; sourceTree = "<group>"; };
 		9857A7302B1B27E4008A9827 /* LoggedOut */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LoggedOut; sourceTree = "<group>"; };
 		9872E5C72B24A33900168842 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Domain; sourceTree = "<group>"; };
@@ -130,6 +131,7 @@
 		337214AF2B19D1BD007622F7 = {
 			isa = PBXGroup;
 			children = (
+				33CC364E2BAAD5C900A8403A /* PlaceStory.xctestplan */,
 				9880229C2B67F5AF00AA21D8 /* PlaceDiary */,
 				3346D1432B303F20000CB726 /* MyLocation */,
 				98F9EBA82B2DF363005A1A55 /* LoggedIn */,
