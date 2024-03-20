@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UITextView {
+extension UITextView: KeyboardInputToolbar {
     public func addDoneButtonOnToolbar() {
         let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
         doneToolbar.barStyle = .default

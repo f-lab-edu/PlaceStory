@@ -7,9 +7,8 @@
 
 import UIKit
 
-extension UITextField {
-    public func addDoneToolbar() {
-        
+extension UITextField: KeyboardInputToolbar {
+    public func addDoneButtonOnToolbar() {
         let toolbar: UIToolbar = UIToolbar()
         toolbar.barStyle = .default
         
