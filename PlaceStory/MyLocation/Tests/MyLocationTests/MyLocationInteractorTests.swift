@@ -16,16 +16,16 @@ enum MyLocationErrorTest: Error {
 final class MyLocationInteractorTests: XCTestCase {
 
     var interactor: MyLocationInteractor!
-    var locationServiceUseCase: LocationServiceUseCaseMock!
+    var dependency: MyLocationDependencyMock!
     var listener: MyLocationListenerMock!
     var viewController: MyLocationViewControllableMock!
     var router: MyLocationRoutingMock!
     
     override func setUp() {
         viewController = MyLocationViewControllableMock()
-        locationServiceUseCase = LocationServiceUseCaseMock(repository: LocationServiceRepositoryMock())
+        dependency = MyLocationDependencyMock()
         listener = MyLocationListenerMock()
-        interactor = MyLocationInteractor(presenter: viewController, locationServiceUseCase: locationServiceUseCase)
+        interactor = MyLocationInteractor(presenter: viewController, dependency: dependency)
         
         interactor.listener = listener
         viewController.listener = interactor
@@ -43,19 +43,31 @@ final class MyLocationInteractorTests: XCTestCase {
             Just(false).eraseToAnyPublisher()
         }
 
-        locationServiceUseCase.verifyLocationPermissionHandler = verifyLocationPermissionHandler
-        
-        // When
-        viewController.listener?.checkPermissionLocation()
-        
-        // Then
-        XCTAssertEqual(locationServiceUseCase.verifyLocationPermissionCallCount, 2)
-        XCTAssertEqual(viewController.showRequestLocationAlertCallCount, 2)
+        if let locationServiceUseCase = dependency.locationServiceUseCase as? LocationServiceUseCaseMock {
+            locationServiceUseCase.verifyLocationPermissionHandler = verifyLocationPermissionHandler
+            
+            // When
+            viewController.listener?.checkPermissionLocation()
+            
+            // Then
+            XCTAssertEqual(locationServiceUseCase.verifyLocationPermissionCallCount, 2)
+            XCTAssertEqual(viewController.showAlertWithOneActionCallCount, 2)
+        } else {
+            XCTFail("dependency.locationServiceUseCase is not an instance of LocationServiceUseCaseMock")
+        }
     }
     
     func test_verifyLocationPermission_success() {
         // Given
-        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else { return }
+        guard let locationServiceUseCase = dependency.locationServiceUseCase as? LocationServiceUseCaseMock else {
+            XCTFail("dependency.locationServiceUseCase is not an instance of LocationServiceUseCaseMock")
+            return
+        }
+        
+        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else {
+            XCTFail("dependency.repository is not an instance of LocationServiceRepositoryMock")
+            return
+        }
         
         let isLocationPermissionGrantedHandler = {
             Just(true).eraseToAnyPublisher()
@@ -81,7 +93,15 @@ final class MyLocationInteractorTests: XCTestCase {
     
     func test_updateCurrentUserLocation_failure() {
         // Given
-        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else { return }
+        guard let locationServiceUseCase = dependency.locationServiceUseCase as? LocationServiceUseCaseMock else {
+            XCTFail("dependency.locationServiceUseCase is not an instance of LocationServiceUseCaseMock")
+            return
+        }
+        
+        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else {
+            XCTFail("dependency.repository is not an instance of LocationServiceRepositoryMock")
+            return
+        }
         
         let isLocationPermissionGrantedHandler = {
             Just(true).eraseToAnyPublisher()
@@ -104,12 +124,20 @@ final class MyLocationInteractorTests: XCTestCase {
         XCTAssertEqual(locationServiceUseCase.movedToUserLocationCallCount, 1)
         XCTAssertEqual(locationServiceRepositoryMock.publishCurrentLocationCallCount, 1)
         XCTAssertEqual(viewController.updateCurrentLocationCallCount, 0)
-        XCTAssertEqual(viewController.showFailedLocationAlertCallCount, 1)
+        XCTAssertEqual(viewController.showAlertWithOneActionCallCount, 2)
     }
     
     func test_updateCurrentUserLocation_success() {
         // Given
-        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else { return }
+        guard let locationServiceUseCase = dependency.locationServiceUseCase as? LocationServiceUseCaseMock else {
+            XCTFail("dependency.locationServiceUseCase is not an instance of LocationServiceUseCaseMock")
+            return
+        }
+        
+        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else {
+            XCTFail("dependency.repository is not an instance of LocationServiceRepositoryMock")
+            return
+        }
         
         let isLocationPermissionGrantedHandler = {
             Just(true).eraseToAnyPublisher()
@@ -138,7 +166,15 @@ final class MyLocationInteractorTests: XCTestCase {
     
     func test_didTapPlaceSearchButton_failure() {
         //Given
-        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else { return }
+        guard let locationServiceUseCase = dependency.locationServiceUseCase as? LocationServiceUseCaseMock else {
+            XCTFail("dependency.locationServiceUseCase is not an instance of LocationServiceUseCaseMock")
+            return
+        }
+        
+        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else {
+            XCTFail("dependency.repository is not an instance of LocationServiceRepositoryMock")
+            return
+        }
         
         let isLocationPermissionGrantedHandler = {
             Just(true).eraseToAnyPublisher()
@@ -153,7 +189,7 @@ final class MyLocationInteractorTests: XCTestCase {
         locationServiceRepositoryMock.publishCurrentLocationHandler = publishCurrentLocationHandler
         
         // When
-        viewController.listener?.didTappedMyLocationButton()
+        viewController.listener?.didTapMyLocationButton()
         
         // Then
         XCTAssertEqual(locationServiceUseCase.verifyLocationPermissionCallCount, 2)
@@ -161,12 +197,20 @@ final class MyLocationInteractorTests: XCTestCase {
         XCTAssertEqual(viewController.updateCurrentLocationCallCount, 0)
         XCTAssertEqual(locationServiceUseCase.movedToUserLocationCallCount, 1)
         XCTAssertEqual(locationServiceRepositoryMock.publishCurrentLocationCallCount, 1)
-        XCTAssertEqual(viewController.showFailedLocationAlertCallCount, 1)
+        XCTAssertEqual(viewController.showAlertWithOneActionCallCount, 2)
     }
     
     func test_didTapPlaceSearchButton_success() {
         // Given
-        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else { return }
+        guard let locationServiceUseCase = dependency.locationServiceUseCase as? LocationServiceUseCaseMock else {
+            XCTFail("dependency.locationServiceUseCase is not an instance of LocationServiceUseCaseMock")
+            return
+        }
+        
+        guard let locationServiceRepositoryMock = locationServiceUseCase.repository as? LocationServiceRepositoryMock else {
+            XCTFail("dependency.repository is not an instance of LocationServiceRepositoryMock")
+            return
+        }
         
         let isLocationPermissionGrantedHandler = {
             Just(true).eraseToAnyPublisher()
@@ -181,7 +225,7 @@ final class MyLocationInteractorTests: XCTestCase {
         locationServiceRepositoryMock.publishCurrentLocationHandler = publishCurrentLocationHandler
         
         // When
-        viewController.listener?.didTappedMyLocationButton()
+        viewController.listener?.didTapMyLocationButton()
         
         // Then
         XCTAssertEqual(locationServiceUseCase.verifyLocationPermissionCallCount, 2)
@@ -197,15 +241,18 @@ final class MyLocationInteractorTests: XCTestCase {
 final class MyLocationRouterTests: XCTestCase {
     private var placeSearcherBuilder: PlaceSearcherBuildableMock!
     private var myLocationInteractor: MyLocationInteractableMock!
+    private var placeListBuilder: PlaceListBuildableMock!
     private var myLocationRouter: MyLocationRouter!
     
     override func setUp() {
         placeSearcherBuilder = PlaceSearcherBuildableMock()
         myLocationInteractor = MyLocationInteractableMock()
+        placeListBuilder = PlaceListBuildableMock()
         myLocationRouter = MyLocationRouter(
             interactor: myLocationInteractor,
             viewController: MyLocationViewControllableMock(),
-            placeSearcherBuilder: placeSearcherBuilder
+            placeSearcherBuilder: placeSearcherBuilder, 
+            placeListBuilder: placeListBuilder
         )
     }
     

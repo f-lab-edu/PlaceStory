@@ -127,7 +127,7 @@ final class MyLocationRoutingMock: MyLocationRouting {
     var detachPlaceSearcherHandler: (() -> ())?
     var detachPlaceSearcherCallCount = 0
     
-    var attachPlaceListHandler: (() -> ())?
+    var attachPlaceListHandler: ((String) -> ())?
     var attachPlaceListCallCount = 0
     
     var detachPresentationControllerHandler: (() -> ())?
@@ -166,9 +166,9 @@ final class MyLocationRoutingMock: MyLocationRouting {
         detachPlaceSearcherHandler?()
     }
     
-    func attachPlaceList() {
+    func attachPlaceList(_ placeName: String) {
         attachPlaceListCallCount += 1
-        attachPlaceListHandler?()
+        attachPlaceListHandler?(placeName)
     }
     
     func detachPresentationController() {
@@ -183,11 +183,8 @@ final class MyLocationViewControllableMock: MyLocationViewControllable, MyLocati
     var uiviewController: UIViewController = UIViewController() { didSet { uiviewControllerSetCallCount += 1 } }
     var uiviewControllerSetCallCount = 0
     
-    var showRequestLocationAlertHandler: (() -> Void)?
-    var showRequestLocationAlertCallCount = 0
-    
-    var showFailedLocationAlertHandler: ((_ error: Error) -> Void)?
-    var showFailedLocationAlertCallCount = 0
+    var showAlertWithOneActionHandler: (() -> Void)?
+    var showAlertWithOneActionCallCount = 0
     
     var updateCurrentLocationHandler: (() -> Void)?
     var updateCurrentLocationCallCount = 0
@@ -202,14 +199,9 @@ final class MyLocationViewControllableMock: MyLocationViewControllable, MyLocati
     
     init() {}
     
-    func showRequestLocationAlert() {
-        showRequestLocationAlertCallCount += 1
-        showRequestLocationAlertHandler?()
-    }
-    
-    func showFailedLocationAlert(_ error: Error) {
-        showFailedLocationAlertCallCount += 1
-        showFailedLocationAlertHandler?(error)
+    func showAlertWithOneAction(_ title: String, _ message: String, _ handler: (() -> Void)?) {
+        showAlertWithOneActionCallCount += 1
+        showAlertWithOneActionHandler?()
     }
     
     func updateCurrentLocation() {
@@ -232,6 +224,16 @@ final class MyLocationViewControllableMock: MyLocationViewControllable, MyLocati
 
 final class MyLocationListenerMock: MyLocationListener {
     
+}
+
+// MARK: - MyLocationDependencyMock
+
+final class MyLocationDependencyMock: MyLocationInteractorDependency {
+    var locationServiceUseCase: LocationServiceUseCase = LocationServiceUseCaseMock(repository: LocationServiceRepositoryMock())
+    
+    var mapServiceUseCase: MapServiceUseCase = MapServiceUsecaseMock(repository: MapServiceRepositoryMock())
+    
+    var appSettingsServiceUseCase: AppSettingsServiceUseCase = AppSettingsServiceUseCase(openSetting: {})
 }
 
 // MARK: - LocationServiceUseCase Mock
@@ -272,6 +274,7 @@ final class LocationServiceUseCaseMock: LocationServiceUseCase {
 }
 
 // MARK: - LocationServiceRepository Mock
+
 final class LocationServiceRepositoryMock: LocationServiceRepository {
     
     var isLocationPermissionGrantedHandler: (() -> AnyPublisher<Bool, Never>)?
@@ -298,5 +301,56 @@ final class LocationServiceRepositoryMock: LocationServiceRepository {
     func stopLocationUpdates() {
         stopLocationUpdatesCallCount += 1
         stopLocationUpdatesHandler?()
+    }
+}
+
+final class MapServiceUsecaseMock: MapServiceUseCase {
+    var repository: MapServiceRepository! { didSet { repositorySetCallCount += 1 } }
+    var repositorySetCallCount = 0
+    
+    var updateSearchTextHandler: ((String) -> AnyPublisher<[PlaceSearchResult], Never>)?
+    var updateSearchTextCallCount = 0
+    
+    var selectedLocationHandler: ((Int) -> AnyPublisher<[PlaceSearchResult], Never>)?
+    var selectedLocationCallCount = 0
+    
+    init(
+        repository: MapServiceRepository
+    ) {
+        self.repository = repository
+    }
+    
+    func updateSearchText(_ text: String) -> AnyPublisher<[PlaceSearchResult], Never> {
+        updateSearchTextCallCount += 1
+        return repository.searchPlace(from: text)
+    }
+    
+    func selectedLocation(at index: Int) -> AnyPublisher<PlaceMark, Never> {
+        selectedLocationCallCount += 1
+        return repository.startSearchWithLocalSearchCompletion(at: index)
+    }
+}
+
+// MARK: - MapServiceRepositoryMock
+
+final class MapServiceRepositoryMock: MapServiceRepository {
+    var searchPlaceHandler: (() -> AnyPublisher<[PlaceSearchResult], Never>)?
+    var searchPlaceCallCount = 0
+    
+    var startSearchWithLocalSearchCompletionHandler: ((Int) -> AnyPublisher<PlaceMark, Never>)?
+    var startSearchWithLocalSearchCompletionCallCount = 0
+    
+    func searchPlace(from text: String) -> AnyPublisher<[PlaceSearchResult], Never> {
+        searchPlaceCallCount += 1
+        return searchPlaceHandler?() ?? Future<[PlaceSearchResult], Never>({ promise in
+            promise(.success([PlaceSearchResult(title: "", titleHighlightRanges: [], subtitle: "", subtitleHighlightRanges: [])]))
+        }).eraseToAnyPublisher()
+    }
+    
+    func startSearchWithLocalSearchCompletion(at index: Int) -> AnyPublisher<PlaceMark, Never> {
+        startSearchWithLocalSearchCompletionCallCount += 1
+        return startSearchWithLocalSearchCompletionHandler?(index) ?? Future<PlaceMark, Never>({ promise in
+            promise(.success(PlaceMark(latitude: 37.4114441, longitude: 127.0963892, placeName: "핀교 글로벌비즈센터", placeDescription: "회사")))
+        }).eraseToAnyPublisher()
     }
 }
