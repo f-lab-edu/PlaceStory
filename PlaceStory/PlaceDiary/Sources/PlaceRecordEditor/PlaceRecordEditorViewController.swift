@@ -80,7 +80,7 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
         let uiTextField = UITextField()
         uiTextField.placeholder = "제목을 입력하세요"
         uiTextField.borderStyle = .roundedRect
-        uiTextField.addDoneToolbar()
+        uiTextField.addDoneButtonOnToolbar()
         
         return uiTextField
     }()
