@@ -2,9 +2,9 @@ name: PlaceStory_CI
 
 on:
   push:
-    branches: [ "main, feature/*" ]
+    branches: [ "main", "feature/*" ]
   pull_request:
-    branches: [ "main, feature/*" ]
+    branches: [ "main", "feature/*" ]
 
 jobs:
   build:
@@ -17,4 +17,4 @@ jobs:
       run: |
         xcodebuild clean test -project PlaceStory.xcodeproj \
         -scheme PlaceStory \
-        -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest'
+        -destination "platform=iOS Simulator,name=iPhone 15,OS=latest"
