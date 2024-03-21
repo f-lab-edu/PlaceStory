@@ -61,6 +61,39 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
         return uiButton
     }()
     
+    private let recordDateView: UIView = {
+        let uiView = UIView()
+        uiView.backgroundColor = .systemBackground
+        
+        return uiView
+    }()
+    
+    private let recordDateTitleLabel: UILabel = {
+        let uiLabel = UILabel()
+        uiLabel.text = "날짜"
+        uiLabel.font = .boldSystemFont(ofSize: 17)
+        
+        return uiLabel
+    }()
+    
+    private let recordDateTextField: UITextField = {
+        let uiTextField = UITextField()
+        uiTextField.borderStyle = .roundedRect
+        uiTextField.addDoneButtonOnToolbar()
+        
+        return uiTextField
+    }()
+    
+    private lazy var recordDatePicker: UIDatePicker = {
+        let uiDatePicker = UIDatePicker()
+        uiDatePicker.datePickerMode = .date
+        uiDatePicker.preferredDatePickerStyle = .wheels
+        uiDatePicker.locale = Locale(identifier: "ko-KR")
+        uiDatePicker.addTarget(self, action: #selector(changedDate), for: .valueChanged)
+        
+        return uiDatePicker
+    }()
+    
     private let recordTitleView: UIView = {
         let uiView = UIView()
         uiView.backgroundColor = .systemBackground
@@ -141,7 +174,7 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
             )
             , for: .normal
         )
-        uiButton.addTarget(self, action: #selector(didTapAddImageButton), for: .touchUpInside)
+        uiButton.addTarget(self, action: #selector(didTapAddImageButton), for: .valueChanged)
         
         return uiButton
     }()
@@ -177,10 +210,17 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
     private func configureUI() {
         view.backgroundColor = .systemBackground
         
+        recordDateTextField.inputView = recordDatePicker
+        recordDateTextField.text = Formatter.recordDateFormatter.string(from: Date())
+        
         view.addSubview(headerView)
+        view.addSubview(recordDateView)
         view.addSubview(recordTitleView)
         view.addSubview(recordContentView)
         view.addSubview(placeImageView)
+        
+        recordDateView.addSubview(recordDateTitleLabel)
+        recordDateView.addSubview(recordDateTextField)
         
         headerView.addSubview(cancelButton)
         headerView.addSubview(titleLabel)
@@ -200,6 +240,9 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
         configureCancelButtonAutoLayout()
         configureTitleLabelAutoLayout()
         configureDoneButtonAutoLayout()
+        configureRecordDateViewAutoLayout()
+        configureRecordDateTitleLabelAutoLayout()
+        configureRecordDateTextFieldAutoLayout()
         configureRecordTitleViewAutoLayout()
         configureRecordTitleLabelAutoLayout()
         configureRecordTitleTextFieldAutoLayout()
@@ -246,9 +289,32 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
         }
     }
     
+    private func configureRecordDateViewAutoLayout() {
+        recordDateView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(80)
+        }
+    }
+    
+    private func configureRecordDateTitleLabelAutoLayout() {
+        recordDateTitleLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(recordDateView.snp.centerY)
+            make.leading.equalToSuperview()
+        }
+    }
+    
+    private func configureRecordDateTextFieldAutoLayout() {
+        recordDateTextField.snp.makeConstraints { make in
+            make.centerY.equalTo(recordDateView.snp.centerY)
+            make.leading.equalTo(recordDateTitleLabel.snp.trailing).offset(16)
+            make.trailing.equalToSuperview()
+        }
+    }
+    
     private func configureRecordTitleViewAutoLayout() {
         recordTitleView.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom).offset(16)
+            make.top.equalTo(recordDateView.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(80)
         }
@@ -396,6 +462,12 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
     @objc
     private func didTapAddImageButton() {
         listener?.didTapAddImageButton()
+    }
+    
+    @objc
+    private func changedDate(_ sender: UIDatePicker) {
+        let selectedDate = Formatter.recordDateFormatter.string(from: sender.date)
+        recordDateTextField.text = selectedDate
     }
     
     // MARK: - PlaceRecordEditorPresentable
