@@ -38,7 +38,7 @@ final class AppComponent: Component<EmptyDependency>, AppRootDependency, LoggedO
     init() {
         let realmDatabaseImp = RealmDatabaseImp()
         let keychainService = KeychainServiceImp()
-        let appleAuthenticationServiceRepositoryImp = AppleAuthenticationServiceRepositoryImp(database: realmDatabaseImp, keychain: keychainService)
+        let appleAuthenticationServiceRepositoryImp = AppleAuthenticationServiceRepositoryImp()
         let appleAuthenticationServiceUseCaseImp = AppleAuthenticationServiceUseCaseImp(appleAuthenticationServiceRepository: appleAuthenticationServiceRepositoryImp)
         self.appleAuthenticationServiceUseCase = appleAuthenticationServiceUseCaseImp
         

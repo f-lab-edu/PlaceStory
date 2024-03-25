@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-protocol KeychainService {
+public protocol KeychainService {
     func create(_ account: String, _ value: String) -> (isSucceed: Bool, resultMessage: String)
     func read(_ account: String) -> (readValue: String?, resultMessage: String)
     func update(_ account: String, _ value: String) -> (isSucceed: Bool, resultMessage: String)

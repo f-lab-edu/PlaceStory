@@ -10,8 +10,8 @@ import Entities
 import Foundation
 
 public protocol AppleAuthenticationServiceRepository {
-    func signIn() -> AnyPublisher<AppleUser, Error>
+    func signIn() -> AnyPublisher<Bool, Error>
     func decodeWith(idToken: String) -> [String: Any]
     func fetchAppleSignInStatus() -> Future<Bool, Error>
-    func fetchUserInfo() -> AppleUser?
+    func fetchUserID() -> String?
 }
