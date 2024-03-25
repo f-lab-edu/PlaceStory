@@ -21,7 +21,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/DevYeom/ModernRIBs.git", from: "1.0.0"),
         .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.0.1")),
-        .package(url: "https://github.com/realm/realm-swift.git", .upToNextMajor(from: "10.40.0"))
+        .package(url: "https://github.com/realm/realm-swift.git", .upToNextMajor(from: "10.40.0")),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", exact: "10.23.0")
     ],
     targets: [
         .target(
@@ -30,7 +31,11 @@ let package = Package(
                 .product(name: "ModernRIBs", package: "ModernRIBs"),
                 .product(name: "SnapKit", package: "SnapKit"),
                 .product(name: "Realm", package: "realm-swift"),
-                .product(name: "RealmSwift", package: "realm-swift")
+                .product(name: "RealmSwift", package: "realm-swift"),
+                .product(name: "FirebaseDatabase", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseFirestore", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseAuth", package: "firebase-ios-sdk")
             ]
         ),
         .target(

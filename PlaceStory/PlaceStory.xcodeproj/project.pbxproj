@@ -10,6 +10,7 @@
 		3300E9E12B70C8C800317DD3 /* AppleMapView in Frameworks */ = {isa = PBXBuildFile; productRef = 3300E9E02B70C8C800317DD3 /* AppleMapView */; };
 		333F697A2B2A9A0800BF9C83 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333F69792B2A9A0800BF9C83 /* Security.framework */; };
 		334F10EB2B2AD45900FFEE0A /* SecurityServices in Frameworks */ = {isa = PBXBuildFile; productRef = 334F10EA2B2AD45900FFEE0A /* SecurityServices */; };
+		336D0D1A2BB14DF600835EF3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 336D0D192BB14DF600835EF3 /* GoogleService-Info.plist */; };
 		337214BC2B19D1BD007622F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214BB2B19D1BD007622F7 /* AppDelegate.swift */; };
 		337214BE2B19D1BD007622F7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 337214BD2B19D1BD007622F7 /* SceneDelegate.swift */; };
 		337214C52B19D1BE007622F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 337214C42B19D1BE007622F7 /* Assets.xcassets */; };
@@ -58,6 +59,7 @@
 /* Begin PBXFileReference section */
 		333F69792B2A9A0800BF9C83 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		3346D1432B303F20000CB726 /* MyLocation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MyLocation; sourceTree = "<group>"; };
+		336D0D192BB14DF600835EF3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		337214B82B19D1BD007622F7 /* PlaceStory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlaceStory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		337214BB2B19D1BD007622F7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		337214BD2B19D1BD007622F7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 		988C78D72B1B04EA007E5440 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				336D0D192BB14DF600835EF3 /* GoogleService-Info.plist */,
 				337214C42B19D1BE007622F7 /* Assets.xcassets */,
 				337214C62B19D1BE007622F7 /* LaunchScreen.storyboard */,
 				337214C92B19D1BE007622F7 /* Info.plist */,
@@ -341,6 +344,7 @@
 			files = (
 				337214C82B19D1BE007622F7 /* LaunchScreen.storyboard in Resources */,
 				337214C52B19D1BE007622F7 /* Assets.xcassets in Resources */,
+				336D0D1A2BB14DF600835EF3 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -544,9 +548,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PlaceStory/PlaceStory.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = FF4F6NQNDX;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = FF4F6NQNDX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PlaceStory/Resources/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "앱이 사용자의 현재 위치를 정확하게 파악하여 지도에 표시하고, 사용자가 기록한 장소에 마커를 표시하기 위해 위치 권한이 필요합니다";
@@ -563,6 +569,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = randychoi.PlaceStory;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "match Development randychoi.PlaceStory";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
