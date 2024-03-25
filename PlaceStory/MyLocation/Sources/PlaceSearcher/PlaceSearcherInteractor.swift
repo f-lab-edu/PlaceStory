@@ -68,7 +68,6 @@ final class PlaceSearcherInteractor: PresentableInteractor<PlaceSearcherPresenta
     
     func didChangeSearchText(_ text: String) {
         dependency.mapServiceUseCase.updateSearchText(text)
-            .filter { $0.count > 0 }
             .sink(receiveValue: { [weak self] placeSearchResults in
                 guard let self else { return }
                 
