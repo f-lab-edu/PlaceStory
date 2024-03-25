@@ -14,7 +14,7 @@ import Utils
 public protocol AppRootRouting: ViewableRouting {
     func attachLoggedOut()
     func detachLoggedOut()
-    func attachLoggedIn()
+    func attachLoggedIn(with userID: String)
 }
 
 protocol AppRootPresentable: Presentable {
@@ -53,6 +53,7 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
         super.didBecomeActive()
         
         dependency.appleAuthenticationServiceUseCase.checkPreviousSignInWithApple()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 guard let self else { return }
                 
@@ -68,16 +69,9 @@ final class AppRootInteractor: PresentableInteractor<AppRootPresentable>, AppRoo
                 guard let self else { return }
                 
                 if hasPrevious {
-                    if let userInfo = dependency.appleAuthenticationServiceUseCase.fetchUserInfo() {
-                        Log.info("UserInfo is \(userInfo)", "[\(#file)-\(#function) - \(#line)]")
-                        
-                        DispatchQueue.main.async {
-                            self.router?.attachLoggedIn()
-                        }
-                    }
+                    self.router?.attachLoggedIn(with: dependency.appleAuthenticationServiceUseCase.fetchUserID() ?? "")   
                 } else {
                     self.router?.attachLoggedOut()
-                    
                 }
             }
             .store(in: &cancellables)

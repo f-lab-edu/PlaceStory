@@ -14,12 +14,23 @@ public protocol LoggedInDependency: Dependency {
     var placeListBuilder: PlaceListBuildable { get }
 }
 
-final class LoggedInComponent: Component<LoggedInDependency> {}
+final class LoggedInComponent: Component<LoggedInDependency>, LoggedInInteractorDependency {
+    let userID: String
+    
+    init(
+        dependency: LoggedInDependency,
+        userID: String
+    ) {
+        self.userID = userID
+        
+        super.init(dependency: dependency)
+    }
+}
 
 // MARK: - Builder
 
 public protocol LoggedInBuildable: Buildable {
-    func build(withListener listener: LoggedInListener) -> LoggedInRouting
+    func build(withListener listener: LoggedInListener, userID: String) -> LoggedInRouting
 }
 
 public final class LoggedInBuilder: Builder<LoggedInDependency>, LoggedInBuildable {
@@ -28,10 +39,16 @@ public final class LoggedInBuilder: Builder<LoggedInDependency>, LoggedInBuildab
         super.init(dependency: dependency)
     }
     
-    public func build(withListener listener: LoggedInListener) -> LoggedInRouting {
-        let component = LoggedInComponent(dependency: dependency)
+    public func build(withListener listener: LoggedInListener, userID: String) -> LoggedInRouting {
+        let component = LoggedInComponent(
+            dependency: dependency,
+            userID: userID
+        )
         let viewController = LoggedInViewController()
-        let interactor = LoggedInInteractor(presenter: viewController)
+        let interactor = LoggedInInteractor(
+            presenter: viewController,
+            dependency: component
+        )
         interactor.listener = listener
         
         return LoggedInRouter(

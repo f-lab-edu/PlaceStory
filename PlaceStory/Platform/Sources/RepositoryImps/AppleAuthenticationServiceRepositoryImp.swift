@@ -7,81 +7,74 @@
 
 import AuthenticationServices
 import Combine
-import Entities
+import CryptoKit
+import FirebaseAuth
 import Foundation
-import LocalStorage
-import Model
-import RealmSwift
 import Repositories
-import SecurityServices
 import Utils
 
 public final class AppleAuthenticationServiceRepositoryImp: NSObject {
-    private let signInSubject = PassthroughSubject<AppleUser, Error>()
-    private let database: RealmDatabaseImp
-    private let keychain: KeychainServiceImp
+    private let signInSubject = PassthroughSubject<Bool, Error>()
     
-    public init(
-        database: RealmDatabaseImp,
-        keychain: KeychainServiceImp
-    ) {
-        self.database = database
-        self.keychain = keychain
+    fileprivate var currentNonce: String?
+    
+    private func randomNonceString(length: Int = 32) -> String {
+      precondition(length > 0)
+      var randomBytes = [UInt8](repeating: 0, count: length)
+      let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
+      if errorCode != errSecSuccess {
+        fatalError(
+          "Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)"
+        )
+      }
+
+      let charset: [Character] =
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+
+      let nonce = randomBytes.map { byte in
+        // Pick a random character from the set, wrapping around if needed.
+        charset[Int(byte) % charset.count]
+      }
+
+      return String(nonce)
     }
     
-    private func fetchUserInfo(from credential: ASAuthorizationAppleIDCredential) -> UserInfo {
-        var codeStr = ""
-        if let code = credential.authorizationCode {
-            codeStr = String(data: code, encoding: .utf8) ?? ""
-        }
-        
-        let user = credential.user
-        var email = credential.email ?? ""
-        let idToken = credential.identityToken ?? Data()
-        let idTokenToString = String(data: idToken, encoding: .utf8) ?? ""
-        
-        if email.isEmpty {
-            let decodeResult = decodeWith(idToken: idTokenToString)
-            Log.info("decodeResult = \(decodeResult)", "[\(#file)-\(#function) - \(#line)]")
-            email = decodeResult["email"] as? String ?? ""
-        }
-        
-        let familyName = credential.fullName?.familyName ?? ""
-        let givenName = credential.fullName?.givenName ?? ""
-        let fullName = "\(familyName)\(givenName)"
-        
-        let userInfo = UserInfo()
-        userInfo.userIdentifier = user
-        userInfo.email = email
-        userInfo.name = fullName
-        userInfo.accessToken = codeStr
-        userInfo.identityToken = idTokenToString
-        userInfo.imgPath = nil
-        
-        return userInfo
+    private func sha256(_ input: String) -> String {
+      let inputData = Data(input.utf8)
+      let hashedData = SHA256.hash(data: inputData)
+      let hashString = hashedData.compactMap {
+        String(format: "%02x", $0)
+      }.joined()
+
+      return hashString
     }
     
-    private func checkForDuplicate(of userInfo: UserInfo) -> UserInfo? {
-        let result = database.read(UserInfo.self, forKey: userInfo.id)
-        
-        switch result {
-        case .success(let userInfo):
-            return userInfo
-            
-        case .failure:
-            return nil
-        }
+    private func signIn(with credential: AuthCredential) {
+        Auth.auth().signIn(
+            with: credential) { [weak self] authResult, error in
+                guard let self else { return }
+                
+                if let error {
+                    self.signInSubject.send(completion: .failure(error))
+                } else {
+                    self.signInSubject.send(true)
+                }
+            }
     }
 }
 
 extension AppleAuthenticationServiceRepositoryImp: AppleAuthenticationServiceRepository {
-    public func signIn() -> AnyPublisher<AppleUser, Error> {
+    public func signIn() -> AnyPublisher<Bool, Error> {
+        let nonce = randomNonceString()
+        currentNonce = nonce
+        
         let request = ASAuthorizationAppleIDProvider().createRequest()
         request.requestedScopes = [.fullName, .email]
+        request.nonce = sha256(nonce)
         
         let controller = ASAuthorizationController(authorizationRequests: [request])
         controller.delegate = self
-        controller.presentationContextProvider = self as? ASAuthorizationControllerPresentationContextProviding
+        controller.presentationContextProvider = self
         controller.performRequests()
         
         return signInSubject.eraseToAnyPublisher()
@@ -118,55 +111,12 @@ extension AppleAuthenticationServiceRepositoryImp: AppleAuthenticationServiceRep
     
     public func fetchAppleSignInStatus() -> Future<Bool, Error> {
         return Future { promise in
-            let readResult = self.keychain.read("userIdentifier")
-            
-            if let userIdentifier = readResult.readValue {
-                let appleIDProvider = ASAuthorizationAppleIDProvider()
-                Log.debug("userIdentifier = \(userIdentifier)", "[\(#file)-\(#function) - \(#line)]")
-                appleIDProvider.getCredentialState(forUserID: userIdentifier) { credentialState, error in
-                    if let error = error {
-                        Log.error("error is \(error.localizedDescription)", "[\(#file)-\(#function) - \(#line)]")
-                        promise(.failure(error))
-                    } else {
-                        Log.error("credentialState is \(credentialState)", "[\(#file)-\(#function) - \(#line)]")
-                        switch credentialState {
-                        case .revoked:
-                            promise(.success(false))
-                        case .authorized:
-                            promise(.success(true))
-                        case .notFound:
-                            promise(.success(false))
-                        case .transferred:
-                            promise(.success(false))
-                        @unknown default:
-                            promise(.success(false))
-                        }
-                    }
-                }
-            } else {
-                Log.error(readResult.resultMessage, "[\(#file)-\(#function) - \(#line)]")
-                promise(.success(false))
-            }
+            Auth.auth().currentUser?.uid != nil ? promise(.success(true)) : promise(.success(false))
         }
     }
     
-    public func fetchUserInfo() -> AppleUser? {
-        let readResult = keychain.read("objectId")
-        
-        if let readValue = readResult.readValue {
-            let objectId = try! ObjectId(string: readValue)
-            let result = database.read(UserInfo.self, forKey: objectId)
-            
-            switch result {
-            case .success(let userInfo):
-                return userInfo?.toDomain()
-                
-            case .failure:
-                return nil
-            }
-        }
-        
-        return nil
+    public func fetchUserID() -> String? {
+        return Auth.auth().currentUser?.uid
     }
 }
 
@@ -179,34 +129,42 @@ extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerDele
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         
         guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+            Log.error("Cannnot find appleIDCredential", "[\(#file)-\(#function) - \(#line)]")
+            return
+        }
+        
+        guard let nonce = currentNonce else {
             Log.error("Invalid state: A login callback was received, but no login request was sent.", "[\(#file)-\(#function) - \(#line)]")
             return
         }
         
-        let userInfo = fetchUserInfo(from: appleIDCredential)
+        guard let appleIDToken = appleIDCredential.identityToken else {
+            Log.error("Unable to fetch identity token", "[\(#file)-\(#function) - \(#line)]")
+            return
+        }
         
-        if let userInfo = checkForDuplicate(of: userInfo) {
-            signInSubject.send(userInfo.toDomain())
+        guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+            Log.error("Unalbe to serialize token string from data: \(appleIDToken.debugDescription)", "[\(#file)-\(#function) - \(#line)]")
+            return
+        }
+        
+        let credential = OAuthProvider.appleCredential(
+            withIDToken: idTokenString,
+            rawNonce: nonce,
+            fullName: appleIDCredential.fullName
+        )
+        
+        signIn(with: credential)
+    }
+}
+
+extension AppleAuthenticationServiceRepositoryImp: ASAuthorizationControllerPresentationContextProviding {
+    public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+            let keyWindow = windowScene.keyWindow {
+            return keyWindow
         } else {
-            let result = database.create(userInfo)
-            
-            switch result {
-            case .success(let success):
-                let createForUserIdentifierResult = keychain.create("userIdentifier", userInfo.userIdentifier)
-                let createForObjectIdResult = keychain.create("objectId", userInfo.id.stringValue)
-                
-                if createForUserIdentifierResult.isSucceed &&
-                    createForObjectIdResult.isSucceed {
-                    Log.debug("Success - \(createForUserIdentifierResult.resultMessage), \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
-                } else {
-                    Log.error("Failed - \(createForUserIdentifierResult.resultMessage), , \(createForObjectIdResult.resultMessage)", "[\(#file)-\(#function) - \(#line)]")
-                }
-                
-                signInSubject.send(userInfo.toDomain())
-                
-            case .failure(let failure):
-                signInSubject.send(completion: .failure(failure))
-            }
+            return UIWindow()
         }
     }
 }

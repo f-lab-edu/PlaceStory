@@ -20,14 +20,23 @@ public protocol LoggedInListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
+protocol LoggedInInteractorDependency {
+    var userID: String { get }
+}
+
 final class LoggedInInteractor: PresentableInteractor<LoggedInPresentable>, LoggedInInteractable, LoggedInPresentableListener {
 
+    private let dependency: LoggedInInteractorDependency
+    
     weak var router: LoggedInRouting?
     weak var listener: LoggedInListener?
-
-    // TODO: Add additional dependencies to constructor. Do not perform any logic
-    // in constructor.
-    override init(presenter: LoggedInPresentable) {
+    
+    init(
+        presenter: LoggedInPresentable,
+        dependency: LoggedInInteractorDependency
+    ) {
+        self.dependency = dependency
+        
         super.init(presenter: presenter)
         presenter.listener = self
     }

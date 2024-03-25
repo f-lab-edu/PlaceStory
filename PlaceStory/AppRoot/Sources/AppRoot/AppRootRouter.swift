@@ -61,10 +61,10 @@ final class AppRootRouter: LaunchRouter<AppRootInteractable, AppRootViewControll
         loggedOutRouter = nil
     }
     
-    func attachLoggedIn() {
+    func attachLoggedIn(with userID: String) {
         guard loggedInRouter == nil else { return }
         
-        let router = loggedInBuilder.build(withListener: interactor)
+        let router = loggedInBuilder.build(withListener: interactor, userID: userID)
         loggedInRouter = router
         attachChild(router)
         
