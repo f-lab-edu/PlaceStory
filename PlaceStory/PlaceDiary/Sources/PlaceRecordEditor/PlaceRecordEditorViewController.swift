@@ -15,7 +15,7 @@ import PhotosUI
 
 protocol PlaceRecordEditorPresentableListener: AnyObject {
     func didTapCancelButton()
-    func didTapDoneButton()
+    func didTapDoneButton(_ recordRegDate: String, _ recordTitle: String, _ recordContent: String, _ recordImages: [UIImage])
     func didTapAddImageButton()
 }
 
@@ -143,6 +143,7 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
         uiTextView.text = textViewPlaceHolder
         uiTextView.textColor = .systemGray3
         uiTextView.addDoneButtonOnToolbar()
+        uiTextView.delegate = self
         
         return uiTextView
     }()
@@ -456,7 +457,12 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
     
     @objc
     private func didTapDoneButton() {
-        listener?.didTapDoneButton()
+        listener?.didTapDoneButton(
+            recordDateTextField.text ?? "",
+            recordTitleTextField.text ?? "",
+            recordContentTextView.text.elementsEqual(textViewPlaceHolder) ? "" : recordContentTextView.text,
+            placeRecordEditorViewModels.count > 0 ? placeRecordEditorViewModels.map { UIImage(data: $0.placeImage)! } : []
+        )
     }
     
     @objc
@@ -483,5 +489,32 @@ final class PlaceRecordEditorViewController: UIViewController, PlaceRecordEditor
     func update(from viewModels: [PlaceRecordEditorViewModel], with recordImages: [RecordImage]) {
         placeRecordEditorViewModels = viewModels
         applyPlaceImagesSnapshot(from: recordImages)
+    }
+    
+    func presentInvalidAlert(_ title: String, _ message: String) {
+        PlaceStoryAlert.showAlertWithOneAction(
+            self,
+            title,
+            message,
+            nil
+        )
+    }
+}
+
+// MARK: - UITextViewDelegate
+
+extension PlaceRecordEditorViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.systemGray3 {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = textViewPlaceHolder
+            textView.textColor = UIColor.systemGray3
+        }
     }
 }

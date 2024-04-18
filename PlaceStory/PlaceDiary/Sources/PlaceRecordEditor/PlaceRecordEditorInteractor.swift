@@ -21,6 +21,7 @@ protocol PlaceRecordEditorPresentable: Presentable {
     func presentPhotoPicker(_ pickerVC: PHPickerViewController)
     func removeViewModel()
     func update(from viewModels: [PlaceRecordEditorViewModel], with recordImages: [RecordImage])
+    func presentInvalidAlert(_ title: String, _ message: String)
 }
 
 public protocol PlaceRecordEditorListener: AnyObject {
@@ -64,6 +65,20 @@ final class PlaceRecordEditorInteractor: PresentableInteractor<PlaceRecordEditor
     }
     
     func didTapDoneButton() {
+        
+    }
+    
+    func didTapDoneButton(_ recordRegDate: String, _ recordTitle: String, _ recordContent: String, _ recordImages: [UIImage]) {
+        guard !recordTitle.isEmpty else {
+            presenter.presentInvalidAlert("장소 기록", "제목을 입력해주세요")
+            return
+        }
+        
+        guard !recordContent.isEmpty else {
+            presenter.presentInvalidAlert("장소 기록", "내용을 입력해주세요")
+            return
+        }
+                
         listener?.placeRecordEditorDidTapDone()
     }
     
