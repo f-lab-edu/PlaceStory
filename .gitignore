@@ -98,3 +98,7 @@ contents.xcworkspacedata
 
 # Claude Code 로컬 설정
 .claude/settings.local.json
+
+# 환경 변수 (시크릿 포함, 커밋 금지)
+.env.local
+.env
