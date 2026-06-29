@@ -8,7 +8,24 @@ PlaceStory는 장소 기록 iOS 앱으로, **RIBs (Router-Interactor-Builder) �
 
 ## 빌드 및 테스트
 
-Xcode에서 직접 빌드/실행하거나 xcodebuild 사용:
+### Build & Test Tools (XcodeBuildMCP)
+
+raw xcodebuild 명령어 대신 MCP 도구를 우선 사용한다:
+
+- **Build**: `build_sim` / `build_device` — 구조화된 에러 출력
+- **Test**: `test_sim` / `test_device` — pass/fail 결과 확인
+- **Simulators**: `list_sims`, `boot_sim`, `open_sim`
+- **Debug**: `debug_attach_sim`, `debug_stack`, `debug_variables`
+
+### Apple Xcode MCP (mcpbridge)
+
+- **Documentation**: Apple 문서 검색에는 `DocumentationSearch` 사용
+- **Swift REPL**: API 검증에는 `ExecuteSnippet` 사용
+- **Previews**: SwiftUI 헤드리스 렌더링에는 `RenderPreview` 사용
+
+Apple API 질문에는 WebSearch 대신, REPL 작업에는 Bash `swift` 대신 이 도구들을 우선 사용한다.
+
+### xcodebuild 직접 사용 (MCP 도구를 쓸 수 없는 경우)
 
 ```bash
 # 빌드
